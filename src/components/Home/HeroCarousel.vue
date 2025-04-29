@@ -19,7 +19,7 @@ import Swiper from 'swiper/bundle'
 import 'swiper/css/bundle'
 
 // Registrar módulos que usaremos
-Swiper.use([Navigation, Autoplay])
+// Swiper.use([Navigation, Autoplay])
 
 // Definimos la lista de slides via props
 const props = defineProps({
