@@ -1,16 +1,15 @@
 <!-- src/App.vue -->
 <template>
   <Navbar />
-
-  <!-- BLOQUE DE PRUEBA -->
-  <main style="min-height: 80vh; background: #111;"></main>
-
-  <Footer/>
+  <main class="pt-navbar">
+    <router-view /> <!-- ← aquí se renderizará la vista activa -->
+  </main>
+  <Footer />
 </template>
 
 <script setup>
-import Navbar from '@/components/Navbar.vue'
-import Footer from '@/components/Footer.vue'
+import Navbar from './components/Navbar.vue'
+import Footer from './components/Footer.vue'
 </script>
 
 <style>

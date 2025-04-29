@@ -17,7 +17,7 @@
 
             <!-- Logo -->
             <router-link to="/" class="navbar-brand d-flex align-items-center ms-3">
-                <img src="@/assets/images/logo header.PNG" alt="Logo" class="logo-img" />
+                <img src="../assets/imagenes/logo header.PNG" alt="Logo" class="logo-img" />
                 <span class="ms-2 company-title">KALE CONNECTING WORLDS</span>
             </router-link>
 
@@ -27,7 +27,7 @@
                     <button class="lang-btn">accesibilidad</button>
                 </div>
                 <div class="user-info d-flex align-items-center">
-                    <img src="@/assets/images/avatar.png" class="user-avatar" />
+                    <img src="../assets/images/avatar-de-usuario.png" class="user-avatar" />
                     <span class="user-name ms-2">@nombreusuario</span>
                 </div>
             </div>
@@ -218,7 +218,7 @@ onUnmounted(() => {
     /* Centra el texto */
 }
 
-.wrapper ul li a {
+.wrapper ul li router-link {
     display: block;
     width: 100%;
     /* Ocupará todo el ancho del <li> */
@@ -229,7 +229,7 @@ onUnmounted(() => {
     transition: color 0.3s ease-in-out;
 }
 
-.wrapper ul li a::after {
+.wrapper ul li router-link::after {
     content: "";
     display: block;
     width: 100%;
@@ -242,16 +242,16 @@ onUnmounted(() => {
     transition: transform 0.3s ease-in-out;
 }
 
-.wrapper ul li a:hover::after {
+.wrapper ul li router-link:hover::after {
     transform: scaleX(1);
     /* Hace que la línea se expanda */
 }
 
-#active:checked~.wrapper ul li a {
+#active:checked~.wrapper ul li router-link {
     opacity: 1;
 }
 
-.wrapper ul li a {
+.wrapper ul li router-link {
     opacity: 0;
     /* Hacer los enlaces invisibles al inicio */
     transition: opacity 0.6s ease, transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -259,7 +259,7 @@ onUnmounted(() => {
 }
 
 
-#active:checked~.wrapper ul li a {
+#active:checked~.wrapper ul li router-link {
     opacity: 1;
     transform: translateX(0);
     transition-delay: 0.3s;
@@ -308,7 +308,7 @@ onUnmounted(() => {
     margin: 20px 0;
 }
 
-.wrapper ul li a {
+.wrapper ul li router-link {
     color: white;
     /* Asegúrate de que el color del texto sea blanco */
     text-decoration: none;
@@ -323,5 +323,8 @@ onUnmounted(() => {
     cursor: pointer;
     color: white;
     /* Asegúrate de que el color sea blanco */
+}
+#active {
+  display: none;
 }
 </style>
