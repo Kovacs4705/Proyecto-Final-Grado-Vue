@@ -1,12 +1,17 @@
 <!-- src/App.vue -->
 <template>
-  <main class="pt-navbar">
-    <router-view /> <!-- ← aquí se renderizará la vista activa -->
+  <Navbar />
+  <main>
+    <router-view />
   </main>
+  <Footer />
 
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import Navbar from './components/Navbar.vue'
+import Footer from './components/Footer.vue'
 
 </script>
 

@@ -28,6 +28,11 @@ const props = defineProps({
         default: () => []
     }
 })
+props.slides.forEach(slide => {
+    console.log(slide.id, slide.img);
+});
+
+
 
 onMounted(() => {
     new Swiper('.hero-swiper', {
@@ -49,29 +54,55 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.hero-carousel {
-    width: 100%;
+/* Contenedor principal del swiper */
+.hero-swiper {
+  position: relative;
+  top: 2%;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-/* Contenedor del swiper */
-.hero-swiper {
-    width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
+/* Wrapper de slides */
+.hero-swiper .swiper-wrapper {
+  display: flex;
+  transition: transform 0.5s ease;
 }
 
 /* Cada slide */
 .hero-swiper .swiper-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: auto;
+  transition: transform 0.5s ease-in-out;
+  transform-style: preserve-3d;
 }
 
 /* Imagen dentro de la slide */
 .hero-swiper .swiper-slide img {
-    width: 100%;
-    border-radius: 10px;
-    display: block;
+  width: 100%;
+  border-radius: 10px;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+/* Sombra verde fosforescente para la slide activa */
+.hero-swiper .swiper-slide-active img {
+  box-shadow: 5px 5px 15px #63B76980;
+}
+
+/* Efecto 3D */
+.hero-swiper .swiper-slide {
+  transform-origin: center;
+}
+.hero-swiper .swiper-slide-active {
+  transform: scale(1) translateZ(0);
+}
+.hero-swiper .swiper-slide-next,
+.hero-swiper .swiper-slide-prev {
+  transform: scale(0.8) translateZ(-100px);
+}
+.hero-swiper .swiper-slide-next {
+  transform: scale(0.8) translateZ(-100px) rotateY(-30deg);
+}
+.hero-swiper .swiper-slide-prev {
+  transform: scale(0.8) translateZ(-100px) rotateY(30deg);
 }
 
 /* Botones de navegación */
@@ -80,8 +111,8 @@ onMounted(() => {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 36px;
-    height: 36px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background-color: #39ff14;
     color: #000;
@@ -93,11 +124,11 @@ onMounted(() => {
 
 /* Posicionamiento de las flechas */
 .hero-swiper .swiper-button-prev {
-    left: 10px;
+    left: 10%;
 }
 
 .hero-swiper .swiper-button-next {
-    right: 10px;
+    right: 10%;
 }
 
 /* Ocultar los pseudo-elementos por defecto de Swiper */
@@ -109,11 +140,11 @@ onMounted(() => {
 /* Añadir iconos */
 .hero-swiper .swiper-button-prev:before {
     content: '←';
-    font-size: 20px;
+    font-size: 30px;
 }
 
 .hero-swiper .swiper-button-next:before {
     content: '→';
-    font-size: 20px;
+    font-size: 30px;
 }
 </style>

@@ -218,7 +218,7 @@ onUnmounted(() => {
     /* Centra el texto */
 }
 
-.wrapper ul li router-link {
+::v-deep .wrapper ul li a {
     display: block;
     width: 100%;
     /* Ocupará todo el ancho del <li> */
@@ -229,7 +229,7 @@ onUnmounted(() => {
     transition: color 0.3s ease-in-out;
 }
 
-.wrapper ul li router-link::after {
+::v-deep .wrapper ul li a::after {
     content: "";
     display: block;
     width: 100%;
@@ -242,16 +242,16 @@ onUnmounted(() => {
     transition: transform 0.3s ease-in-out;
 }
 
-.wrapper ul li router-link:hover::after {
+::v-deep .wrapper ul li a:hover::after {
     transform: scaleX(1);
     /* Hace que la línea se expanda */
 }
 
-#active:checked~.wrapper ul li router-link {
+::v-deep #active:checked~.wrapper ul li a {
     opacity: 1;
 }
 
-.wrapper ul li router-link {
+::v-deep .wrapper ul li a{
     opacity: 0;
     /* Hacer los enlaces invisibles al inicio */
     transition: opacity 0.6s ease, transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -259,7 +259,7 @@ onUnmounted(() => {
 }
 
 
-#active:checked~.wrapper ul li router-link {
+::v-deep #active:checked~.wrapper ul li a {
     opacity: 1;
     transform: translateX(0);
     transition-delay: 0.3s;
@@ -308,7 +308,7 @@ onUnmounted(() => {
     margin: 20px 0;
 }
 
-.wrapper ul li router-link {
+::v-deep.wrapper ul li a {
     color: white;
     /* Asegúrate de que el color del texto sea blanco */
     text-decoration: none;
