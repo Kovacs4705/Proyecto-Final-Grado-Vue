@@ -1,9 +1,9 @@
 <template>
 
-    <HeroCarousel :slides="heroSlides" />
-    <BestGameCards :games="bestGames" />
-    <NewsCard @open="openLightbox" />
-    <Lightbox ref="lightbox" :items="newsData" @closed="onClose" />
+  <HeroCarousel :slides="heroSlides" />
+  <BestGameCards :games="bestGames" />
+  <NewsCard @open="openLightbox" />
+  <Lightbox ref="lightbox" :items="newsData" @closed="onClose" />
 
 </template>
 
@@ -15,10 +15,10 @@ import NewsCard from '../components/Home/NewsCard.vue'
 import Lightbox from '../components/Home/Lightbox.vue'
 
 const heroSlides = ref([
-    { id: 1, img: '/images/stardewValleyPortada.png' },
-    { id: 2, img: '/images/hadesPortada.jpg' },
-    { id: 3, img: '/images/HollowKnightPortada.png' },
-    { id: 4, img: '/images/balatroPortada.png' }
+  { id: 1, img: '/images/stardewValleyPortada.png' },
+  { id: 2, img: '/images/hadesPortada.jpg' },
+  { id: 3, img: '/images/HollowKnightPortada.png' },
+  { id: 4, img: '/images/balatroPortada.png' }
 ])
 
 // Datos para “Mejores Juegos”
@@ -26,8 +26,8 @@ const bestGames = ref([
   {
     id: 1,
     img: '/images/juego2.png',
-    title: 'Uncharted 4: A Thief’s End',
-    price: '29.99€',
+    titleImg: '/images/uncharted4-title.png',
+    characterImg: '/images/uncharted-character.png',
     aos: 'fade-up',
     duration: 1200,
     delay: 0
