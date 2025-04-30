@@ -57,7 +57,8 @@ onMounted(() => {
 /* Contenedor principal del swiper */
 .hero-swiper {
   position: relative;
-  top: 2%;
+  /* top: 2%; */
+  height: auto;
   overflow: hidden;
   box-sizing: border-box;
 }

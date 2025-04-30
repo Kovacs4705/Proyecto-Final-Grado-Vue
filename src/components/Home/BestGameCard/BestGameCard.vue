@@ -1,10 +1,10 @@
 <!-- src/components/Home/BestGameCard.vue -->
 <template>
-    <div class="best-game-card" :data-aos="aos" :data-aos-duration="duration" :data-aos-delay="delay">
-        <img :src="img" alt="" class="best-game-img" />
-        <div class="best-game-info">
-            <h5 class="best-game-title">{{ title }}</h5>
-            <p class="best-game-price">{{ price }}</p>
+    <div class="card card-custom-width" :data-aos="aos" :data-aos-duration="duration" :data-aos-delay="delay">
+        <img :src="img" alt="Card image cap" class="card-img-top" />
+        <div>
+            <h5>{{ title }}</h5>
+            <p>Precio: {{ price }}</p>
         </div>
     </div>
 </template>
@@ -21,68 +21,65 @@ const props = defineProps({
         type: String,
         default: ''
     },
-    /** Precio o texto descriptivo */
+    /** Precio del juego */
     price: {
         type: String,
         default: ''
     },
-    /** Animación AOS (fade-up, etc.) */
+    /** Animación AOS (e.g. "fade-up") */
     aos: {
         type: String,
         default: 'fade-up'
     },
-    /** Duración de la animación AOS en milisegundos */
+    /** Duración de la animación AOS en ms */
     duration: {
-        type: Number,
+        type: [String, Number],
         default: 1200
     },
-    /** Retardo de la animación AOS en milisegundos */
+    /** Retardo de la animación AOS en ms */
     delay: {
-        type: Number,
+        type: [String, Number],
         default: 0
     }
 })
 </script>
 
 <style scoped>
-.best-game-card {
+.card-custom-width {
+    width: 100%;
+    /* se adapta al contenedor padre */
     border-radius: 15px;
     overflow: hidden;
-    width: 100%;
+    background: transparent;
 }
 
-/* Imagen del juego */
-.best-game-img {
-    display: block;
+.card-img-top {
+    border-radius: 10px 10px 0 0;
+    object-fit: cover;
     width: 100%;
+    height: auto;
 }
 
-/* Contenedor inferior con degradado */
-.best-game-info {
-    background:
-        linear-gradient(180deg,
+.card-body {
+    background: linear-gradient(180deg,
             #243953 0%,
             rgba(10, 10, 10, 0.95) 67%,
             rgba(23, 23, 23, 0.91) 100%);
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.29);
     border-radius: 0 0 15px 15px;
-    opacity: 0.5;
     padding: 10px;
     text-align: center;
     color: white;
 }
 
-/* Título del juego */
-.best-game-title {
-    margin: 0 0 0.5rem;
-    font-size: 1rem;
+.card-title {
+    margin-bottom: 0.5rem;
     font-weight: bold;
 }
 
-/* Precio o subtítulo */
-.best-game-price {
+.card-text {
     margin: 0;
-    font-size: 0.9rem;
     color: #39ff14;
 }
+
 </style>

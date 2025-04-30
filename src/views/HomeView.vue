@@ -1,7 +1,7 @@
 <template>
 
     <HeroCarousel :slides="heroSlides" />
-    <BestGameCards />
+    <BestGameCards :games="bestGames" />
     <NewsCard @open="openLightbox" />
     <Lightbox ref="lightbox" :items="newsData" @closed="onClose" />
 
@@ -19,6 +19,82 @@ const heroSlides = ref([
     { id: 2, img: '/images/hadesPortada.jpg' },
     { id: 3, img: '/images/HollowKnightPortada.png' },
     { id: 4, img: '/images/balatroPortada.png' }
+])
+
+// Datos para “Mejores Juegos”
+const bestGames = ref([
+  {
+    id: 1,
+    img: '/images/juego2.png',
+    title: 'Uncharted 4: A Thief’s End',
+    price: '29.99€',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 0
+  },
+  {
+    id: 2,
+    img: '/images/juego2.png',
+    title: 'The Witcher 3: Wild Hunt',
+    price: '39.99€',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 200
+  },
+  {
+    id: 3,
+    img: '/images/juego3.png',
+    title: 'The Witcher 3: Wild Hunt',
+    price: '39.99€',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 400
+  },
+  {
+    id: 4,
+    img: '/images/juego3.png',
+    title: 'The Witcher 3: Wild Hunt',
+    price: '39.99€',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 600
+  },
+  {
+    id: 5,
+    img: '/images/juego2.png',
+    title: 'The Witcher 3: Wild Hunt',
+    price: '39.99€',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 800
+  },
+  {
+    id: 6,
+    img: '/images/juego2.png',
+    title: 'The Witcher 3: Wild Hunt',
+    price: '39.99€',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 1000
+  },
+  {
+    id: 7,
+    img: '/images/juego3.png',
+    title: 'The Witcher 3: Wild Hunt',
+    price: '39.99€',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 1200
+  },
+  {
+    id: 8,
+    img: '/images/juego3.png',
+    title: 'The Witcher 3: Wild Hunt',
+    price: '39.99€',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 1400
+  }
 ])
 
 // datos de noticias para el lightbox…
