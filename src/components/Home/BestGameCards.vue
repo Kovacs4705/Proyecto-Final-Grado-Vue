@@ -2,10 +2,10 @@
 <template>
     <div class="container mt-3">
         <section class="best-games-cards mt-3">
-            <h2 id="mejoresJuegos" class="text-center">Mejores Juegos</h2>
+            <h2 id="mejoresJuegos">Mejores Juegos</h2>
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
                 <div class="col" v-for="game in games" :key="game.id">
-                    <BestGameCard :link="game.link" :img="game.img" :titleImg="game.titleImg"
+                    <BestGameCard :link="game.link" :img="game.img" 
                         :characterImg="game.characterImg" :aos="game.aos" :duration="game.duration"
                         :delay="game.delay" />
                 </div>
@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import BestGameCard from '@/components/Home/BestGameCard.vue'
+import BestGameCard from '../Home/BestGameCard/BestGameCard.vue'
 
 const props = defineProps({
     games: {

@@ -25,45 +25,40 @@ const heroSlides = ref([
 const bestGames = ref([
   {
     id: 1,
-    img: '/images/juego2.png',
-    titleImg: '/images/uncharted4-title.png',
-    characterImg: '/images/uncharted-character.png',
+    img: '/images/Uncharted-portada.webp',
+    characterImg: '/images/nathan3.png',
     aos: 'fade-up',
     duration: 1200,
     delay: 0
   },
   {
     id: 2,
-    img: '/images/juego2.png',
-    title: 'The Witcher 3: Wild Hunt',
-    price: '39.99€',
+    img: '/images/spiderman-portada.jpg',
+    characterImg: '/images/spiderman-character.png',
     aos: 'fade-up',
     duration: 1200,
     delay: 200
   },
   {
     id: 3,
-    img: '/images/juego3.png',
-    title: 'The Witcher 3: Wild Hunt',
-    price: '39.99€',
+    img: '/images/ratchet-portada.png',
+    characterImg: '/images/ratchet-character.png',
     aos: 'fade-up',
     duration: 1200,
     delay: 400
   },
   {
     id: 4,
-    img: '/images/juego3.png',
-    title: 'The Witcher 3: Wild Hunt',
-    price: '39.99€',
+    img: '/images/reddeadredemption2.png',
+    characterImg: '/images/reddead-character.png',
     aos: 'fade-up',
     duration: 1200,
     delay: 600
   },
   {
     id: 5,
-    img: '/images/juego2.png',
-    title: 'The Witcher 3: Wild Hunt',
-    price: '39.99€',
+    img: '/images/clairobscur-portada.jpg',
+    characterImg: '/images/clair-character.avif',
     aos: 'fade-up',
     duration: 1200,
     delay: 800

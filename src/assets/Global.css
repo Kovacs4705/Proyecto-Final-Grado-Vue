@@ -36,5 +36,10 @@ html, body, #app {
   body .container.mt-3 {
     margin-top: 100px !important;
     margin-bottom: 100px !important;
-    max-width: 67% !important;
+    max-width: 80% !important;
+}
+
+:root {
+  --card-height: 300px;
+  --card-width: calc(var(--card-height) / 1.5);
 }
