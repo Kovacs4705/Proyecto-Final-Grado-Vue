@@ -86,13 +86,12 @@ const props = defineProps({
   } */
 
 .card {
-    width: 250px;
+  width: 250px;
   height: 333.33px;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  ;
   perspective: 2500px;
   margin-bottom: 50px;
   background-color: transparent !important;
@@ -216,11 +215,9 @@ a {
   color: #fff;
   padding: 0;
 }
+
 .info-title {
   bottom: -50px;
- 
+
 }
-
-
-
 </style>
