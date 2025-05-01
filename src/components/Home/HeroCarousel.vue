@@ -38,7 +38,7 @@ onMounted(() => {
     new Swiper('.hero-swiper', {
         // Muestra 1.5 slides para ver parcialmente el siguiente
         slidesPerView: 1.5,
-        spaceBetween: 10,
+        spaceBetween: 0,
         centeredSlides: true,
         loop: true,
         autoplay: {
@@ -54,14 +54,21 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
+
 /* Contenedor principal del swiper */
 .hero-swiper {
+  top: 10%;
   position: relative;
-  /* top: 2%; */
-  height: auto;
-  overflow: hidden;
+  display: block;
+  margin: 0 auto;
+  width: clamp(90%, 1600px, 100%);
+  /* - En móviles: 90% del viewport
+     - En pantallas medias: hasta 1600px
+     - Jamás pasará de 100% del viewport */
   box-sizing: border-box;
 }
+
 
 /* Wrapper de slides */
 .hero-swiper .swiper-wrapper {

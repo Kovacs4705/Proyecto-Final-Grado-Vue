@@ -1,21 +1,24 @@
-<!-- src/components/Home/BestGameCard.vue -->
-<template>
-  <a :href="link" target="_blank" class="card-link" :data-aos="aos" :data-aos-duration="duration"
-    :data-aos-delay="delay">
-    <div class="card">
-      <!-- Portada -->
-      <div class="wrapper">
-        <img :src="img" alt="Portada del juego" class="cover-image" />
+  <!-- src/components/Home/BestGameCard.vue -->
+  <template>
+    <a :href="link" target="_blank" class="card-link" :data-aos="aos" :data-aos-duration="duration"
+      :data-aos-delay="delay">
+      <div class="card">
+        <!-- Portada -->
+        <div class="wrapper">
+          <img :src="img" alt="Portada del juego" class="cover-image" />
+        </div>
+
+        <!-- Imagen del título -->
+        <img v-if="titleImg" :src="titleImg" alt="Título" class="title" />
+
+        <!-- Imagen del personaje -->
+        <img v-if="characterImg" :src="characterImg" alt="Personaje" class="character" />
       </div>
-
-      <!-- Imagen del título -->
-      <img v-if="titleImg" :src="titleImg" alt="Título" class="title" />
-
-      <!-- Imagen del personaje -->
-      <img v-if="characterImg" :src="characterImg" alt="Personaje" class="character" />
-    </div>
-  </a>
-</template>
+      <!-- Título y precio como texto -->
+      <p class="info-title">{{ title }}</p>
+      <p class="info-price">{{ price }}</p>
+    </a>
+  </template>
 
 <script setup>
 const props = defineProps({
@@ -39,6 +42,16 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  /** Texto para el título */
+  title: {
+    type: String,
+    default: ''
+  },
+  /** Texto para el precio */
+  price: {
+    type: String,
+    default: ''
+  },
   /** Animación AOS (fade-up, etc.) */
   aos: {
     type: String,
@@ -58,42 +71,41 @@ const props = defineProps({
 </script>
 
 <style scoped>
-
-
-
-
 /* * {
-  box-sizing: border-box;
-} */
+    box-sizing: border-box;
+  } */
 
 /* body {
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #191c29;
-} */
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #191c29;
+  } */
 
 .card {
-  width: var(--card-width);
-  height: var(--card-height);
+    width: 250px;
+  height: 333.33px;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  padding: 0 36px;
+  ;
   perspective: 2500px;
-  margin: 0 50px;
   margin-bottom: 50px;
   background-color: transparent !important;
+
+
+
 }
 
 .cover-image {
   width: 100%;
-  height: 300px;   
+  height: 300px;
   object-fit: fill;
+  border-radius: 15px;
 }
 
 .wrapper {
@@ -128,6 +140,7 @@ const props = defineProps({
       transparent 46%,
       rgba(12, 13, 19, 0.5) 68%,
       rgba(12, 13, 19) 97%);
+  border-radius: 15px;
 }
 
 /* Estado inicial: sin oscurecer */
@@ -137,21 +150,24 @@ const props = defineProps({
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 0;                              /* sin altura */
-  background-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(12, 13, 19, 0.5) 50%,
-    rgba(12, 13, 19, 0.8) 100%
-  );
-  opacity: 0;                             /* invisible */
+  height: 0;
+  /* sin altura */
+  background-image: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(12, 13, 19, 0.5) 50%,
+      rgba(12, 13, 19, 0.8) 100%);
+  opacity: 0;
+  /* invisible */
   transition: height 0.4s ease, opacity 0.4s ease;
+  border-radius: 15px;
 }
 
 /* Al hacer hover: altura + opacidad máxima */
 .card:hover .wrapper::after {
-  height: 50%;                            /* oscurece mitad inferior */
-  opacity: 1;                             /* visible */
+  height: 50%;
+  /* oscurece mitad inferior */
+  opacity: 1;
+  /* visible */
 }
 
 
@@ -185,4 +201,26 @@ const props = defineProps({
   opacity: 1;
   transform: translate3d(0%, -30%, 100px);
 }
+
+a {
+  text-decoration: none;
+}
+
+/* Título y precio */
+.info-title,
+.info-price {
+  font-family: sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  position: absolute;
+  color: #fff;
+  padding: 0;
+}
+.info-title {
+  bottom: -50px;
+ 
+}
+
+
+
 </style>

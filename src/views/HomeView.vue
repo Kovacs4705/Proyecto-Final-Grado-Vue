@@ -89,6 +89,54 @@ const bestGames = ref([
     aos: 'fade-up',
     duration: 1200,
     delay: 1400
+  },
+  {
+    id: 9,
+    img: '/images/Uncharted-portada.webp',
+    characterImg: '/images/nathan3.png',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 1600
+  },
+  {
+    id: 10,
+    img: '/images/spiderman-portada.jpg',
+    characterImg: '/images/spiderman-character.png',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 1800
+  },
+  {
+    id: 11,
+    img: '/images/ratchet-portada.png',
+    characterImg: '/images/ratchet-character.png',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 2000
+  },
+  {
+    id: 12,
+    img: '/images/reddeadredemption2.png',
+    characterImg: '/images/reddead-character.png',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 2200
+  },
+  {
+    id: 13,
+    img: '/images/clairobscur-portada.jpg',
+    characterImg: '/images/clair-character.avif',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 2400
+  },
+  {
+    id: 14,
+    img: '/images/ratchet-portada.png',
+    characterImg: '/images/ratchet-character.png',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 2600
   }
 ])
 

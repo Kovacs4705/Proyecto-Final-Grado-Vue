@@ -36,9 +36,21 @@ html, body, #app {
   body .container.mt-3 {
     margin-top: 100px !important;
     margin-bottom: 100px !important;
-    max-width: 80% !important;
+    max-width: 70% !important;
 }
+@media (max-width: 1024px) {
+  /* Para el swiper genérico */
+  .swiper-button-prev,
+  .swiper-button-next {
+    display: none !important;
+  }
 
+  /* Si usas clases específicas, p. ej. hero-swiper */
+  .hero-swiper .swiper-button-prev,
+  .hero-swiper .swiper-button-next {
+    display: none !important;
+  }
+}
 :root {
   --card-height: 300px;
   --card-width: calc(var(--card-height) / 1.5);

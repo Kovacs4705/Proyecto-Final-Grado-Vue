@@ -47,13 +47,13 @@ const year = new Date().getFullYear()
 </script>
 <style scoped>
 .footer {
-  left: 16.5%;
+  left: 15%;
   bottom: 0;
   width: 100%;
 }
 .footer {
     background-color: black;
-    max-width: 67%;
+    max-width: 70%;
     /* Igual al ancho del .container.mt-3 */
     margin: 0 auto;
     /* Centrar el footer horizontalmente */
