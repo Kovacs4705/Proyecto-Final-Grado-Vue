@@ -3,10 +3,10 @@
     <div class="container mt-3">
         <section class="best-games-cards mt-3">
             <h2 id="mejoresJuegos">Mejores Juegos</h2>
-            <div class="row g-5">
+            <div class="row">
                 <div class="col" v-for="game in visibleGames" :key="game.id">
                     <BestGameCard :link="game.link" :img="game.img" :characterImg="game.characterImg" :aos="game.aos"
-                        :duration="game.duration" :delay="game.delay" :title="game.title" :price="game.price"/>
+                        :duration="game.duration" :delay="game.delay" :title="game.title" :price="game.price" />
                 </div>
             </div>
         </section>
@@ -22,21 +22,35 @@ const props = defineProps({
 })
 
 // reactivo al ancho de ventana
-const ww = ref(window.innerWidth)
-function onResize() { ww.value = window.innerWidth }
+const ww = ref(innerWidth)
+console.log('ww', ww.value);
+
+function onResize() { ww.value = innerWidth }
 
 onMounted(() => window.addEventListener('resize', onResize))
 onBeforeUnmount(() => window.removeEventListener('resize', onResize))
 
 // calculamos cuántas mostrar
 const visibleGames = computed(() => {
-    let limit = 2        // móvil
-    if (ww.value >= 576) limit = 4   // pantallas ≥ sm
-    if (ww.value >= 768) limit = 6   // ≥ md
-    if (ww.value >= 992) limit = 8   // ≥ lg
-    if (ww.value >= 1200) limit = 14  // ≥ xl
-    return props.games.slice(0, limit)
-})
+    let cardsPerRow = 1; // móvil por defecto
+
+    if (ww.value >= 576) cardsPerRow = 2;
+    if (ww.value >= 768) cardsPerRow = 3;
+    if (ww.value >= 992) cardsPerRow = 4;
+    if (ww.value >= 1200) cardsPerRow = 4;
+    if (ww.value >= 2560) cardsPerRow = 6 ;
+    if (ww.value >= 3840) cardsPerRow = 9;  
+    console.log('cardsPerRow', cardsPerRow);
+    
+
+    const maxCards = cardsPerRow * 2; 
+    console.log('maxCards', maxCards);
+    
+    console.log(props.games.slice(0, maxCards));
+    
+    return props.games.slice(0, maxCards);
+});
+    
 </script>
 
 <style scoped>

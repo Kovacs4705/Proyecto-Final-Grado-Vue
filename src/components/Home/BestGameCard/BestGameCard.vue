@@ -217,7 +217,13 @@ a {
 }
 
 .info-title {
-  bottom: -50px;
-
+  text-align: left;
+  bottom: 0px;
+}
+.info-price{
+  bottom: -30px;
+  font-size: 1rem;
+  font-weight: 400;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 </style>

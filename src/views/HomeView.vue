@@ -27,6 +27,8 @@ const bestGames = ref([
     id: 1,
     img: '/images/Uncharted-portada.webp',
     characterImg: '/images/nathan3.png',
+    title: 'Uncharted 4: A Thief’s End',
+    price: '39.99€',
     aos: 'fade-up',
     duration: 1200,
     delay: 0
@@ -35,6 +37,8 @@ const bestGames = ref([
     id: 2,
     img: '/images/spiderman-portada.jpg',
     characterImg: '/images/spiderman-character.png',
+    title: 'Spider-Man Remastered',
+    price: '39.99€',
     aos: 'fade-up',
     duration: 1200,
     delay: 200
@@ -43,6 +47,8 @@ const bestGames = ref([
     id: 3,
     img: '/images/ratchet-portada.png',
     characterImg: '/images/ratchet-character.png',
+    title: 'Ratchet & Clank: Rift Apart',
+    price: '39.99€',
     aos: 'fade-up',
     duration: 1200,
     delay: 400
@@ -51,6 +57,8 @@ const bestGames = ref([
     id: 4,
     img: '/images/reddeadredemption2.png',
     characterImg: '/images/reddead-character.png',
+    title: 'Red Dead Redemption 2',
+    price: '39.99€',
     aos: 'fade-up',
     duration: 1200,
     delay: 600
@@ -59,6 +67,8 @@ const bestGames = ref([
     id: 5,
     img: '/images/clairobscur-portada.jpg',
     characterImg: '/images/clair-character.avif',
+    title: 'Clair Obscur: Expedition 33',
+    price: '49.99€',
     aos: 'fade-up',
     duration: 1200,
     delay: 800
@@ -137,7 +147,47 @@ const bestGames = ref([
     aos: 'fade-up',
     duration: 1200,
     delay: 2600
-  }
+  },
+  {
+    id: 15,
+    img: '/images/Uncharted-portada.webp',
+    characterImg: '/images/nathan3.png',
+    title: 'Uncharted 4: A Thief’s End',
+    price: '39.99€',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 2800
+  },
+  {
+    id: 16,
+    img: '/images/spiderman-portada.jpg',
+    characterImg: '/images/spiderman-character.png',
+    title: 'Spider-Man Remastered',
+    price: '39.99€',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 3000
+  },
+  {
+    id: 17,
+    img: '/images/ratchet-portada.png',
+    characterImg: '/images/ratchet-character.png',
+    title: 'Ratchet & Clank: Rift Apart',
+    price: '39.99€',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 3200
+  },
+  {
+    id: 18,
+    img: '/images/reddeadredemption2.png',
+    characterImg: '/images/reddead-character.png',
+    title: 'Red Dead Redemption 2',
+    price: '39.99€',
+    aos: 'fade-up',
+    duration: 1200,
+    delay: 3400
+  },
 ])
 
 // datos de noticias para el lightbox…
