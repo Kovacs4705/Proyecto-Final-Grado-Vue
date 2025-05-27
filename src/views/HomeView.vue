@@ -2,8 +2,7 @@
 
   <HeroCarousel :slides="heroSlides" />
   <BestGameCards :games="bestGames" />
-  <NewsCard @open="openLightbox" />
-  <Lightbox ref="lightbox" :items="newsData" @closed="onClose" />
+  <LatestNews/>
 
 </template>
 
@@ -11,8 +10,7 @@
 import { ref } from 'vue'
 import HeroCarousel from '../components/Home/HeroCarousel.vue'
 import BestGameCards from '../components/Home/BestGameCards.vue'
-import NewsCard from '../components/Home/NewsCard.vue'
-import Lightbox from '../components/Home/Lightbox.vue'
+import LatestNews from '../components/Home/LatestNews.vue'
 
 const heroSlides = ref([
   { id: 1, img: '/images/stardewValleyPortada.png' },
