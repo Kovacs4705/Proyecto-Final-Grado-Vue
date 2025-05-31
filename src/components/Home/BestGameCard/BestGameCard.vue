@@ -164,9 +164,8 @@ const props = defineProps({
 /* Al hacer hover: altura + opacidad máxima */
 .card:hover .wrapper::after {
   height: 50%;
-  /* oscurece mitad inferior */
   opacity: 1;
-  /* visible */
+ 
 }
 
 

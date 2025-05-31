@@ -36,8 +36,8 @@ const visibleGames = computed(() => {
 
     if (ww.value >= 576) cardsPerRow = 2;
     if (ww.value >= 768) cardsPerRow = 3;
-    if (ww.value >= 992) cardsPerRow = 4;
-    if (ww.value >= 1200) cardsPerRow = 4;
+    if (ww.value >= 992) cardsPerRow = 3;
+    if (ww.value >= 1200) cardsPerRow = 3;
     if (ww.value >= 2560) cardsPerRow = 6 ;
     if (ww.value >= 3840) cardsPerRow = 9;  
     console.log('cardsPerRow', cardsPerRow);
