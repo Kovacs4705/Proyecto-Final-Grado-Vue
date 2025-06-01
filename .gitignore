@@ -7,15 +7,34 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+dist-ssr/
+**/dist-ssr/
 *.local
+
+# Laravel
+vendor/
+**/vendor/
+public/storage/
+**/public/storage/
+storage/*.key
+**/storage/*.key
+.env
+.env.*
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+.vagrant/
+**/.vagrant/
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
+**/.idea/
 .DS_Store
 *.suo
 *.ntvs*
