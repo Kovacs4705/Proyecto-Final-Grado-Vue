@@ -17,9 +17,8 @@ import HomeUsuario from '../views/HomeView.vue'
 
 // Invitado
 import HomeInvitado from '../views/HomeView.vue'
-// import ExplorarInvitado from '../views/ExplorarView.vue'
-// import BibliotecaInvitado from '../views/BibliotecaView.vue'
-// import NoticiasInvitado from '../views/NoticiasView.vue'
+import ExplorarInvitado from '../views/ExplorarView.vue'
+import NoticiasInvitado from '../views/NoticiasView.vue'
 
 const routes = [
   { path: '/', name: 'root', redirect: '/login' },
@@ -38,9 +37,8 @@ const routes = [
 
   // Rutas Invitado
   { path: '/invitado', name: 'home-invitado', component: HomeInvitado },
-  // { path: '/invitado/explorar', name: 'explorar-invitado', component: ExplorarInvitado },
-  // { path: '/invitado/biblioteca', name: 'biblioteca-invitado', component: BibliotecaInvitado },
-  // { path: '/invitado/noticias', name: 'noticias-invitado', component: NoticiasInvitado }
+  { path: '/invitado/explorar', name: 'explorar-invitado', component: ExplorarInvitado },
+  { path: '/invitado/noticias', name: 'noticias-invitado', component: NoticiasInvitado }
 ]
 
 const router = createRouter({
