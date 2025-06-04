@@ -12,18 +12,21 @@
   </div>
 
   <div v-if="rol === 'admin'">
+    <p>Admin</p>
     <HeroCarouselAdmin :slides="heroSlides" />
     <BestGameCardsAdmin :games="bestGames" />
     <LatestNewsAdmin />
   </div>
-
+  
   <div v-if="rol === 'usuario'">
+    <p>UUARIO</p>
     <HeroCarouselUsuario :slides="heroSlides" />
     <BestGameCardsuuario :games="bestGames" />
     <LatestNewsUsuario />
   </div>
 
   <div v-else>
+    <p>Invitado</p>
     <HeroCarouselInvitado :slides="heroSlides" />
     <BestGameCardsInvitado :games="bestGames" />
     <LatestNewsInvitado />
@@ -33,7 +36,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref,computed } from 'vue'
+import { useLoginStore } from '../stores/useLoginStore.js'
 import FooterGeneral from '../components/Footer.vue'
 import NavbarAdmin from '../components/Admin/Navbar.vue'
 import NavbarUsuario from '../components/Usuario/Navbar.vue'
@@ -229,6 +233,13 @@ const bestGames = ref([
     delay: 3400
   },
 ])
+
+// 1) Obtén la instancia del store
+const loginStore = useLoginStore()
+
+// 2) Crea una “propiedad computada” para el rol
+//    Si user es null, rol será null, por lo que caerá en el v-else (invitado)
+const rol = computed(() => loginStore.rol)
 
 // datos de noticias para el lightbox…
 const newsData = { /* … */ }

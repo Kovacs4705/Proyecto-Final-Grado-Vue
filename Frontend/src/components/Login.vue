@@ -98,19 +98,17 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useLoginStore } from '../stores/useLoginStore.js' // <-- aquí usamos solo LoginStore
+import { useLoginStore } from '../stores/useLoginStore.js'
 
-const emit = defineEmits(['logged-in'])
-const router = useRouter()
+const router     = useRouter()
 const loginStore = useLoginStore()
 
 const isLogin = ref(true)
-
-const form = ref({
+const form    = ref({
   dni_usuario: '',
-  nombre: '',
-  email: '',
-  password: ''
+  nombre:      '',
+  email:       '',
+  password:    ''
 })
 
 function toggleMode() {
@@ -122,19 +120,32 @@ async function handleSubmit() {
   loginStore.error = null
 
   if (isLogin.value) {
-    // ----------------------------------------
-    // MODO INICIAR SESIÓN (lógica sencilla)
-    // ----------------------------------------
-    if (form.value.email.includes('admin')) {
-      emit('logged-in', 'admin')
-    } else {
-      emit('logged-in', 'usuario')
+    // -------------------------------
+    // MODO INICIAR SESIÓN (real)
+    // -------------------------------
+    const ok = await loginStore.loginUser({
+      email:       form.value.email.trim(),
+      contraseña:  form.value.password
+    })
+    if (ok) {
+      // Dependiendo del rol que guardó el store:
+      const rolUsuario = loginStore.rol
+      if (rolUsuario === 'admin') {
+        router.push({ name: 'home-admin' })
+      }
+      else if (rolUsuario === 'usuario') {
+        router.push({ name: 'home-usuario' })
+      }
+      else {
+        // Si en tu backend existieran otros roles, o si no lo encontraron:
+        router.push({ name: 'home-invitado' })
+      }
     }
   }
   else {
-    // ----------------------------------------
-    // MODO REGISTRARSE: llamamos a loginStore.registerUser(...)
-    // ----------------------------------------
+    // -------------------------------
+    // MODO REGISTRARSE
+    // -------------------------------
     const payload = {
       dni_usuario: form.value.dni_usuario.trim(),
       nombre:      form.value.nombre.trim(),
@@ -144,22 +155,25 @@ async function handleSubmit() {
 
     const ok = await loginStore.registerUser(payload)
     if (ok) {
-      alert('¡Registro completado! Ahora puedes iniciar sesión.')
-      // Limpiar formulario y volver a modo LOGIN
+      alert('¡Registro completado! Ahora inicia sesión.')
+      // Limpiar campos y volver a login
       form.value.dni_usuario = ''
-      form.value.nombre     = ''
-      form.value.email      = ''
-      form.value.password   = ''
+      form.value.nombre      = ''
+      form.value.email       = ''
+      form.value.password    = ''
       isLogin.value = true
     }
-    // Si ok === false, loginStore.error contendrá el mensaje del backend y se mostrará arriba
+    // Si ok === false, loginStore.error se mostrará
   }
 }
 
 function entrarComoInvitado() {
-  emit('logged-in', 'invitado')
+  // Simplemente navegamos a “home” sin llamar a loginStore.loginUser,
+  // de modo que loginStore.user = null, rol = null → se mostrará la vista “invitado”.
+  router.push({ name: 'home-invitado' })
 }
 </script>
+
 
 <style scoped>
 .card {

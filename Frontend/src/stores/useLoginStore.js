@@ -11,6 +11,10 @@ export const useLoginStore = defineStore('login', {
     error: null,
     user: null
   }),
+  getters: {
+    // Si user === null devuelve null, de lo contrario devuelve el rol
+    rol: (state) => (state.user ? state.user.rol : null)
+  },
 
   actions: {
     async registerUser(datosRegistro) {
@@ -24,9 +28,9 @@ export const useLoginStore = defineStore('login', {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             dni_usuario: datosRegistro.dni_usuario,
-            nombre:      datosRegistro.nombre,
-            email:       datosRegistro.email,
-            contraseña:  datosRegistro.contraseña
+            nombre: datosRegistro.nombre,
+            email: datosRegistro.email,
+            contraseña: datosRegistro.contraseña
           })
         })
 
@@ -63,7 +67,7 @@ export const useLoginStore = defineStore('login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email:      credenciales.email,
+            email: credenciales.email,
             contraseña: credenciales.contraseña
           })
         })
@@ -73,14 +77,17 @@ export const useLoginStore = defineStore('login', {
           try {
             const errJson = await res.json()
             if (errJson.message) mensajeError = errJson.message
-          } catch {}
+          } catch { }
           this.error = mensajeError
           this.isLoading = false
           return false
         }
 
         const data = await res.json()
-        this.user = data
+        // data = { message: "...", usuario: { dni_usuario: "...", nombre: "...", rol: "usuario", ... } }
+
+        // Almacenamos en this.user directamente el objeto “usuario”
+        this.user = data.usuario
         this.isLoading = false
         return true
 
@@ -90,6 +97,7 @@ export const useLoginStore = defineStore('login', {
         this.isLoading = false
         return false
       }
+
     }
   }
 })
