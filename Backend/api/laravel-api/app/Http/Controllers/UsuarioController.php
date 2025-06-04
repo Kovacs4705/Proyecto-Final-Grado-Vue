@@ -37,7 +37,7 @@ class UsuarioController extends Controller
 
     #[OA\Post(
         path: "/api/usuarios",
-        summary: "Crear un nuevo usuario",
+        summary: "Crear un nuevo usuario de cualquier tipo",
         tags: ["Usuario"],
         requestBody: new OA\RequestBody(
             required: true,
@@ -53,7 +53,70 @@ class UsuarioController extends Controller
     )]
     public function store(Request $request)
     {
-        $usuario = Usuario::create($request->all());
+        $data = $request->all();
+
+        if (isset($data['contraseña'])) {
+            $data['contraseña'] = bcrypt($data['contraseña']);
+        }
+
+        $usuario = Usuario::create($data);
+        return response()->json($usuario, 201);
+    }
+
+    #[OA\Post(
+        path: "/api/registrar-usuario",
+        summary: "Registrar un nuevo usuario de tipo usuario",
+        tags: ["Usuario"],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ["dni_usuario", "nombre", "email", "contraseña"],
+                properties: [
+                    new OA\Property(property: "dni_usuario", type: "string", example: "12345678A"),
+                    new OA\Property(property: "nombre", type: "string", example: "Juan Pérez"),
+                    new OA\Property(property: "email", type: "string", example: "juan@email.com"),
+                    new OA\Property(property: "contraseña", type: "string", example: "secreto123")
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: "Usuario registrado correctamente"
+            ),
+            new OA\Response(
+                response: 422,
+                description: "Datos inválidos"
+            )
+        ]
+    )]
+    public function registrarUsuario(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'dni_usuario' => 'required|string|unique:usuario,dni_usuario',
+                'nombre' => 'required|string|unique:usuario,nombre',
+                'email' => 'required|email|unique:usuario,email',
+                'contraseña' => 'required|string',
+                'saldo' => 'nullable|numeric',
+                'avatar' => 'nullable|string',
+
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw new HttpResponseException(response()->json([
+                'errors' => $e->errors()
+            ], 422));
+        }
+
+        $validated['contraseña'] = bcrypt($validated['contraseña']);
+
+        $usuario = new Usuario($validated);
+        $usuario->rol = 'usuario';
+        $usuario->fecha_registro = now();
+        $usuario->saldo = $request->input('saldo', 0);
+        $usuario->avatar = $request->input('avatar', null);
+        $usuario->save();
+
         return response()->json($usuario, 201);
     }
 
@@ -184,61 +247,7 @@ class UsuarioController extends Controller
         return response()->json(['message' => 'Usuario eliminado correctamente']);
     }
 
-    #[OA\Post(
-        path: "/api/registrar-usuario",
-        summary: "Registrar un nuevo usuario",
-        tags: ["Usuario"],
-        requestBody: new OA\RequestBody(
-            required: true,
-            content: new OA\JsonContent(
-                required: ["dni_usuario", "nombre", "email", "contraseña"],
-                properties: [
-                    new OA\Property(property: "dni_usuario", type: "string", example: "12345678A"),
-                    new OA\Property(property: "nombre", type: "string", example: "Juan Pérez"),
-                    new OA\Property(property: "email", type: "string", example: "juan@email.com"),
-                    new OA\Property(property: "contraseña", type: "string", example: "secreto123")
-                ]
-            )
-        ),
-        responses: [
-            new OA\Response(
-                response: 201,
-                description: "Usuario registrado correctamente"
-            ),
-            new OA\Response(
-                response: 422,
-                description: "Datos inválidos"
-            )
-        ]
-    )]
-    public function registrarUsuario(Request $request)
-    {
-        try {
-            $validated = $request->validate([
-                'dni_usuario' => 'required|string|unique:usuario,dni_usuario',
-                'nombre' => 'required|string|unique:usuario,nombre',
-                'email' => 'required|email|unique:usuario,email',
-                'contraseña' => 'required|string',
-                'saldo' => 'nullable|numeric',
-                'avatar' => 'nullable|string',
-            ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            throw new HttpResponseException(response()->json([
-                'errors' => $e->errors()
-            ], 422));
-        }
 
-        $validated['contraseña'] = bcrypt($validated['contraseña']);
-
-        $usuario = new Usuario($validated);
-        $usuario->rol = 'usuario';
-        $usuario->fecha_registro = now();
-        $usuario->saldo = $request->input('saldo', 0);
-        $usuario->avatar = $request->input('avatar', null);
-        $usuario->save();
-
-        return response()->json($usuario, 201);
-    }
 
     #[OA\Post(
         path: "/api/login",
