@@ -295,7 +295,8 @@ class UsuarioController extends Controller
 
         return response()->json([
             'message' => 'Login exitoso',
-            'logeado' => true
+            'logeado' => true,
+            'usuario' => $usuario
         ]);
     }
 }
