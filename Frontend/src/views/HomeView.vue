@@ -1,5 +1,5 @@
 <template>
-  <div v-if="rol === 'admin'">
+  <div v-if="rol === 'administrador'">
     <NavbarAdmin />
   </div>
 
