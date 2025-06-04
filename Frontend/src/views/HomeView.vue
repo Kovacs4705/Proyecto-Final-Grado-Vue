@@ -11,13 +11,13 @@
     <NavbarInvitado />
   </div>
 
-  <div v-if="rol === 'admin'">
+  <div v-if="rol === 'administrador'">
     <p>Admin</p>
     <HeroCarouselAdmin :slides="heroSlides" />
     <BestGameCardsAdmin :games="bestGames" />
     <LatestNewsAdmin />
   </div>
-  
+
   <div v-if="rol === 'usuario'">
     <p>UUARIO</p>
     <HeroCarouselUsuario :slides="heroSlides" />
