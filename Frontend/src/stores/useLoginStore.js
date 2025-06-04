@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia'
 
 // import.meta.env.VITE_API_URL debe leerse aquí
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL_REAL
 console.log("🍍 API_URL =", API_URL)
 
 export const useLoginStore = defineStore('login', {
