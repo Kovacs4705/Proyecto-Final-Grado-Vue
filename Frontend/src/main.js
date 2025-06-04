@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import { createPinia } from 'pinia'
 import router from './router'       // ← aquí importas tu router
 
 import AOS from 'aos'
@@ -10,7 +11,10 @@ import './assets/global.css'        // tu CSS global
 const app = createApp(App)
 
 app.use(router)                     // ← aquí registras Vue Router
-app.mount('#app')                   // montas tu App en el div#app
+app.mount('#app')   
+const pinia = createPinia()            // <-- Crear instancia de Pinia
+app.use(pinia)                         // <-- Registrar Pinia EN EL APP
+app.use(router)                     // montas tu App en el div#app
 
 
 AOS.init({
