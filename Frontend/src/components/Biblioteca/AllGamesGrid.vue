@@ -1,4 +1,3 @@
-<!-- src/components/AllGameGrid.vue -->
 <template>
   <section class="all-games-section container mt-3">
     <!-- Título de la sección -->
@@ -21,94 +20,15 @@
   </section>
 </template>
 
-<script>
-import LibraryGameCard from '../Biblioteca/LibraryGameCard/LibraryGameCard.vue';
+<script setup>
+import LibraryGameCard from '../Biblioteca/LibraryGameCard/LibraryGameCard.vue'
 
-export default {
-  name: 'AllGameGrid',
-  components: { LibraryGameCard },
-  data() {
-    return {
-      games: [
-        {
-          image: '/images/hordes.png',
-          title: 'Nier Automata',
-          delay: 200
-        },
-        {
-          image: '/images/citizen.png',
-          title: 'Cyberpunk 2077',
-          delay: 400
-        },
-        {
-          image: '/images/Crysis.png',
-          title: 'Crysis Remastered',
-          delay: 600
-        },
-        {
-          image: '/images/fantasy.png',
-          title: 'Final Fantasy XV',
-          delay: 800
-        },
-        {
-          image: '/images/farming.png',
-          title: 'Farming Simulator 22',
-          delay: 1000
-        },
-        {
-          image: '/images/heart.png',
-          title: 'Hearthstone',
-          delay: 200
-        },
-        {
-          image: '/images/Outlast.png',
-          title: 'Outlast II',
-          delay: 400
-        },
-        {
-          image: '/images/Mortal.png',
-          title: 'Mortal Kombat 11',
-          delay: 600
-        },
-        {
-          image: '/images/tankhead.png',
-          title: 'World of Tanks',
-          delay: 800
-        },
-        {
-          image: '/images/Crysis.png',
-          title: 'JEDI Falling Order',
-          delay: 1000
-        },
-        {
-          image: '/images/citizen.png',
-          title: 'Uncharted 4',
-          delay: 200
-        },
-        {
-          image: 'images/fantasy.png',
-          title: 'Final Fantasy VII',
-          delay: 400
-        },
-        {
-          image: '/images/farming.png',
-          title: 'Nier Automata',
-          delay: 600
-        },
-        {
-          image: 'images/fantasy.png',
-          title: 'Final Fantasy VII',
-          delay: 800
-        },
-        {
-          image: 'images/fantasy.png',
-          title: 'Final Fantasy VII',
-          delay: 1000
-        }
-      ]
-    };
+defineProps({
+  games: {
+    type: Array,
+    required: true
   }
-};
+})
 </script>
 
 <style scoped>
