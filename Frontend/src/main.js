@@ -10,10 +10,12 @@ import './assets/global.css'        // tu CSS global
 
 const app = createApp(App)
 
+const pinia = createPinia()            // <-- Crear instancia de Pinia
+app.use(pinia)        
+
 app.use(router)                     // ← aquí registras Vue Router
 app.mount('#app')   
-const pinia = createPinia()            // <-- Crear instancia de Pinia
-app.use(pinia)                         // <-- Registrar Pinia EN EL APP
+                 // <-- Registrar Pinia EN EL APP
 app.use(router)                     // montas tu App en el div#app
 
 

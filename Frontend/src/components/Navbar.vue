@@ -8,6 +8,7 @@
 
             <div class="wrapper" :class="{ open: menuOpen }">
                 <ul>
+                    <li><router-link to="/panel" @click="menuOpen = false">Panel</router-link></li>
                     <li><router-link to="/home" @click="menuOpen = false">Inicio</router-link></li>
                     <li><router-link to="/biblioteca" @click="menuOpen = false">Biblioteca</router-link></li>
                     <li><router-link to="/explorar" @click="menuOpen = false">Explorar</router-link></li>
@@ -28,7 +29,7 @@
                 </div>
                 <div class="user-info d-flex align-items-center">
                     <img src="../assets/images/avatar-de-usuario.png" class="user-avatar" />
-                    <span class="user-name ms-2">@nombreusuario</span>
+                    <span class="user-name ms-2">{{ displayName }}</span>
                 </div>
             </div>
         </div>
@@ -36,12 +37,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
+import { useLoginStore } from '../stores/useLoginStore.js'
 import { useRouter } from 'vue-router'
 
 const nav = ref(null)
 const scrolled = ref(false)
 const menuOpen = ref(false)
+const loginStore = useLoginStore()
+
+
+// Computed para el rol y nombre de usuario
+const rol = computed(() => loginStore.rol)
+const displayName = computed(() => {
+  if (!loginStore.user) return 'Invitado'
+  return loginStore.user.nombre || 'Invitado'
+})
 
 // Scroll listener
 function onScroll() {

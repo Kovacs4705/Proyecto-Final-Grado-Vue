@@ -31,7 +31,7 @@ const routes = [
     path: '/biblioteca',
     name: 'biblioteca',
     component: BibliotecaView,
-    meta: { requiresAuth: true }
+
   },
 
   // 6) Noticias (todos los roles)
@@ -42,7 +42,6 @@ const routes = [
     path: '/panel',
     name: 'panel',
     component: PanelControl,
-    meta: { requiresAdmin: true }
   },
 
   // 8) Capturar todo lo demás → redirigir a /login
