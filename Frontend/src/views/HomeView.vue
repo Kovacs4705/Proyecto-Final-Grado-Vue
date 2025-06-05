@@ -1,60 +1,28 @@
 <template>
-  <div v-if="rol === 'administrador'">
-    <NavbarAdmin />
+
+
+  <div>
+    <p>hola </p>
+    <HeroCarousel :slides="heroSlides" />
+    <BestGameCards :games="bestGames" />
+    <LatestNews />
   </div>
 
-  <div v-if="rol === 'usuario'">
-    <NavbarUsuario />
-  </div>
 
-  <div v-else>
-    <NavbarInvitado />
-  </div>
 
-  <div v-if="rol === 'administrador'">
-    <p>Admin</p>
-    <HeroCarouselAdmin :slides="heroSlides" />
-    <BestGameCardsAdmin :games="bestGames" />
-    <LatestNewsAdmin />
-  </div>
 
-  <div v-if="rol === 'usuario'">
-    <p>UUARIO</p>
-    <HeroCarouselUsuario :slides="heroSlides" />
-    <BestGameCardsuuario :games="bestGames" />
-    <LatestNewsUsuario />
-  </div>
-
-  <div v-else>
-    <p>Invitado</p>
-    <HeroCarouselInvitado :slides="heroSlides" />
-    <BestGameCardsInvitado :games="bestGames" />
-    <LatestNewsInvitado />
-  </div>
-
-  <FooterGeneral />
 </template>
 
 <script setup>
-import { ref,computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useLoginStore } from '../stores/useLoginStore.js'
-import FooterGeneral from '../components/Footer.vue'
-import NavbarAdmin from '../components/Admin/Navbar.vue'
-import NavbarUsuario from '../components/Usuario/Navbar.vue'
-import NavbarInvitado from '../components/Invitado/Navbar.vue'
 import { useRoute } from 'vue-router'
 
-import HeroCarouselAdmin from '../components/Admin/Home/HeroCarousel.vue'
-import BestGameCardsAdmin from '../components/Admin/Home/BestGameCards.vue'
-import LatestNewsAdmin from '../components/Admin/Home/LatestNews.vue'
 
-import HeroCarouselUsuario from '../components/Usuario/Home/HeroCarousel.vue'
-import BestGameCardsuuario from '../components/Usuario/Home/BestGameCards.vue'
-import LatestNewsUsuario from '../components/Usuario/Home/LatestNews.vue'
+import HeroCarousel from '../components/Home/HeroCarousel.vue'
+import BestGameCards from '../components/Home/BestGameCards.vue'
+import LatestNews from '../components/Home/LatestNews.vue'
 
-import HeroCarouselInvitado from '../components/Invitado/Home/HeroCarousel.vue'
-import BestGameCardsInvitado from '../components/Invitado/Home/BestGameCards.vue'
-import LatestNewsInvitado from '../components/Invitado/Home/LatestNews.vue'
 
 
 

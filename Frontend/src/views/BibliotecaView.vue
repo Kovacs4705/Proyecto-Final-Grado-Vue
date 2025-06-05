@@ -1,46 +1,28 @@
 <!-- src/views/BibliotecaView.vue -->
 <template>
-  <!-- NAVBAR SEGÚN ROL -->
-  <div v-if="rol === 'administrador'">
-    <NavbarAdmin />
-  </div>
-  <div v-else-if="rol === 'usuario'">
-    <NavbarUsuario />
-  </div>
-  <div v-else>
-    <NavbarInvitado />
-  </div>
 
-  <!-- CONTENIDO DE BIBLIOTECA SEGÚN ROL -->
-  <div v-if="rol === 'administrador'" class="biblioteca-view">
-    <p>Admin</p>
-    <RecentlyPlayedAdmin />
-    <AllGameGridAdmin />
-  </div>
 
-  <div v-else-if="rol === 'usuario'" class="biblioteca-view">
-    <p>Usuario</p>
-    <RecentlyPlayedUsuario />
-    <AllGameGridUsuario />
-  </div>
 
-  <FooterGeneral />
+
+
+
+  <RecentlyPlayed />
+  <AllGameGrid />
+
+
+
 </template>
 
 <script setup>
 import { computed } from 'vue'
 import { useLoginStore } from '../stores/useLoginStore.js'
 
-// Importa los componentes correspondientes a cada rol
-import NavbarAdmin    from '../components/Admin/Navbar.vue'
-import NavbarUsuario  from '../components/Usuario/Navbar.vue'
-import FooterGeneral  from '../components/Footer.vue'
 
-import RecentlyPlayedAdmin   from '../components/Admin/Biblioteca/RecentlyPlayed.vue'
-import AllGameGridAdmin      from '../components/Admin/Biblioteca/AllGamesGrid.vue'
 
-import RecentlyPlayedUsuario from '../components/Usuario/Biblioteca/RecentlyPlayed.vue'
-import AllGameGridUsuario    from '../components/Usuario/Biblioteca/AllGamesGrid.vue'
+
+
+import RecentlyPlayed from '../components/Biblioteca/RecentlyPlayed.vue'
+import AllGameGrid from '../components/Biblioteca/AllGamesGrid.vue'
 
 // 1) Instanciamos la store de login
 const loginStore = useLoginStore()

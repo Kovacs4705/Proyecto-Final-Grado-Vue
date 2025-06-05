@@ -1,53 +1,24 @@
 <!-- src/views/NoticiasView.vue -->
 <template>
-  <!-- NAVBAR SEGÚN ROL -->
-  <div v-if="rol === 'admin'">
-    <NavbarAdmin />
-  </div>
-  <div v-else-if="rol === 'usuario'">
-    <NavbarUsuario />
-  </div>
-  <div v-else>
-    <NavbarInvitado />
-  </div>
 
-  <!-- CONTENIDO DE NOTICIAS SEGÚN ROL -->
-  <div class="noticias-view container mt-4" v-if="rol === 'admin'">
-    <p>admin</p>
-    <!-- Sección Noticias de Hoy -->
-    <section class="section-todays-news">
-      <TodaysNewsAdmin />
-    </section>
+
+
 
       
 
-  </div>
 
-  <div class="noticias-view container mt-4" v-else-if="rol === 'usuario'">
-    <p>usuario</p>
+
+ 
     <!-- Sección Noticias de Hoy -->
     <section class="section-todays-news">
-      <TodaysNewsUsuario />
+      <TodaysNews />
     </section>
 
-    <!-- Sección Noticias Generales -->
-   
-  </div>
 
-  <div class="noticias-view container mt-4" v-else>
-    <p>Invitado</p>
-    <!-- Sección Noticias de Hoy -->
-    <section class="section-todays-news">
-      <TodaysNewsInvitado />
-    </section>
 
-    <!-- Separador -->
-    <hr class="mt-5 mb-5 separator" />
 
-    
-  </div>
 
-  <FooterGeneral />
+  
 </template>
 
 <script setup>
@@ -58,19 +29,12 @@ import 'aos/dist/aos.css'
 import { useLoginStore } from '../stores/useLoginStore.js'
 
 // Importar los componentes de navegación
-import NavbarAdmin    from '../components/Admin/Navbar.vue'
-import NavbarUsuario  from '../components/Usuario/Navbar.vue'
-import NavbarInvitado from '../components/Invitado/Navbar.vue'
-import FooterGeneral  from '../components/Footer.vue'
+
 
 // Importar componentes de “Noticias” para cada rol
-import TodaysNewsAdmin    from '../components/Admin/Noticias/TodaysNews.vue'
-import TodaysNewsUsuario  from '../components/Usuario/Noticias/TodaysNews.vue'
-import TodaysNewsInvitado from '../components/Invitado/Noticias/TodaysNews.vue'
+import TodaysNews   from '../components/Noticias/TodaysNews.vue'
 
-import GeneralNewsCardAdmin    from '../components/Admin/Noticias/GeneralNews.vue'
-import GeneralNewsCardUsuario   from '../components/Usuario/Noticias/GeneralNews.vue'
-import GeneralNewsCardInvitado  from '../components/Invitado/Noticias/GeneralNews.vue'
+
 
 // 1) Crea la store de login
 const loginStore = useLoginStore()

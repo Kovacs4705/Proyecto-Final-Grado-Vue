@@ -1,39 +1,10 @@
 <!-- src/views/ExploreView.vue -->
 <template>
-  <!-- NAVBAR SEGÚN ROL -->
-  <div v-if="rol === 'admin'">
-    <NavbarAdmin />
-  </div>
-  <div v-else-if="rol === 'usuario'">
-    <NavbarUsuario />
-  </div>
-  <div v-else>
-    <NavbarInvitado />
-  </div>
-
-  <!-- CONTENIDO DE EXPLORAR SEGÚN ROL -->
-  <div v-if="rol === 'admin'">
-    <p>admin</p>
-    <FeaturedSectionAdmin :featured-item="featuredData" />
-    <GenresCarouselAdmin :genres="genresData" />
-    <GamesGridAdmin :games="gamesData" />
-  </div>
-
-  <div v-else-if="rol === 'usuario'">
-    <p>usuario</p>
-    <FeaturedSectionUsuario :featured-item="featuredData" />
-    <GenresCarouselUsuario :genres="genresData" />
-    <GamesGridUsuario :games="gamesData" />
-  </div>
-
-  <div v-else>
-    <p>invitado</p>
-    <FeaturedSectionInvitado :featured-item="featuredData" />
-    <GenresCarouselInvitado :genres="genresData" />
-    <GamesGridInvitado :games="gamesData" />
-  </div>
-
-  <FooterGeneral />
+  
+    <FeaturedSection :featured-item="featuredData" />
+    <GenresCarousel :genres="genresData" />
+    <GamesGrid :games="gamesData" />
+  
 </template>
 
 <script setup>
@@ -41,23 +12,14 @@ import { computed } from 'vue'
 import { useLoginStore } from '../stores/useLoginStore.js'
 
 // Importa componentes de navegación
-import NavbarAdmin    from '../components/Admin/Navbar.vue'
-import NavbarUsuario  from '../components/Usuario/Navbar.vue'
-import NavbarInvitado from '../components/Invitado/Navbar.vue'
-import FooterGeneral  from '../components/Footer.vue'
+
 
 // Importa componentes de sección “Explorar” para cada rol
-import FeaturedSectionAdmin   from '../components/Admin/Explorar/FeaturedSection.vue'
-import GenresCarouselAdmin    from '../components/Admin/Explorar/GenresCarousel.vue'
-import GamesGridAdmin         from '../components/Admin/Explorar/GamesGrid.vue'
+import FeaturedSection   from '../components/Explorar/FeaturedSection.vue'
+import GenresCarousel    from '../components/Explorar/GenresCarousel.vue'
+import GamesGrid       from '../components/Explorar/GamesGrid.vue'
 
-import FeaturedSectionUsuario from '../components/Usuario/Explorar/FeaturedSection.vue'
-import GenresCarouselUsuario  from '../components/Usuario/Explorar/GenresCarousel.vue'
-import GamesGridUsuario       from '../components/Usuario/Explorar/GamesGrid.vue'
 
-import FeaturedSectionInvitado from '../components/Invitado/Explorar/FeaturedSection.vue'
-import GenresCarouselInvitado  from '../components/Invitado/Explorar/GenresCarousel.vue'
-import GamesGridInvitado       from '../components/Invitado/Explorar/GamesGrid.vue'
 
 // 1) Instancia la store de login
 const loginStore = useLoginStore()
