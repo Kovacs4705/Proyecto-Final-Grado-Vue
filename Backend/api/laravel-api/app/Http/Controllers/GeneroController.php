@@ -14,23 +14,45 @@ class GeneroController extends Controller
 {
     #[OA\Get(
         path: "/api/generos",
-        summary: "Listar todos los géneros",
+        summary: "Listar todos los géneros paginados",
         tags: ["Genero"],
+        parameters: [
+            new OA\Parameter(
+                name: "pagina",
+                in: "query",
+                required: false,
+                description: "Número de página",
+                schema: new OA\Schema(type: "integer", default: 1)
+            ),
+            new OA\Parameter(
+                name: "registrosPorPagina",
+                in: "query",
+                required: false,
+                description: "Cantidad de registros por página",
+                schema: new OA\Schema(type: "integer", default: 10)
+            )
+        ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Lista de géneros",
+                description: "Lista de géneros paginada",
                 content: new OA\JsonContent(
-                    type: "array",
-                    items: new OA\Items(ref: "#/components/schemas/Genero")
+                    properties: [
+                        new OA\Property(property: "data", type: "array", items: new OA\Items(ref: "#/components/schemas/Genero")),
+                        
+                    ]
                 )
             )
         ]
     )]
-    public function index()
+    public function index(Request $request)
     {
-        $generos = Genero::all();
-        return response()->json($generos);
+        $pagina = $request->query('pagina', 1);
+        $registrosPorPagina = $request->query('registrosPorPagina', 10);
+
+        $generos = Genero::paginate($registrosPorPagina, ['*'], 'page', $pagina);
+
+        return response()->json($generos->items());
     }
 
     #[OA\Post(

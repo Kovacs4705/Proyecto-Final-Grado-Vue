@@ -14,12 +14,28 @@ class JuegoController extends Controller
 {
     #[OA\Get(
         path: "/api/juegos",
-        summary: "Listar todos los juegos con sus imágenes y categorías",
+        summary: "Listar todos los juegos con sus imágenes y categorías (paginado, solo listado)",
         tags: ["Juego"],
+        parameters: [
+            new OA\Parameter(
+                name: "pagina",
+                in: "query",
+                required: false,
+                description: "Número de página",
+                schema: new OA\Schema(type: "integer", default: 1)
+            ),
+            new OA\Parameter(
+                name: "registrosPorPagina",
+                in: "query",
+                required: false,
+                description: "Cantidad de registros por página",
+                schema: new OA\Schema(type: "integer", default: 10)
+            )
+        ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Lista de juegos con imágenes",
+                description: "Lista de juegos con imágenes (solo listado, sin metadatos de paginación)",
                 content: new OA\JsonContent(
                     type: "array",
                     items: new OA\Items(
@@ -40,10 +56,15 @@ class JuegoController extends Controller
             )
         ]
     )]
-    public function index()
+    public function index(Request $request)
     {
-        $juegos = Juego::with('juego_imagens')->get();
-        return response()->json($juegos);
+        $pagina = $request->query('pagina', 1);
+        $registrosPorPagina = $request->query('registrosPorPagina', 10);
+
+        $juegos = Juego::with('juego_imagens')->paginate($registrosPorPagina, ['*'], 'page', $pagina);
+
+        // Solo retorna el listado (array de juegos)
+        return response()->json($juegos->items());
     }
 
     #[OA\Post(
