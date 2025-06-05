@@ -1,91 +1,31 @@
 <!-- src/views/NoticiasView.vue -->
 <template>
-
-
-
-
-      
-
-
-
- 
-    <!-- Sección Noticias de Hoy -->
-    <section class="section-todays-news">
-      <TodaysNews />
-    </section>
-
-
-
-
-
-  
+  <!-- Sección Noticias de Hoy -->
+   <div class="container mt-3">
+     <section class="section-todays-news">
+       <TodaysNews :featured-news="noticiasStore.featuredNews" :small-news="noticiasStore.smallNews" />
+     </section>
+   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { onMounted, computed } from 'vue'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import { useNoticiasStore } from '../stores/useNoticiasStore.js'
+import TodaysNews from '../components/Noticias/TodaysNews.vue'
 
-import { useLoginStore } from '../stores/useLoginStore.js'
+const noticiasStore = useNoticiasStore()
 
-// Importar los componentes de navegación
-
-
-// Importar componentes de “Noticias” para cada rol
-import TodaysNews   from '../components/Noticias/TodaysNews.vue'
-
-
-
-// 1) Crea la store de login
-const loginStore = useLoginStore()
-
-// 2) Computed para obtener el rol actual
-const rol = computed(() => loginStore.rol)
-
-// Lista de noticias generales (idéntica para todos los roles en este ejemplo)
-const generalNewsList = ref([
-  {
-    image: "/images/fornitenoticia.png",
-    title: "Noticia General 1",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, corrupti illo distinctio minus.",
-  },
-  {
-    image: "/images/rocket.png",
-    title: "Noticia General 2",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, corrupti illo distinctio minus.",
-  },
-  {
-    image: "/images/fornitenoticia.png",
-    title: "Noticia General 3",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, corrupti illo distinctio minus.",
-  },
-  {
-    image: "/images/rocket.png",
-    title: "Noticia General 4",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, corrupti illo distinctio minus.",
-  },
-  {
-    image: "/images/fornitenoticia.png",
-    title: "Noticia General 5",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, corrupti illo distinctio minus.",
-  },
-  {
-    image: "/images/rocket.png",
-    title: "Noticia General 6",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, corrupti illo distinctio minus.",
-  },
-])
-
-// Inicializar AOS al montar el componente
+// Cargar noticias al montar el componente
 onMounted(() => {
   AOS.init()
+  noticiasStore.fetchNoticias({ pagina: 1, registrosPorPagina: 9 })
 })
+
+// Computed para featured y small news
+const featuredNews = computed(() => noticiasStore.featuredNews)
+const smallNews = computed(() => noticiasStore.smallNews)
 </script>
 
 <style scoped>
@@ -109,6 +49,7 @@ onMounted(() => {
   color: #ffffff;
   position: relative;
 }
+
 .general-title::after {
   content: "";
   position: absolute;

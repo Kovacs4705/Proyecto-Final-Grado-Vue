@@ -26,4 +26,23 @@ class Noticia extends Model
     {
         return $value ? base64_encode($value) : null;
     }
+
+    public function getMimeTypePortadaAttribute()
+    {
+        return $this->getMimeType($this->attributes['portada']);
+    }
+    public function getMimeTypeLightboxAttribute()
+    {
+        return $this->getMimeType($this->attributes['lightbox']);
+    }
+    private function getMimeType($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_buffer($finfo, $value);
+        finfo_close($finfo);
+        return $mime;
+    }
 }
