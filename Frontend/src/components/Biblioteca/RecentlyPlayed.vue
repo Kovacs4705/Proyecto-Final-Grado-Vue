@@ -1,4 +1,3 @@
-<!-- src/components/RecentlyPlayed.vue -->
 <template>
   <section class="recently-played-section container mt-3">
     <!-- Título de la sección -->
@@ -27,34 +26,15 @@ import RecentlyPlayedCard from '../Biblioteca/RecentlyPlayCard/RecentlyPlayCard.
 export default {
   name: 'RecentlyPlayed',
   components: { RecentlyPlayedCard },
-  data() {
-    return {
-      games: [
-        {
-          image: '/images/juego1.png',
-          title: 'JEDI Falling Order',
-          delay: 200
-        },
-        {
-          image: '/images/juego2.png',
-          title: 'Uncharted 4',
-          delay: 400
-        },
-        {
-          image: '/images/juego3.png',
-          title: 'Final Fantasy VII',
-          delay: 600
-        },
-        {
-          image: '/images/juego4.png',
-          title: 'Nier Automata',
-          delay: 800
-        }
-      ]
-    };
+  props: {
+    games: {
+      type: Array,
+      required: true
+    }
   }
 };
 </script>
+
 
 <style scoped>
 /* Contenedor principal de la sección */

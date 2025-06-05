@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $id_genero
  * @property string $nombre
+ * @property string|null $imagen
  * 
  * @property Collection|Juego[] $juegos
  *
@@ -21,16 +22,17 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Genero extends Model
 {
-	protected $table = 'genero';
-	protected $primaryKey = 'id_genero';
-	public $timestamps = false;
+    protected $table = 'genero';
+    protected $primaryKey = 'id_genero';
+    public $timestamps = false;
 
-	protected $fillable = [
-		'nombre'
-	];
+    protected $fillable = [
+        'nombre',
+        'imagen'
+    ];
 
-	public function juegos()
-	{
-		return $this->belongsToMany(Juego::class, 'juego_genero', 'id_genero', 'id_juego');
-	}
+    public function juegos()
+    {
+        return $this->belongsToMany(Juego::class, 'juego_genero', 'id_genero', 'id_juego');
+    }
 }

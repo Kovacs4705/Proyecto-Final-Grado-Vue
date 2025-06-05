@@ -1,39 +1,51 @@
 <template>
   <div class="biblioteca-view">
-    <RecentlyPlayed :games="games" />
-    <AllGameGrid :games="games" />
+    <RecentlyPlayed :games="recentlyPlayed" />
+    <AllGameGrid :games="allGames" />
   </div>
 </template>
 
 <script setup>
 import { onMounted, computed } from 'vue'
-import { useGamesStore } from '../stores/useGamesStore.js'
+import { useBibliotecasStore } from '../stores/useBibliotecasStore.js'
 import { useLoginStore } from '../stores/useLoginStore.js'
 import RecentlyPlayed from '../components/Biblioteca/RecentlyPlayed.vue'
 import AllGameGrid from '../components/Biblioteca/AllGamesGrid.vue'
 
 // Instancia de stores
-const gamesStore = useGamesStore()
+const bibliotecaStore = useBibliotecasStore()
 const loginStore = useLoginStore()
 
-// Computed para el rol (si lo necesitas)
-const rol = computed(() => loginStore.rol)
-
-// Cargar juegos al montar la vista
-onMounted(() => {
-  gamesStore.fetchGames()
+// Cargar biblioteca del usuario logueado al montar la vista
+onMounted(async () => {
+  await bibliotecaStore.fetchBibliotecaUsuarioLogueado()
+  console.log(games.value) // Verifica que los juegos se carguen correctamente
+  console.log(loginStore.usuario) // Verifica que el usuario esté logueado;
+  
 })
 
 // Computed para los juegos en formato esperado por los componentes hijos
 const games = computed(() =>
-  gamesStore.games.map((j, idx) => ({
-    image: j.juego_imagens && j.juego_imagens.length
-      ? `data:image/jpeg;base64,${j.juego_imagens[0].imagen}`
-      : '/images/default.png',
-    title: j.nombre,
-    delay: 100 * idx // Puedes ajustar el delay como prefieras
-  }))
+  (bibliotecaStore.biblioteca || []).map((j, idx) => {
+    // Buscar imagen de categoría 'horizontal'
+    const landscapeImg = j.juego_imagens?.find(img =>
+      img.categoria === 'horizontal' 
+    )
+    return {
+      image: landscapeImg
+        ? `data:image/jpeg;base64,${landscapeImg.imagen}`
+        : '/images/default.png',
+      title: j.nombre,
+      delay: 200 * idx // Puedes ajustar el delay como prefieras
+    }
+  })
 )
+
+// Los primeros 4 juegos para RecentlyPlayed
+const recentlyPlayed = computed(() => games.value.slice(0, 4))
+
+// Los primeros 10 juegos para AllGameGrid
+const allGames = computed(() => games.value.slice(0, 10))
 </script>
 
 <style scoped>

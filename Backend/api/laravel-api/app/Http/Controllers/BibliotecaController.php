@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Biblioteca;
+use App\Models\Juego;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
@@ -172,12 +173,14 @@ class BibliotecaController extends Controller
         ]
     )]
     public function getBibliotecaByIdUsuario($dni_usuario)
-    {
-        $juegos = \App\Models\Juego::whereIn(
+{
+    $juegos = Juego::with('juego_imagens')
+        ->whereIn(
             'id_juego',
             Biblioteca::where('dni_usuario', $dni_usuario)->pluck('id_juego')
-        )->get();
+        )
+        ->get();
 
-        return response()->json($juegos);
-    }
+    return response()->json($juegos);
+}
 }
