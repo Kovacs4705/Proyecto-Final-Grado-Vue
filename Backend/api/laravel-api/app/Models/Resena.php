@@ -11,14 +11,14 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Reseña
- * 
+ *
  * @property int $id_reseña
  * @property string $dni_usuario
  * @property int $id_juego
  * @property int|null $calificación
  * @property string|null $comentario
  * @property Carbon $fecha_publicacion
- * 
+ *
  * @property Usuario $usuario
  * @property Juego $juego
  *
@@ -26,8 +26,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Resena extends Model
 {
-	protected $table = 'reseña';
-	protected $primaryKey = 'id_reseña';
+	protected $table = 'resena';
+	protected $primaryKey = 'id_resena';
 	public $timestamps = false;
 
 	protected $casts = [

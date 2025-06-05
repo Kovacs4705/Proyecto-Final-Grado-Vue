@@ -1,43 +1,51 @@
 <!-- src/views/BibliotecaView.vue -->
 <template>
-
+  <!-- NAVBAR SEGÚN ROL -->
   <div v-if="rol === 'admin'">
     <NavbarAdmin />
   </div>
-
-  <div v-if="rol === 'usuario'">
+  <div v-else-if="rol === 'usuario'">
     <NavbarUsuario />
   </div>
-
   <div v-else>
     <NavbarInvitado />
   </div>
+
+  <!-- CONTENIDO DE BIBLIOTECA SEGÚN ROL -->
   <div v-if="rol === 'admin'" class="biblioteca-view">
     <RecentlyPlayedAdmin />
-
     <AllGameGridAdmin />
   </div>
 
-  <div v-if="rol === 'usuario'" class="biblioteca-view">
+  <div v-else-if="rol === 'usuario'" class="biblioteca-view">
     <RecentlyPlayedUsuario />
-
     <AllGameGridUsuario />
   </div>
+
   <FooterGeneral />
 </template>
 
 <script setup>
-// Importa los componentes que ya creaste
-import FooterGeneral from '../components/Footer.vue'
-import NavbarAdmin from '../components/Admin/Navbar.vue'
-import NavbarUsuario from '../components/Usuario/Navbar.vue'
-import NavbarInvitado from '../components/Invitado/Navbar.vue'
+import { computed } from 'vue'
+import { useLoginStore } from '../stores/useLoginStore.js'
 
-import RecentlyPlayedAdmin from '../components/Admin/Biblioteca/RecentlyPlayed.vue'
-import AllGameGridAdmin from '../components/Admin/Biblioteca/AllGamesGrid.vue'
+// Importa los componentes correspondientes a cada rol
+import NavbarAdmin    from '../components/Admin/Navbar.vue'
+import NavbarUsuario  from '../components/Usuario/Navbar.vue'
+import FooterGeneral  from '../components/Footer.vue'
+
+import RecentlyPlayedAdmin   from '../components/Admin/Biblioteca/RecentlyPlayed.vue'
+import AllGameGridAdmin      from '../components/Admin/Biblioteca/AllGamesGrid.vue'
 
 import RecentlyPlayedUsuario from '../components/Usuario/Biblioteca/RecentlyPlayed.vue'
-import AllGameGridUsuario from '../components/Usuario/Biblioteca/AllGamesGrid.vue'
+import AllGameGridUsuario    from '../components/Usuario/Biblioteca/AllGamesGrid.vue'
+
+// 1) Instanciamos la store de login
+const loginStore = useLoginStore()
+
+// 2) Computed que lee el rol
+//    Si loginStore.user es null, entonces loginStore.rol será null y entra en la rama “invitado”
+const rol = computed(() => loginStore.rol)
 </script>
 
 <style scoped>

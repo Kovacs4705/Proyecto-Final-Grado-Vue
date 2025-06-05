@@ -8,10 +8,10 @@
 
             <div class="wrapper" :class="{ open: menuOpen }">
                 <ul>
-                    <li><router-link to="/" @click="menuOpen = false">Inicio</router-link></li>
-                    <li><router-link to="/biblioteca" @click="menuOpen = false">Biblioteca</router-link></li>
-                    <li><router-link to="/explorar" @click="menuOpen = false">Explorar</router-link></li>
-                    <li><router-link to="/noticias" @click="menuOpen = false">Noticias</router-link></li>
+                    <li><router-link to="/usuario" @click="menuOpen = false">Inicio</router-link></li>
+                    <li><router-link to="/usuario/biblioteca" @click="menuOpen = false">Biblioteca</router-link></li>
+                    <li><router-link to="/usuario/explorar" @click="menuOpen = false">Explorar</router-link></li>
+                    <li><router-link to="/usuario/noticias" @click="menuOpen = false">Noticias</router-link></li>
                 </ul>
             </div>
 
