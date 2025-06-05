@@ -9,10 +9,11 @@ class Noticia extends Model
     protected $table = 'noticia';
     protected $primaryKey = 'id_noticia';
 
-    protected $fillable = [
+     protected $fillable = [
         'titulo',
-        'imagen',
         'descripcion',
-        'cuerpo'
+        'cuerpo',
+        'portada',
+        'lightbox'
     ];
 }

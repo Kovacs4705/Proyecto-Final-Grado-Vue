@@ -1,8 +1,5 @@
 <?php
 
-/**
- * Created by Reliese Model.
- */
 
 namespace App\Models;
 
@@ -13,29 +10,35 @@ use Illuminate\Database\Eloquent\Model;
  * 
  * @property int $id_imagen
  * @property int $id_juego
- * @property string $url
+ * @property string $imagen
+ * @property string $categoria
  * 
  * @property Juego $juego
- *
- * @package App\Models
  */
 class JuegoImagen extends Model
 {
-	protected $table = 'juego_imagen';
-	protected $primaryKey = 'id_imagen';
-	public $timestamps = false;
+    protected $table = 'juego_imagen';
+    protected $primaryKey = 'id_imagen';
+    public $timestamps = false;
 
-	protected $casts = [
-		'id_juego' => 'int'
-	];
+    protected $casts = [
+        'id_juego' => 'int'
+    ];
 
-	protected $fillable = [
-		'id_juego',
-		'url'
-	];
+    protected $fillable = [
+        'id_juego',
+        'imagen',
+        'categoria'
+    ];
 
-	public function juego()
-	{
-		return $this->belongsTo(Juego::class, 'id_juego');
-	}
+    public function juego()
+    {
+        return $this->belongsTo(Juego::class, 'id_juego');
+    }
+
+    // Mutator para devolver la imagen como base64 en JSON
+    public function getImagenAttribute($value)
+    {
+        return base64_encode($value);
+    }
 }

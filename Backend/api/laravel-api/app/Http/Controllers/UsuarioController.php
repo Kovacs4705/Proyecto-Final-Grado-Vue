@@ -7,6 +7,7 @@ use App\Models\Usuario;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Hash;
 
 #[OA\Tag(
     name: "Usuario",
@@ -298,7 +299,7 @@ class UsuarioController extends Controller
 
         $usuario = \App\Models\Usuario::where('email', $validated['email'])->first();
 
-        if (!$usuario || !\Hash::check($validated['contraseña'], $usuario->contraseña)) {
+        if (!$usuario || !Hash::check($validated['contraseña'], $usuario->contraseña)) {
             return response()->json(['error' => 'Credenciales incorrectas'], 401);
         }
 

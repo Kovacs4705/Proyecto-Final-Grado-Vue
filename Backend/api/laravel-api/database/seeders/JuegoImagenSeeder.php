@@ -14,10 +14,13 @@ class JuegoImagenSeeder extends Seeder
         JuegoImagen::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
+        $categorias = ['horizontal', 'vertical', 'personaje'];
+
         for ($i = 1; $i <= 10; $i++) {
             JuegoImagen::create([
                 'id_juego' => $i,
-                'url' => "https://picsum.photos/seed/juego{$i}/600/400"
+                'imagen' => random_bytes(12000), // 12 KB de datos binarios simulados
+                'categoria' => $categorias[array_rand($categorias)],
             ]);
         }
     }
