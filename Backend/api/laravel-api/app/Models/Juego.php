@@ -48,7 +48,9 @@ class Juego extends Model
 		'editor',
 		'fecha_lanzamiento',
 		'precio',
-		'descuento'
+		'descuento',
+		'genero',
+		'plataforma',
 	];
 
 	public function bibliotecas()
