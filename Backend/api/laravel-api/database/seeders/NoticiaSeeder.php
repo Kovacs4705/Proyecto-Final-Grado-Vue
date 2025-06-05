@@ -16,9 +16,9 @@ class NoticiaSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // Ruta absoluta a la carpeta de imágenes
-        $imagenesPath = realpath(base_path('../../imagenes'));
+        $imagenesPath = realpath(base_path('/imagenes'));
         if (!$imagenesPath) {
-            throw new \Exception("La carpeta de imágenes no existe: " . base_path('../../imagenes'));
+            throw new \Exception("La carpeta de imágenes no existe: " . base_path('/imagenes'));
         }
 
         // Busca imágenes con extensiones válidas (insensible a mayúsculas)
