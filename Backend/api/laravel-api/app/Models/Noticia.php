@@ -9,11 +9,21 @@ class Noticia extends Model
     protected $table = 'noticia';
     protected $primaryKey = 'id_noticia';
 
-     protected $fillable = [
+    protected $fillable = [
         'titulo',
         'descripcion',
         'cuerpo',
         'portada',
         'lightbox'
     ];
+
+    public function getPortadaAttribute($value)
+    {
+        return $value ? base64_encode($value) : null;
+    }
+
+    public function getLightboxAttribute($value)
+    {
+        return $value ? base64_encode($value) : null;
+    }
 }
