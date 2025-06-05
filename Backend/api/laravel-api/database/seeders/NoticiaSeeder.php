@@ -31,7 +31,7 @@ class NoticiaSeeder extends Seeder
         }
 
         for ($i = 1; $i <= 10; $i++) {
-            $portadaPath = $archivos[($i - 1) % $totalImagenes];
+            $portadaPath = $archivos[($i) % $totalImagenes];
             $lightboxPath = $archivos[($i) % $totalImagenes];
 
             // Generar texto lorem ipsum de al menos 500 caracteres
