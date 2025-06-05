@@ -1,16 +1,9 @@
 <template>
-
-
   <div>
-    <p>hola </p>
     <HeroCarousel :slides="heroSlides" />
     <BestGameCards :games="bestGames" />
     <LatestNews />
   </div>
-
-
-
-
 </template>
 
 <script setup>
