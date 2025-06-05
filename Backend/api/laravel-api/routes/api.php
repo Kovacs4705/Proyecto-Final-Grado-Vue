@@ -18,6 +18,7 @@ use App\Http\Controllers\NoticiaController;
 
 Route::post('login', [UsuarioController::class, 'login']);
 Route::post('registrar-usuario', [UsuarioController::class, 'registrarUsuario']);
+Route::get('/juegos/filtrar', [JuegoController::class, 'filtrar']);
 Route::get('juegos-destacados', [JuegoController::class, 'listarDestacados']);
 Route::get('juegos/buscarPorParametro', [JuegoController::class, 'buscarPorParametro']);
 Route::get('biblioteca/usuario/{dni_usuario}', [BibliotecaController::class, 'getBibliotecaByIdUsuario']);

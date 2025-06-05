@@ -239,4 +239,61 @@ class JuegoController extends Controller
 
         return response()->json($juegos);
     }
+
+    #[OA\Get(
+        path: "/api/juegos/filtrar",
+        summary: "Filtrar juegos por nombre, género y/o plataforma",
+        tags: ["Juego"],
+        parameters: [
+            new OA\Parameter(
+                name: "nombre",
+                in: "query",
+                required: false,
+                description: "Filtrar por nombre del juego",
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "genero",
+                in: "query",
+                required: false,
+                description: "Filtrar por género",
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "plataforma",
+                in: "query",
+                required: false,
+                description: "Filtrar por plataforma",
+                schema: new OA\Schema(type: "string")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Lista de juegos filtrados",
+                content: new OA\JsonContent(
+                    type: "array",
+                    items: new OA\Items(ref: "#/components/schemas/Juego")
+                )
+            )
+        ]
+    )]
+    public function filtrar(Request $request)
+    {
+        $query = Juego::query();
+
+        if ($request->filled('nombre')) {
+            $query->where('nombre', 'like', '%' . $request->nombre . '%');
+        }
+        if ($request->filled('genero')) {
+            $query->where('genero', 'like', '%' . $request->genero . '%');
+        }
+        if ($request->filled('plataforma')) {
+            $query->where('plataforma', 'like', '%' . $request->plataforma . '%');
+        }
+
+        $juegos = $query->with('juego_imagens')->get();
+
+        return response()->json($juegos);
+    }
 }

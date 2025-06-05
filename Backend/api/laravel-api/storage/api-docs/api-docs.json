@@ -554,17 +554,32 @@
                 "tags": [
                     "Juego"
                 ],
-                "summary": "Listar todos los juegos",
+                "summary": "Listar todos los juegos con sus imágenes y categorías",
                 "operationId": "e6414dd14d51162ed1d94054ea30fe65",
                 "responses": {
                     "200": {
-                        "description": "Lista de juegos",
+                        "description": "Lista de juegos con imágenes",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Juego"
+                                        "allOf": [
+                                            {
+                                                "$ref": "#/components/schemas/Juego"
+                                            },
+                                            {
+                                                "properties": {
+                                                    "juego_imagens": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "$ref": "#/components/schemas/JuegoImagen"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        ]
                                     }
                                 }
                             }
@@ -607,7 +622,7 @@
                 "tags": [
                     "Juego"
                 ],
-                "summary": "Obtener un juego por ID",
+                "summary": "Obtener un juego por ID con sus imágenes y categorías",
                 "operationId": "7330d442c22044dce5c0cf1a2c5a6dde",
                 "parameters": [
                     {
@@ -622,11 +637,26 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Juego encontrado",
+                        "description": "Juego encontrado con imágenes",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Juego"
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Juego"
+                                        },
+                                        {
+                                            "properties": {
+                                                "juego_imagens": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/JuegoImagen"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -764,6 +794,59 @@
                 "responses": {
                     "200": {
                         "description": "Lista de juegos encontrados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Juego"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/juegos/filtrar": {
+            "get": {
+                "tags": [
+                    "Juego"
+                ],
+                "summary": "Filtrar juegos por nombre, género y/o plataforma",
+                "operationId": "f8e4a22ececeadb2c61bb47ad4447f8d",
+                "parameters": [
+                    {
+                        "name": "nombre",
+                        "in": "query",
+                        "description": "Filtrar por nombre del juego",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "genero",
+                        "in": "query",
+                        "description": "Filtrar por género",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "plataforma",
+                        "in": "query",
+                        "description": "Filtrar por plataforma",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de juegos filtrados",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1655,7 +1738,7 @@
                 "tags": [
                     "Usuario"
                 ],
-                "summary": "Crear un nuevo usuario",
+                "summary": "Crear un nuevo usuario de cualquier tipo",
                 "operationId": "4e9dbcbdaaaf9faab196a82d5cbaea23",
                 "requestBody": {
                     "required": true,
@@ -1677,6 +1760,57 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/api/registrar-usuario": {
+            "post": {
+                "tags": [
+                    "Usuario"
+                ],
+                "summary": "Registrar un nuevo usuario de tipo usuario",
+                "operationId": "23e61a855688f6fe133fe6738356606e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "dni_usuario",
+                                    "nombre",
+                                    "email",
+                                    "contraseña"
+                                ],
+                                "properties": {
+                                    "dni_usuario": {
+                                        "type": "string",
+                                        "example": "12345678A"
+                                    },
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "juan@email.com"
+                                    },
+                                    "contraseña": {
+                                        "type": "string",
+                                        "example": "secreto123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario registrado correctamente"
+                    },
+                    "422": {
+                        "description": "Datos inválidos"
                     }
                 }
             }
@@ -1796,57 +1930,6 @@
                     },
                     "404": {
                         "description": "Usuario no encontrado"
-                    }
-                }
-            }
-        },
-        "/api/registrar-usuario": {
-            "post": {
-                "tags": [
-                    "Usuario"
-                ],
-                "summary": "Registrar un nuevo usuario",
-                "operationId": "23e61a855688f6fe133fe6738356606e",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "dni_usuario",
-                                    "nombre",
-                                    "email",
-                                    "contraseña"
-                                ],
-                                "properties": {
-                                    "dni_usuario": {
-                                        "type": "string",
-                                        "example": "12345678A"
-                                    },
-                                    "nombre": {
-                                        "type": "string",
-                                        "example": "Juan Pérez"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "example": "juan@email.com"
-                                    },
-                                    "contraseña": {
-                                        "type": "string",
-                                        "example": "secreto123"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Usuario registrado correctamente"
-                    },
-                    "422": {
-                        "description": "Datos inválidos"
                     }
                 }
             }
