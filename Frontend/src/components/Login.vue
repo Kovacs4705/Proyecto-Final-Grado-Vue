@@ -120,32 +120,23 @@ async function handleSubmit() {
   loginStore.error = null
 
   if (isLogin.value) {
-    // -------------------------------
+    // ----------------------------------------
     // MODO INICIAR SESIÓN (real)
-    // -------------------------------
+    // ----------------------------------------
     const ok = await loginStore.loginUser({
-      email:       form.value.email.trim(),
-      contraseña:  form.value.password
+      email:      form.value.email.trim(),
+      contraseña: form.value.password
     })
     if (ok) {
-      // Dependiendo del rol que guardó el store:
-      const rolUsuario = loginStore.rol
-      if (rolUsuario === 'admin') {
-        router.push({ name: 'home-admin' })
-      }
-      else if (rolUsuario === 'usuario') {
-        router.push({ name: 'home-usuario' })
-      }
-      else {
-        // Si en tu backend existieran otros roles, o si no lo encontraron:
-        router.push({ name: 'home-invitado' })
-      }
+      // Ahora, independientemente de si es admin/usuario/invitado,
+      // empujamos siempre a “home”. Dentro de HomeView.vue decidiremos qué mostrar.
+      router.push({ name: 'home' })
     }
   }
   else {
-    // -------------------------------
+    // ----------------------------------------
     // MODO REGISTRARSE
-    // -------------------------------
+    // ----------------------------------------
     const payload = {
       dni_usuario: form.value.dni_usuario.trim(),
       nombre:      form.value.nombre.trim(),
@@ -156,24 +147,22 @@ async function handleSubmit() {
     const ok = await loginStore.registerUser(payload)
     if (ok) {
       alert('¡Registro completado! Ahora inicia sesión.')
-      // Limpiar campos y volver a login
+      // Limpiar campos y volver a modo LOGIN
       form.value.dni_usuario = ''
       form.value.nombre      = ''
       form.value.email       = ''
       form.value.password    = ''
       isLogin.value = true
     }
-    // Si ok === false, loginStore.error se mostrará
   }
 }
 
 function entrarComoInvitado() {
-  // Simplemente navegamos a “home” sin llamar a loginStore.loginUser,
-  // de modo que loginStore.user = null, rol = null → se mostrará la vista “invitado”.
-  router.push({ name: 'home-invitado' })
+  // Si el invitado pulsa aquí, dejamos loginStore.user = null y rol null
+  // y también vamos a “home” → HomeView interpretará rol=null como invitado.
+  router.push({ name: 'home' })
 }
 </script>
-
 
 <style scoped>
 .card {
