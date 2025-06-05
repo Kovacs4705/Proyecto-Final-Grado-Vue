@@ -1,128 +1,96 @@
 <!-- src/views/ExploreView.vue -->
 <template>
-
+  <!-- NAVBAR SEGÚN ROL -->
   <div v-if="rol === 'admin'">
     <NavbarAdmin />
   </div>
-
   <div v-else-if="rol === 'usuario'">
     <NavbarUsuario />
   </div>
-
   <div v-else>
     <NavbarInvitado />
   </div>
 
-
+  <!-- CONTENIDO DE EXPLORAR SEGÚN ROL -->
   <div v-if="rol === 'admin'">
+    <p>admin</p>
     <FeaturedSectionAdmin :featured-item="featuredData" />
     <GenresCarouselAdmin :genres="genresData" />
     <GamesGridAdmin :games="gamesData" />
   </div>
 
-  <div v-if="rol === 'usuario'">
+  <div v-else-if="rol === 'usuario'">
+    <p>usuario</p>
     <FeaturedSectionUsuario :featured-item="featuredData" />
     <GenresCarouselUsuario :genres="genresData" />
     <GamesGridUsuario :games="gamesData" />
   </div>
 
   <div v-else>
+    <p>invitado</p>
     <FeaturedSectionInvitado :featured-item="featuredData" />
     <GenresCarouselInvitado :genres="genresData" />
     <GamesGridInvitado :games="gamesData" />
   </div>
 
-
-
   <FooterGeneral />
-
 </template>
 
-<script>
-import FooterGeneral from '../components/Footer.vue'
-import NavbarAdmin from '../components/Admin/Navbar.vue'
-import NavbarUsuario from '../components/Usuario/Navbar.vue'
+<script setup>
+import { computed } from 'vue'
+import { useLoginStore } from '../stores/useLoginStore.js'
+
+// Importa componentes de navegación
+import NavbarAdmin    from '../components/Admin/Navbar.vue'
+import NavbarUsuario  from '../components/Usuario/Navbar.vue'
 import NavbarInvitado from '../components/Invitado/Navbar.vue'
+import FooterGeneral  from '../components/Footer.vue'
 
-import FeaturedSectionAdmin from "../components/Admin/Explorar/FeaturedSection.vue";
-import GenresCarouselAdmin from "../components/Admin/Explorar/GenresCarousel.vue";
-import GamesGridAdmin from "../components/Admin/Explorar/GamesGrid.vue";
+// Importa componentes de sección “Explorar” para cada rol
+import FeaturedSectionAdmin   from '../components/Admin/Explorar/FeaturedSection.vue'
+import GenresCarouselAdmin    from '../components/Admin/Explorar/GenresCarousel.vue'
+import GamesGridAdmin         from '../components/Admin/Explorar/GamesGrid.vue'
 
-import FeaturedSectionInvitado from "../components/Invitado/Explorar/FeaturedSection.vue";
-import GenresCarouselInvitado from "../components/Invitado/Explorar/GenresCarousel.vue";
-import GamesGridInvitado from "../components/Invitado/Explorar/GamesGrid.vue";
+import FeaturedSectionUsuario from '../components/Usuario/Explorar/FeaturedSection.vue'
+import GenresCarouselUsuario  from '../components/Usuario/Explorar/GenresCarousel.vue'
+import GamesGridUsuario       from '../components/Usuario/Explorar/GamesGrid.vue'
 
-import FeaturedSectionUsuario from "../components/Usuario/Explorar/FeaturedSection.vue";
-import GenresCarouselUsuario from "../components/Usuario/Explorar/GenresCarousel.vue";
-import GamesGridUsuario from "../components/Usuario/Explorar/GamesGrid.vue";
+import FeaturedSectionInvitado from '../components/Invitado/Explorar/FeaturedSection.vue'
+import GenresCarouselInvitado  from '../components/Invitado/Explorar/GenresCarousel.vue'
+import GamesGridInvitado       from '../components/Invitado/Explorar/GamesGrid.vue'
 
+// 1) Instancia la store de login
+const loginStore = useLoginStore()
 
+// 2) Computed para el rol (puede ser 'admin', 'usuario' o null)
+const rol = computed(() => loginStore.rol)
 
-export default {
-  name: "ExploreView",
-  components: {
-    NavbarAdmin,
-    NavbarUsuario,
-    NavbarInvitado,
+// Datos estáticos de ejemplo para "Destacado", "Géneros" y "Juegos"
+const featuredData = {
+  sectionTitle: "Destacado",
+  imageUrl: "/images/NoticiaDestacada.png",
+  altText: "Imagen Destacado",
+  headline: "UNREAL TOURNAMENT",
+  description:
+    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, a aliquid corrupti illo distinctio minus, voluptates cum nobis ex enim deleniti reiciendis.",
+  buttonText: "Comprar Ahora",
+  buttonUrl: "#"
+}
 
-    FeaturedSectionAdmin,
-    GenresCarouselAdmin,
-    GamesGridAdmin,
+const genresData = [
+  { id: 1, title: "Aventuras",        imageUrl: "/images/fortnite1.png" },
+  { id: 2, title: "Disparos",         imageUrl: "/images/spiderman1.png" },
+  { id: 3, title: "Multiplataforma",  imageUrl: "/images/stranger1.png" },
+  { id: 4, title: "Rol",              imageUrl: "/images/fortnite1.png" },
+  { id: 5, title: "Estrategia",       imageUrl: "/images/spiderman1.png" }
+]
 
-    FeaturedSectionUsuario,
-    GenresCarouselUsuario,
-    GamesGridUsuario,
-
-    FeaturedSectionInvitado,
-    GenresCarouselInvitado,
-    GamesGridInvitado,
-
-    FooterGeneral
-  },
-  data() {
-    return {
-      featuredData: {
-        sectionTitle: "Destacado",
-        imageUrl: "/images/NoticiaDestacada.png",
-        altText: "Imagen Destacado",
-        headline: "UNREAL TOURNAMENT",
-        description:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, a aliquid corrupti illo distinctio minus, voluptates cum nobis ex enim deleniti reiciendis.",
-        buttonText: "Comprar Ahora",
-        buttonUrl: "#",
-      },
-      genresData: [
-        { id: 1, title: "Aventuras", imageUrl: "/images/fortnite1.png" },
-        { id: 2, title: "Disparos", imageUrl: "/images/spiderman1.png" },
-        { id: 3, title: "Multiplataforma", imageUrl: "/images/stranger1.png" },
-        { id: 4, title: "Rol", imageUrl: "/images/fortnite1.png" },
-        { id: 5, title: "Estrategia", imageUrl: "/images/spiderman1.png" },
-      ],
-      // Ejemplo de datos para juegos; ajústalos según tu API
-      gamesData: [
-        {
-          id: 1,
-          title: "JEDI Fallen Order",
-          price: "60€",
-          imageUrl: "/images/juego1.png",
-        },
-        {
-          id: 2,
-          title: "Cyberpunk 2077",
-          price: "50€",
-          imageUrl: "/images/juego2.png",
-        },
-        {
-          id: 3,
-          title: "The Witcher 3",
-          price: "40€",
-          imageUrl: "/images/juego3.png",
-        },
-        // …más objetos de ejemplo…
-      ],
-    };
-  },
-};
+const gamesData = [
+  { id: 1, title: "JEDI Fallen Order", price: "60€", imageUrl: "/images/juego1.png" },
+  { id: 2, title: "Cyberpunk 2077",    price: "50€", imageUrl: "/images/juego2.png" },
+  { id: 3, title: "The Witcher 3",     price: "40€", imageUrl: "/images/juego3.png" },
+  // ...otros juegos de ejemplo...
+]
 </script>
 
 <style scoped>

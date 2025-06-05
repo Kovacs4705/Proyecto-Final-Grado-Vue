@@ -1,7 +1,7 @@
 <!-- src/views/BibliotecaView.vue -->
 <template>
   <!-- NAVBAR SEGÚN ROL -->
-  <div v-if="rol === 'admin'">
+  <div v-if="rol === 'administrador'">
     <NavbarAdmin />
   </div>
   <div v-else-if="rol === 'usuario'">
@@ -12,12 +12,14 @@
   </div>
 
   <!-- CONTENIDO DE BIBLIOTECA SEGÚN ROL -->
-  <div v-if="rol === 'admin'" class="biblioteca-view">
+  <div v-if="rol === 'administrador'" class="biblioteca-view">
+    <p>Admin</p>
     <RecentlyPlayedAdmin />
     <AllGameGridAdmin />
   </div>
 
   <div v-else-if="rol === 'usuario'" class="biblioteca-view">
+    <p>Usuario</p>
     <RecentlyPlayedUsuario />
     <AllGameGridUsuario />
   </div>
