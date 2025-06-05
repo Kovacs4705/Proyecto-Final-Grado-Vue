@@ -3,6 +3,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Noticia;
 use Illuminate\Support\Facades\DB;
+
 class NoticiaSeeder extends Seeder
 {
     public function run()
@@ -15,9 +16,11 @@ class NoticiaSeeder extends Seeder
         for ($i = 1; $i <= 10; $i++) {
             Noticia::create([
                 'titulo' => "Noticia $i",
-                'imagen' => "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAEklEQVR42mP8z8BQz0AEYBxVSFMAAAeZAf7LU9RQAAAAAElFTkSuQmCC",
                 'descripcion' => "Descripción corta de la noticia $i",
                 'cuerpo' => "Texto completo de la noticia $i",
+                // Simula imágenes binarias para portada y lightbox (puedes usar datos reales en producción)
+                'portada' => random_bytes(10000),   // 10 KB de datos binarios simulados
+                'lightbox' => random_bytes(15000),  // 15 KB de datos binarios simulados
             ]);
         }
     }

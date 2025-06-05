@@ -14,22 +14,35 @@ class JuegoController extends Controller
 {
     #[OA\Get(
         path: "/api/juegos",
-        summary: "Listar todos los juegos",
+        summary: "Listar todos los juegos con sus imágenes y categorías",
         tags: ["Juego"],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Lista de juegos",
+                description: "Lista de juegos con imágenes",
                 content: new OA\JsonContent(
                     type: "array",
-                    items: new OA\Items(ref: "#/components/schemas/Juego")
+                    items: new OA\Items(
+                        allOf: [
+                            new OA\Schema(ref: "#/components/schemas/Juego"),
+                            new OA\Schema(
+                                properties: [
+                                    new OA\Property(
+                                        property: "juego_imagens",
+                                        type: "array",
+                                        items: new OA\Items(ref: "#/components/schemas/JuegoImagen")
+                                    )
+                                ]
+                            )
+                        ]
+                    )
                 )
             )
         ]
     )]
     public function index()
     {
-        $juegos = Juego::all();
+        $juegos = Juego::with('juego_imagens')->get();
         return response()->json($juegos);
     }
 
@@ -57,7 +70,7 @@ class JuegoController extends Controller
 
     #[OA\Get(
         path: "/api/juegos/{id}",
-        summary: "Obtener un juego por ID",
+        summary: "Obtener un juego por ID con sus imágenes y categorías",
         tags: ["Juego"],
         parameters: [
             new OA\Parameter(
@@ -71,8 +84,21 @@ class JuegoController extends Controller
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Juego encontrado",
-                content: new OA\JsonContent(ref: "#/components/schemas/Juego")
+                description: "Juego encontrado con imágenes",
+                content: new OA\JsonContent(
+                    allOf: [
+                        new OA\Schema(ref: "#/components/schemas/Juego"),
+                        new OA\Schema(
+                            properties: [
+                                new OA\Property(
+                                    property: "juego_imagens",
+                                    type: "array",
+                                    items: new OA\Items(ref: "#/components/schemas/JuegoImagen")
+                                )
+                            ]
+                        )
+                    ]
+                )
             ),
             new OA\Response(
                 response: 404,
@@ -82,6 +108,7 @@ class JuegoController extends Controller
     )]
     public function show(Juego $juego)
     {
+        $juego->load('juego_imagens');
         return response()->json($juego);
     }
 
