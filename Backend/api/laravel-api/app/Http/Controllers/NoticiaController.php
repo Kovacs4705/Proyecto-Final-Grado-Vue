@@ -15,12 +15,28 @@ class NoticiaController extends Controller
 {
     #[OA\Get(
         path: "/api/noticias",
-        summary: "Listar todas las noticias",
+        summary: "Listar todas las noticias paginadas (solo listado)",
         tags: ["Noticia"],
+        parameters: [
+            new OA\Parameter(
+                name: "pagina",
+                in: "query",
+                required: false,
+                description: "Número de página",
+                schema: new OA\Schema(type: "integer", default: 1)
+            ),
+            new OA\Parameter(
+                name: "registrosPorPagina",
+                in: "query",
+                required: false,
+                description: "Cantidad de registros por página",
+                schema: new OA\Schema(type: "integer", default: 10)
+            )
+        ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Lista de noticias",
+                description: "Lista de noticias (solo listado, sin metadatos de paginación)",
                 content: new OA\JsonContent(
                     type: "array",
                     items: new OA\Items(ref: "#/components/schemas/Noticia")
@@ -28,9 +44,15 @@ class NoticiaController extends Controller
             )
         ]
     )]
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Noticia::all());
+        $pagina = $request->query('pagina', 1);
+        $registrosPorPagina = $request->query('registrosPorPagina', 10);
+
+        $noticias = Noticia::paginate($registrosPorPagina, ['*'], 'page', $pagina);
+
+        // Solo retorna el listado (array de noticias)
+        return response()->json($noticias->items());
     }
 
     #[OA\Post(

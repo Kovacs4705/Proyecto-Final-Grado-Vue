@@ -384,18 +384,45 @@
                 "tags": [
                     "Genero"
                 ],
-                "summary": "Listar todos los géneros",
+                "summary": "Listar todos los géneros paginados",
                 "operationId": "3f481aeb2388ba232907c09ac43e7f7d",
+                "parameters": [
+                    {
+                        "name": "pagina",
+                        "in": "query",
+                        "description": "Número de página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "registrosPorPagina",
+                        "in": "query",
+                        "description": "Cantidad de registros por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Lista de géneros",
+                        "description": "Lista de géneros paginada",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Genero"
-                                    }
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Genero"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -554,11 +581,33 @@
                 "tags": [
                     "Juego"
                 ],
-                "summary": "Listar todos los juegos con sus imágenes y categorías",
+                "summary": "Listar todos los juegos con sus imágenes y categorías (paginado, solo listado)",
                 "operationId": "e6414dd14d51162ed1d94054ea30fe65",
+                "parameters": [
+                    {
+                        "name": "pagina",
+                        "in": "query",
+                        "description": "Número de página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "registrosPorPagina",
+                        "in": "query",
+                        "description": "Cantidad de registros por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Lista de juegos con imágenes",
+                        "description": "Lista de juegos con imágenes (solo listado, sin metadatos de paginación)",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1376,11 +1425,33 @@
                 "tags": [
                     "Noticia"
                 ],
-                "summary": "Listar todas las noticias",
+                "summary": "Listar todas las noticias paginadas (solo listado)",
                 "operationId": "914e63ade6e06a3fc689556f6c295245",
+                "parameters": [
+                    {
+                        "name": "pagina",
+                        "in": "query",
+                        "description": "Número de página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "registrosPorPagina",
+                        "in": "query",
+                        "description": "Cantidad de registros por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Lista de noticias",
+                        "description": "Lista de noticias (solo listado, sin metadatos de paginación)",
                         "content": {
                             "application/json": {
                                 "schema": {
