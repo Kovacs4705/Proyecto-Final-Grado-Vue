@@ -41,4 +41,12 @@ class JuegoImagen extends Model
     {
         return base64_encode($value);
     }
+
+    public function getMimeTypeAttribute()
+    {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_buffer($finfo, $this->attributes['imagen']);
+        finfo_close($finfo);
+        return $mime;
+    }
 }

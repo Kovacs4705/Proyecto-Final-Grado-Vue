@@ -1,5 +1,7 @@
 <?php
+
 namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use App\Models\Noticia;
 use Illuminate\Support\Facades\DB;
@@ -13,14 +15,39 @@ class NoticiaSeeder extends Seeder
         Noticia::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
+        // Ruta absoluta a la carpeta de imágenes
+        $imagenesPath = realpath(base_path('../../imagenes'));
+        if (!$imagenesPath) {
+            throw new \Exception("La carpeta de imágenes no existe: " . base_path('../../imagenes'));
+        }
+
+        // Busca imágenes con extensiones válidas (insensible a mayúsculas)
+        $archivos = glob($imagenesPath . '/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}', GLOB_BRACE);
+
+        $totalImagenes = count($archivos);
+
+        if ($totalImagenes === 0) {
+            throw new \Exception("No se encontraron imágenes en la carpeta: $imagenesPath");
+        }
+
         for ($i = 1; $i <= 10; $i++) {
+            $portadaPath = $archivos[($i - 1) % $totalImagenes];
+            $lightboxPath = $archivos[($i) % $totalImagenes];
+
+            // Generar texto lorem ipsum de al menos 500 caracteres
+            $lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc ut laoreet dictum, massa erat ultricies enim, nec dictum ex nulla ac nisi. ";
+            $cuerpo = '';
+            while (strlen($cuerpo) < 2000) {
+                $cuerpo .= $lorem;
+            }
+            $cuerpo = substr($cuerpo, 0, 2000);
+
             Noticia::create([
                 'titulo' => "Noticia $i",
                 'descripcion' => "Descripción corta de la noticia $i",
-                'cuerpo' => "Texto completo de la noticia $i",
-                // Simula imágenes binarias para portada y lightbox (puedes usar datos reales en producción)
-                'portada' => random_bytes(10000),   // 10 KB de datos binarios simulados
-                'lightbox' => random_bytes(15000),  // 15 KB de datos binarios simulados
+                'cuerpo' => $cuerpo,
+                'portada' => file_get_contents($portadaPath),
+                'lightbox' => file_get_contents($lightboxPath),
             ]);
         }
     }

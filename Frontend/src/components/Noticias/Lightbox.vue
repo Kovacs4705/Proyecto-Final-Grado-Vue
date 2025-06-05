@@ -8,8 +8,8 @@
     >
       <div class="lightbox-content">
         <span class="lightbox-close" @click="onClose">&times;</span>
-        <img class="lightbox-image" :src="image" alt="noticia"/>
-        <div class="lightbox-text">{{ text }}</div>
+        <img class="lightbox-image" :src="lightboxImage" alt="noticia"/>
+        <div class="lightbox-text">{{ body }}</div>
       </div>
     </div>
   </teleport>
@@ -19,10 +19,11 @@
 import { ref, watch, nextTick } from 'vue'
 
 const props = defineProps({
-  image:   { type: String,  required: true },
-  text:    { type: String,  required: true },
-  visible: { type: Boolean, required: true }
+  lightboxImage: { type: String, required: true },
+  body:          { type: String, required: true },
+  visible:       { type: Boolean, required: true }
 })
+
 const emit = defineEmits(['close'])
 const box  = ref(null)
 
@@ -30,13 +31,13 @@ function onClose() {
   emit('close')
 }
 
-// Cada vez que `visible` cambie:
 watch(() => props.visible, async (vis) => {
   if (vis) {
     document.body.classList.add('no-scroll')
     await nextTick()
-    // esto es lo que te ancla al scroll actual:
-    box.value.style.top = `${window.scrollY}px`
+    if (box.value) {
+      box.value.style.top = `${window.scrollY}px`
+    }
   } else {
     document.body.classList.remove('no-scroll')
   }
