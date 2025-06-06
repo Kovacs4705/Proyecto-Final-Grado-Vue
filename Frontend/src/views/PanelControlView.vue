@@ -72,6 +72,7 @@
                 <button class="btn btn-sm btn-outline-warning me-2" @click="onEditClick(juego)">
                   Modificar
                 </button>
+
                 <button class="btn btn-sm btn-outline-danger" @click="openConfirmModal(juego)"
                   :disabled="deletingId === juego.id_juego">
                   <template v-if="deletingId === juego.id_juego">
@@ -211,6 +212,11 @@
     <CreateModal v-if="showCreateModal" :entidad="selectedEntity" :visible="showCreateModal" @saved="onCreated"
       @cancel="onCancelCreate" />
 
+    <ModalEditar :entidad="selectedEntity" :visible="showEditModal" :itemActual="itemToEdit" @saved="onEdited"
+      @cancel="handleCancelEdit" />
+
+
+
     <!-- 4) Modal de confirmación (teleport a <body> para que quede por encima) -->
     <ConfirmModal :visible="showConfirmModal" :isProcessing="isDeleting" @confirm="confirmDeletion"
       @cancel="cancelDeletion" />
@@ -226,6 +232,7 @@ import { useNoticiasStore } from '../stores/useNoticiasStore.js'
 import PanelControl from '../components/Panel de Control/PanelControl.vue'
 import ConfirmModal from '../components/Modal/ModalEliminar.vue'
 import CreateModal from '../components/Modal/ModalCrear.vue'
+import ModalEditar from '../components/Modal/ModalEditar.vue'
 
 const API_URL = import.meta.env.VITE_API_URL_REAL
 
@@ -235,6 +242,9 @@ const deletingId = ref(null)           // id_juego, dni_usuario, id_genero, id_n
 const showConfirmModal = ref(false)    // controla visibilidad del modal
 const itemToDelete = ref(null)         // almacena el objeto a eliminar
 const showCreateModal = ref(false)    // controla visibilidad del modal de creación
+const showEditModal = ref(false)
+const itemToEdit = ref(null)
+
 
 // 2) Instanciamos los stores
 const gamesStore = useGamesStore()
@@ -314,17 +324,12 @@ async function onCreated() {
     await noticiasStore.fetchNoticias({ pagina: 1, registrosPorPagina: 1000 })
   }
 }
+
 function onEditClick(item) {
-  if (selectedEntity.value === 'juegos') {
-    alert(`Modificar juego: "${item.nombre}" (ID: ${item.id_juego})`)
-  } else if (selectedEntity.value === 'usuarios') {
-    alert(`Modificar usuario: "${item.nombre}" (DNI: ${item.dni_usuario})`)
-  } else if (selectedEntity.value === 'generos') {
-    alert(`Modificar género: "${item.nombre}" (ID: ${item.id_genero})`)
-  } else if (selectedEntity.value === 'noticias') {
-    alert(`Modificar noticia: "${item.titulo}" (ID: ${item.id_noticia})`)
-  }
+  itemToEdit.value = item
+  showEditModal.value = true
 }
+
 
 // 10) Abrir modal de confirmación y guardar el objeto a eliminar
 function openConfirmModal(item) {
@@ -377,6 +382,27 @@ async function confirmDeletion() {
   deletingId.value = null
   itemToDelete.value = null
   showConfirmModal.value = false
+}
+
+async function onEdited() {
+  showEditModal.value = false
+  if (selectedEntity.value === 'juegos') {
+    await gamesStore.fetchGames({ pagina: 1, registrosPorPagina: 1000 })
+  } else if (selectedEntity.value === 'usuarios') {
+    await usersStore.fetchUsers({ pagina: 1, registrosPorPagina: 1000 })
+  } else if (selectedEntity.value === 'generos') {
+    await genresStore.fetchGenres({ pagina: 1, registrosPorPagina: 1000 })
+  } else if (selectedEntity.value === 'noticias') {
+    await noticiasStore.fetchNoticias({ pagina: 1, registrosPorPagina: 1000 })
+  } else if (selectedEntity.value === 'juegoImagenes') {
+    await juegoImagenesStore.fetchImagenes()
+  }
+}
+
+function handleCancelEdit() {
+  // Este handler cierra el modal cuando el hijo emite 'cancel'
+  showEditModal.value = false
+  itemToEdit.value = null
 }
 
 // 12) Cancelar borrado

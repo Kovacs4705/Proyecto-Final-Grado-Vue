@@ -59,7 +59,7 @@ class UsuarioController extends Controller
         if (isset($data['contraseña'])) {
             $data['contraseña'] = bcrypt($data['contraseña']);
         }
-
+        $data['fecha_registro'] = now();
         $usuario = Usuario::create($data);
         return response()->json($usuario, 201);
     }
