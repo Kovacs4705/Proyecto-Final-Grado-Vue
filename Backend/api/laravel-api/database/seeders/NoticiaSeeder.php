@@ -11,6 +11,33 @@ class NoticiaSeeder extends Seeder
 {
     public function run()
     {
+
+        $imagenes = [
+            "balatro2.jpeg",
+            "balatro3.jpeg",
+            "balatroPortada.png",
+            "citizen.png",
+            "clair-character.avif",
+            "clairobscur-portada.jpg",
+            "Cloud_Strife.png",
+            "Crysis.png",
+            "Epic+Games+Node_ue-alt-1920x1080-e653a4a4dae65307fd2420076abe44bb71b22f06.png",
+            "Epic+Games+Node_ut-1920x1080-416b0b679e572854df52c39154aff5945328c04d (1).png",
+            "fantasy.png",
+            "farming.png",
+            "finalfantasy7-character.jpg",
+            "finalsantasy7-character.png",
+            "fornitenoticia.png",
+            "fortnite1.png",
+            "hades2.jpg",
+            "hades3.webp",
+            "hadesPortada.jpg",
+            "heart.png",
+            "HollowKnight2png.jpg",
+            "HollowKnight3.webp"
+            // ...agrega aquí cualquier otro archivo que esté en la carpeta y no aparezca en este listado
+        ];
+
         // Desactivar restricciones de claves foráneas
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Noticia::truncate();
