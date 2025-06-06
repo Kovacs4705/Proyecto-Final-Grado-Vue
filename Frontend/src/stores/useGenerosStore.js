@@ -87,13 +87,13 @@ export const useGenerosStore = defineStore('generos', {
         const formData = new FormData()
         if (payload.nombre) formData.append('nombre', payload.nombre)
         if (payload.imagen) formData.append('imagen', payload.imagen)
+        // Para Laravel: al usar FormData con PUT, se hace un POST + _method=PUT
+        formData.append('_method', 'PUT')
         const res = await fetch(`${API_URL}/generos/${id}`, {
-          method: 'POST', // Laravel PUT con FormData requiere POST + _method
+          method: 'POST',
           body: formData,
           headers: { 'Accept': 'application/json' }
         })
-        // Para Laravel: enviar _method=PUT si usas FormData
-        formData.append('_method', 'PUT')
         if (res.status === 404) throw new Error('Género no encontrado')
         if (!res.ok) throw new Error(`Error ${res.status} al actualizar género`)
         return await res.json()

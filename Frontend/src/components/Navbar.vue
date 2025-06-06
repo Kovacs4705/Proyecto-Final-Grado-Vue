@@ -1,3 +1,4 @@
+<!-- src/components/Navbar.vue -->
 <template>
     <nav ref="nav" :class="['navbar', 'navbar-expand-lg', 'navbar-dark', 'navbar-custom', { scrolled }]">
         <div class="container-fluid d-flex align-items-center px-4">
@@ -8,9 +9,13 @@
 
             <div class="wrapper" :class="{ open: menuOpen }">
                 <ul>
-                    <li><router-link to="/panel" @click="menuOpen = false">Panel</router-link></li>
+                    <li v-if="rol === 'administrador'">
+                        <router-link to="/panel" @click="menuOpen = false">Panel</router-link>
+                    </li>
                     <li><router-link to="/home" @click="menuOpen = false">Inicio</router-link></li>
-                    <li><router-link to="/biblioteca" @click="menuOpen = false">Biblioteca</router-link></li>
+                    <li v-if="rol === 'administrador' || rol === 'usuario'">
+                        <router-link to="/biblioteca" @click="menuOpen = false">Biblioteca</router-link>
+                    </li>   
                     <li><router-link to="/explorar" @click="menuOpen = false">Explorar</router-link></li>
                     <li><router-link to="/noticias" @click="menuOpen = false">Noticias</router-link></li>
                 </ul>
@@ -31,7 +36,7 @@
                     </button>
 
                     <!-- Opciones desplegables de accesibilidad -->
-                    <div v-if="showAccessibilityOptions" class="accessibility-panel shadow-sm">
+                    <div v-if="showAccessibilityOptions" class="user-menu shadow-sm">
                         <label class="form-check mb-2">
                             <input type="checkbox" v-model="isFontAccessible" @change="onToggleFont"
                                 class="form-check-input" />
@@ -45,9 +50,32 @@
                     </div>
                 </div>
 
-                <div class="user-info d-flex align-items-center">
+                <div class="user-info d-flex align-items-center position-relative">
                     <img src="../assets/images/avatar-de-usuario.png" class="user-avatar" />
-                    <span class="user-name ms-2">{{ displayName }}</span>
+                    <!-- Al hacer click en el nombre, mostramos el menú correspondiente -->
+                    <span class="user-name ms-2" @click="toggleUserMenu" style="cursor: pointer;">
+                        {{ displayName }}
+                        <i class="fas fa-caret-down ms-1"></i>
+                    </span>
+
+                    <!-- Menú de usuario -->
+                    <div v-if="showUserMenu" class="user-menu shadow-sm bg-dark text-white p-2">
+                        <!-- Si existe usuario logueado -->
+                        <template v-if="rol">
+                            <div class="user-menu-item" @click="logout">
+                                Cerrar sesión
+                            </div>
+                        </template>
+                        <!-- Si es invitado -->
+                        <template v-else>
+                            <div class="user-menu-item" @click="goToLogin">
+                                Iniciar sesión
+                            </div>
+                            <div class="user-menu-item" @click="goToRegister">
+                                Registrarse
+                            </div>
+                        </template>
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,76 +85,96 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useLoginStore } from '../stores/useLoginStore.js'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import AOS from 'aos'
+
+const router = useRouter()
+const route = useRoute()
+const loginStore = useLoginStore()
 
 const nav = ref(null)
 const scrolled = ref(false)
 const menuOpen = ref(false)
-const loginStore = useLoginStore()
-
 const showAccessibilityOptions = ref(false)
-
-// Estados separados para cada tipo de accesibilidad
 const isFontAccessible = ref(false)
 const isColorAccessible = ref(false)
 
-/* --- Funciones para aplicar/quitar clases en <body> --- */
-function applyFontAccess(enabled) {
-  if (enabled) document.body.classList.add('font-accessible')
-  else document.body.classList.remove('font-accessible')
-}
-function applyColorAccess(enabled) {
-  if (enabled) document.body.classList.add('color-accessible')
-  else document.body.classList.remove('color-accessible')
+// Nuevo: control del menú de usuario
+const showUserMenu = ref(false)
+function toggleUserMenu() {
+    showUserMenu.value = !showUserMenu.value
 }
 
-/* --- Handlers de cambio --- */
-function onToggleFont() {
-  localStorage.setItem('font_accessibility', isFontAccessible.value)
-  applyFontAccess(isFontAccessible.value)
-}
-function onToggleColor() {
-  localStorage.setItem('color_accessibility', isColorAccessible.value)
-  applyColorAccess(isColorAccessible.value)
-}
-
-/* --- Mostrar/ocultar panel de opciones --- */
-function toggleAccessibilityOptions() {
-  showAccessibilityOptions.value = !showAccessibilityOptions.value
-}
-
-// Computed para el rol y nombre de usuario
+// Computed para rol y nombre a mostrar
 const rol = computed(() => loginStore.rol)
 const displayName = computed(() => {
-    if (!loginStore.user) return 'Invitado'
-    return loginStore.user.nombre || 'Invitado'
+    return loginStore.user?.nombre || 'Invitado'
 })
+
+// Cuando haya un logout, cerramos el menú automático si estaba abierto
+watch(rol, () => {
+    showUserMenu.value = false
+})
+
+// Métodos para navegar
+function goToLogin() {
+    showUserMenu.value = false
+    router.push({ name: 'login' })
+}
+function goToRegister() {
+    showUserMenu.value = false
+    router.push({ name: 'login' })
+}
+// Método de logout: limpia store y redirige a home como invitado
+function logout() {
+    loginStore.logout()
+    showUserMenu.value = false
+    router.push({ name: 'home' })
+}
+
+// Accesibilidad
+function applyFontAccess(enabled) {
+    if (enabled) document.body.classList.add('font-accessible')
+    else document.body.classList.remove('font-accessible')
+}
+function applyColorAccess(enabled) {
+    if (enabled) document.body.classList.add('color-accessible')
+    else document.body.classList.remove('color-accessible')
+}
+function onToggleFont() {
+    localStorage.setItem('font_accessibility', isFontAccessible.value)
+    applyFontAccess(isFontAccessible.value)
+}
+function onToggleColor() {
+    localStorage.setItem('color_accessibility', isColorAccessible.value)
+    applyColorAccess(isColorAccessible.value)
+}
+function toggleAccessibilityOptions() {
+    showAccessibilityOptions.value = !showAccessibilityOptions.value
+}
 
 // Scroll listener
 function onScroll() {
     scrolled.value = window.scrollY > 50
 }
 
-// Watch menuOpen to lock body scroll
+// Evitamos scroll al abrir el menú hamburguesa
 watch(menuOpen, (open) => {
     document.body.classList.toggle('no-scroll', open)
 })
 
-/* --- Ciclo de vida: leer preferencias de localStorage al montar --- */
+// Ciclo de vida: cargar preferencias de accesibilidad
 onMounted(() => {
-  window.addEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll)
 
-  // 1) Cargar preferencia de fuente accesible
-  const savedFont = localStorage.getItem('font_accessibility') === 'true'
-  isFontAccessible.value = savedFont
-  applyFontAccess(savedFont)
+    const savedFont = localStorage.getItem('font_accessibility') === 'true'
+    isFontAccessible.value = savedFont
+    applyFontAccess(savedFont)
 
-  // 2) Cargar preferencia de colores accesibles
-  const savedColor = localStorage.getItem('color_accessibility') === 'true'
-  isColorAccessible.value = savedColor
-  applyColorAccess(savedColor)
+    const savedColor = localStorage.getItem('color_accessibility') === 'true'
+    isColorAccessible.value = savedColor
+    applyColorAccess(savedColor)
 })
-
 onUnmounted(() => {
     window.removeEventListener('scroll', onScroll)
 })
@@ -398,5 +446,28 @@ onUnmounted(() => {
 
 #active {
     display: none;
+}
+
+/* Menú de usuario desplegable */
+.user-menu {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: #222;
+    border: 1px solid #444;
+    border-radius: 5px;
+    min-width: 150px;
+    z-index: 10000;
+}
+
+.user-menu-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.user-menu-item:hover {
+    background: #333;
+    color: #42D54D;
 }
 </style>

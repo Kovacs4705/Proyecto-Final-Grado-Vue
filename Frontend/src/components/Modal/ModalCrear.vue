@@ -123,9 +123,22 @@
 
                             <!-- ⇨ GÉNEROS ⇨ -->
                             <div v-else-if="entidad === 'generos'">
+                                <!-- Campo para nombre de género -->
                                 <div class="mb-3">
                                     <label class="form-label">Nombre Género</label>
-                                    <input v-model="formGenero.nombre" type="text" class="form-control" required />
+                                    <input v-model="formGenero.nombre" type="text" class="form-control"
+                                        placeholder="Ej: Acción" required />
+                                </div>
+
+                                <!-- Campo para imagen del género -->
+                                <div class="mb-3">
+                                    <label class="form-label">Imagen de Género</label>
+                                    <input type="file" accept="image/*" class="form-control"
+                                        @change="onFileGeneroChange" required />
+                                    <!-- Mostrar nombre de archivo (opcional) -->
+                                    <div v-if="fileGenero" class="mt-2 text-white">
+                                        ⚙️ Archivo seleccionado: {{ fileGenero.name }}
+                                    </div>
                                 </div>
                             </div>
 
@@ -136,8 +149,15 @@
                                     <input v-model="formNoticia.titulo" type="text" class="form-control" required />
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Imagen (URL o base64)</label>
-                                    <input v-model="formNoticia.imagen" type="text" class="form-control" />
+                                    <label class="form-label">Portada (archivo)</label>
+                                    <input type="file" accept="image/*" class="form-control"
+                                        @change="onFilePortadaChange" required />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Lightbox (archivo)</label>
+                                    <input type="file" accept="image/*" class="form-control"
+                                        @change="onFileLightboxChange" required />
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Descripción (corta)</label>
@@ -185,9 +205,9 @@ const props = defineProps({
 const emit = defineEmits(['saved', 'cancel'])
 
 // Stores para crear cada entidad
-const gamesStore    = useGamesStore()
-const usersStore    = useUsersStore()
-const genresStore   = useGenerosStore()
+const gamesStore = useGamesStore()
+const usersStore = useUsersStore()
+const genresStore = useGenerosStore()
 const noticiasStore = useNoticiasStore()
 const juegoImagenesStore = useJuegoImagenesStore()
 
@@ -222,13 +242,18 @@ const formGenero = reactive({
     nombre: ''
 })
 
-// 2.4) Estado del formulario de “Noticias”
+// 2) Para Noticias: guardamos texto Y dos campos Base64
 const formNoticia = reactive({
     titulo: '',
-    imagen: '',
+    portada: '',     // cadena Base64 de la portada
+    lightbox: '',    // cadena Base64 del lightbox
     descripcion: '',
     cuerpo: ''
 })
+// Y, mientras el usuario elige el archivo, lo guardamos como File
+const filePortada = ref(null)
+const fileLightbox = ref(null)
+const fileGenero = ref(null)
 
 // 2.5) Archivos para imágenes de “Juegos”
 const archivosImagen = reactive({
@@ -268,6 +293,45 @@ watch(
 // ──────────────────────────────────────────────────────────────────────────────
 function onFileChange(event, categoria) {
     archivosImagen[categoria] = event.target.files[0] || null
+}
+
+// Cuando el usuario elige la Portada:
+async function onFilePortadaChange(event) {
+    const file = event.target.files[0]
+    if (!file) {
+        filePortada.value = null
+        formNoticia.portada = ''
+        return
+    }
+    filePortada.value = file
+    try {
+        const base64 = await fileToBase64(file)
+        formNoticia.portada = base64
+    } catch (error) {
+        console.error('Error convirtiendo portada a Base64:', error)
+    }
+}
+
+// Cuando el usuario elige el Lightbox:
+async function onFileLightboxChange(event) {
+    const file = event.target.files[0]
+    if (!file) {
+        fileLightbox.value = null
+        formNoticia.lightbox = ''
+        return
+    }
+    fileLightbox.value = file
+    try {
+        const base64 = await fileToBase64(file)
+        formNoticia.lightbox = base64
+    } catch (error) {
+        console.error('Error convirtiendo lightbox a Base64:', error)
+    }
+}
+
+function onFileGeneroChange(event) {
+    const file = event.target.files[0] || null
+    fileGenero.value = file
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -369,9 +433,17 @@ async function onSubmit() {
             if (!formGenero.nombre) {
                 throw new Error('Completa el nombre del género.')
             }
-            const nuevoGenero = await genresStore.createGenre({ nombre: formGenero.nombre })
-            if (!nuevoGenero) {
-                throw new Error(genresStore.error || 'Error al crear género')
+            if (!fileGenero.value) {
+                throw new Error('Debes seleccionar una imagen para el género.')
+            }
+            const payload = {
+                nombre: formGenero.nombre.trim(),
+                imagen: fileGenero.value
+            }
+
+            const creado = await genresStore.createGenre(payload)
+            if (!creado) {
+                throw new Error(genresStore.error || 'Error al crear el género.')
             }
 
         } else if (props.entidad === 'noticias') {
@@ -383,13 +455,21 @@ async function onSubmit() {
             ) {
                 throw new Error('Completa todos los campos de la noticia.')
             }
-            const nuevaNoticia = await noticiasStore.crearNoticia({
+            if (!formNoticia.portada) {
+                throw new Error('Selecciona un archivo para la portada.')
+            }
+            if (!formNoticia.lightbox) {
+                throw new Error('Selecciona un archivo para el lightbox.')
+            }
+            const payload = {
                 titulo: formNoticia.titulo,
-                imagen: formNoticia.imagen,   // aquí podrías enviar también un Base64 si quieres
+                portada: formNoticia.portada,     // base64 completo
+                lightbox: formNoticia.lightbox,   // base64 completo
                 descripcion: formNoticia.descripcion,
                 cuerpo: formNoticia.cuerpo
-            })
-            if (!nuevaNoticia) {
+            }
+            const nueva = await noticiasStore.crearNoticiaConArchivoJSON(payload)
+            if (!nueva) {
                 throw new Error(noticiasStore.error || 'Error al crear noticia')
             }
         }

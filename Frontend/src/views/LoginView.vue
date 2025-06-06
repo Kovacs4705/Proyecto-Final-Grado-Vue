@@ -13,12 +13,10 @@
 <script setup>
 import Login from '../components/Login.vue'
 import { useRouter } from 'vue-router'
-
 const router = useRouter()
 
 function redirigirUsuario(rol) {
-  // 1) El loginStore ya guardó el rol en Pinia.
-  // 2) No importa si es 'admin', 'usuario' o null: siempre vamos a /home
+  // Aquí ya podemos redirigir a “home” o donde toque
   router.push({ name: 'home' })
 }
 </script>

@@ -108,9 +108,18 @@
                                     <label class="form-label">Título</label>
                                     <input v-model="formNoticia.titulo" type="text" class="form-control" required />
                                 </div>
+                                <!-- ► PORTADA ACTUAL ► -->
                                 <div class="mb-3">
-                                    <label class="form-label">Imagen (URL o base64)</label>
-                                    <input v-model="formNoticia.imagen" type="text" class="form-control" />
+                                    <label class="form-label">Cambiar Portada</label>
+                                    <input type="file" accept="image/*" class="form-control"
+                                        @change="onFilePortadaChange" />
+                                </div>
+
+                                <!-- ► LIGHTBOX ACTUAL ► -->
+                                <div class="mb-3">
+                                    <label class="form-label">Cambiar Lightbox</label>
+                                    <input type="file" accept="image/*" class="form-control"
+                                        @change="onFileLightboxChange" />
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Descripción (corta)</label>
@@ -232,10 +241,15 @@ const formGenero = reactive({
 
 const formNoticia = reactive({
     titulo: '',
-    imagen: '',
+    portada: '',    // Base64 data URL (o cadena vacía)
+    lightbox: '',
     descripcion: '',
     cuerpo: ''
 })
+
+// Para detectar si el usuario escogió un archivo nuevo:
+const filePortada = ref(null)
+const fileLightbox = ref(null)
 
 const formImagen = reactive({
     id_imagen: null,
@@ -293,13 +307,34 @@ watch(
         else if (props.entidad === 'generos') {
             formGenero.nombre = nuevoItem.nombre || ''
         }
+        // ► NOTICIAS: aquí cargamos las dos imágenes en Base64
         else if (props.entidad === 'noticias') {
-            Object.assign(formNoticia, {
-                titulo: nuevoItem.titulo || '',
-                imagen: nuevoItem.imagen || '',
-                descripcion: nuevoItem.descripcion || '',
-                cuerpo: nuevoItem.cuerpo || ''
-            })
+            // Suponemos que `nuevoItem.portada` y `nuevoItem.lightbox`  
+            // ya vienen desde el backend en Base64 (sin prefix “data:”).
+            // Si tu API devuelve además el mime type en `nuevoItem.mime_type_portada`,
+            // ensamblamos el dataURL:
+            formNoticia.titulo = nuevoItem.titulo || ''
+            formNoticia.descripcion = nuevoItem.descripcion || ''
+            formNoticia.cuerpo = nuevoItem.cuerpo || ''
+
+            // ► Portada:
+            if (nuevoItem.portada) {
+                const mimeP = nuevoItem.mime_type_portada || 'image/jpeg'
+                formNoticia.portada = `data:${mimeP};base64,${nuevoItem.portada}`
+            } else {
+                formNoticia.portada = ''
+            }
+            // ► Lightbox:
+            if (nuevoItem.lightbox) {
+                const mimeL = nuevoItem.mime_type_lightbox || 'image/jpeg'
+                formNoticia.lightbox = `data:${mimeL};base64,${nuevoItem.lightbox}`
+            } else {
+                formNoticia.lightbox = ''
+            }
+
+            // Reiniciar los File, puesto que aún no se han seleccionado nuevos:
+            filePortada.value = null
+            fileLightbox.value = null
         }
         else if (props.entidad === 'juegoImagenes') {
             Object.assign(formImagen, {
@@ -313,6 +348,53 @@ watch(
         }
     }
 )
+
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result)   // Ej: "data:image/png;base64,AAA…"
+        reader.onerror = err => reject(err)
+        reader.readAsDataURL(file)
+    })
+}
+
+// ────────────────────────────────────────────────────────────
+// 6) Al elegir un nuevo archivo para “Portada”
+// ────────────────────────────────────────────────────────────
+async function onFilePortadaChange(event) {
+    const file = event.target.files[0]
+    if (!file) {
+        // si el usuario borra la selección, volvemos a la antigua portada (o vacío)
+        filePortada.value = null
+        // Mantenemos formNoticia.portada como estaba
+        return
+    }
+    filePortada.value = file
+    try {
+        const base64 = await fileToBase64(file)
+        formNoticia.portada = base64
+    } catch (err) {
+        console.error('Error convirtiendo Portada a Base64:', err)
+    }
+}
+
+// ────────────────────────────────────────────────────────────
+// 7) Al elegir un nuevo archivo para “Lightbox”
+// ────────────────────────────────────────────────────────────
+async function onFileLightboxChange(event) {
+    const file = event.target.files[0]
+    if (!file) {
+        fileLightbox.value = null
+        return
+    }
+    fileLightbox.value = file
+    try {
+        const base64 = await fileToBase64(file)
+        formNoticia.lightbox = base64
+    } catch (err) {
+        console.error('Error convirtiendo Lightbox a Base64:', err)
+    }
+}
 
 // ────────────────────────────────────────────────────────────
 // 5) Enviar formulario
@@ -380,7 +462,7 @@ async function onSubmit() {
             if (!formGenero.nombre) {
                 throw new Error('Completa el nombre del género.')
             }
-            const actualizado = await genresStore.updateGenre(
+            const actualizado = await generosStore.updateGenre(
                 props.itemActual.id_genero,
                 { nombre: formGenero.nombre }
             )
@@ -389,26 +471,44 @@ async function onSubmit() {
             }
         }
         else if (props.entidad === 'noticias') {
+            // 1) Validar campos obligatorios de texto
             if (
-                !formNoticia.titulo ||
-                !formNoticia.descripcion ||
-                !formNoticia.cuerpo
+                !formNoticia.titulo.trim() ||
+                !formNoticia.descripcion.trim() ||
+                !formNoticia.cuerpo.trim()
             ) {
                 throw new Error('Completa todos los campos de la noticia.')
             }
+
+            // 2) Validar que haya una portada (ya sea la antigua o una nueva)
+            if (!formNoticia.portada) {
+                throw new Error('Debe existir una portada (o seleccione una nueva).')
+            }
+
+            // 3) Validar que haya un lightbox (ya sea el antiguo o uno nuevo)
+            if (!formNoticia.lightbox) {
+                throw new Error('Debe existir un lightbox (o seleccione uno nuevo).')
+            }
+
+            // 4) Construir el payload con ambas imágenes y los textos
+            const payload = {
+                titulo: formNoticia.titulo.trim(),
+                portada: formNoticia.portada,     // cadena Base64 completa (o la antigua)
+                lightbox: formNoticia.lightbox,   // idem
+                descripcion: formNoticia.descripcion.trim(),
+                cuerpo: formNoticia.cuerpo.trim()
+            }
+
+            // 5) Llamar UNA VEZ a la API con el payload completo
             const actualizado = await noticiasStore.actualizarNoticia(
                 props.itemActual.id_noticia,
-                {
-                    titulo: formNoticia.titulo,
-                    imagen: formNoticia.imagen,
-                    descripcion: formNoticia.descripcion,
-                    cuerpo: formNoticia.cuerpo
-                }
+                payload
             )
             if (!actualizado) {
                 throw new Error(noticiasStore.error || 'Error al actualizar la noticia.')
             }
         }
+
         else if (props.entidad === 'juegoImagenes') {
             // 5.3) Validar
             if (
