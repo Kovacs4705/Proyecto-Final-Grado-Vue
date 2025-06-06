@@ -15,6 +15,8 @@ class BibliotecaSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $dnis = [
+            '09613206B',
+            '72931728Q',
             '12345678Z',
             '87654321X',
             '11223344A',
