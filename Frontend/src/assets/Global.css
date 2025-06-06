@@ -112,13 +112,12 @@ html, body, #app {
    2) Colores accesibles (amarillo sobre negro)
    -------------------------------------------------- */
 .color-accessible {
-  background-color: #000 !important;
   color: #ff0 !important;
 }
 .color-accessible * {
   color: #ff0 !important;
   /* No forzamos background-color transparente aquí para no romper semitransparencias puntuales */
-  background-color: transparent !important;
+  /* background-color: transparent !important; */
 }
 
 /* Si tienes enlaces y botones, refuérzalos también */

@@ -6,7 +6,7 @@
     </h2>
 
     <form @submit.prevent="handleSubmit">
-      <!-- Campos adicionales solo en modo REGISTRARSE -->
+      <!-- Campos de registro -->
       <div v-if="!isLogin" class="mb-3">
         <label class="form-label">DNI</label>
         <input
@@ -17,7 +17,6 @@
           required
         />
       </div>
-
       <div v-if="!isLogin" class="mb-3">
         <label class="form-label">Nombre completo</label>
         <input
@@ -29,7 +28,7 @@
         />
       </div>
 
-      <!-- Email (ambos modos) -->
+      <!-- Campos comunes -->
       <div class="mb-3">
         <label class="form-label">Correo electrónico</label>
         <input
@@ -40,8 +39,6 @@
           required
         />
       </div>
-
-      <!-- Contraseña (ambos modos) -->
       <div class="mb-3">
         <label class="form-label">Contraseña</label>
         <input
@@ -53,7 +50,7 @@
         />
       </div>
 
-      <!-- Botón principal (Entrar / Registrarse) -->
+      <!-- Botones -->
       <button
         class="btn btn-primary w-100"
         type="submit"
@@ -63,8 +60,6 @@
           ? (isLogin ? 'Validando...' : 'Registrando...')
           : (isLogin ? 'Entrar' : 'Registrarse') }}
       </button>
-
-      <!-- Toggle entre modos -->
       <button
         class="btn btn-outline-light mt-3 w-100"
         type="button"
@@ -77,7 +72,7 @@
       </button>
     </form>
 
-    <!-- Mostrar error (loginStore.error) -->
+    <!-- Error display -->
     <div v-if="loginStore.error" class="mt-3 alert alert-danger">
       {{ loginStore.error }}
     </div>
@@ -100,6 +95,8 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLoginStore } from '../stores/useLoginStore.js'
 
+const emit = defineEmits(['logged-in'])
+
 const router     = useRouter()
 const loginStore = useLoginStore()
 
@@ -120,23 +117,22 @@ async function handleSubmit() {
   loginStore.error = null
 
   if (isLogin.value) {
-    // ----------------------------------------
-    // MODO INICIAR SESIÓN (real)
-    // ----------------------------------------
+    // MODO LOGIN
     const ok = await loginStore.loginUser({
       email:      form.value.email.trim(),
       contraseña: form.value.password
     })
     if (ok) {
-      // Ahora, independientemente de si es admin/usuario/invitado,
-      // empujamos siempre a “home”. Dentro de HomeView.vue decidiremos qué mostrar.
+      // Emitimos 'logged-in' con el rol para que LoginView lo capture
+      // (loginStore.rol ya está seteado)
+      const rolActual = loginStore.rol
+      emit('logged-in', rolActual) 
+      // Y redirigimos a home
       router.push({ name: 'home' })
     }
   }
   else {
-    // ----------------------------------------
-    // MODO REGISTRARSE
-    // ----------------------------------------
+    // MODO REGISTRO
     const payload = {
       dni_usuario: form.value.dni_usuario.trim(),
       nombre:      form.value.nombre.trim(),
@@ -147,19 +143,17 @@ async function handleSubmit() {
     const ok = await loginStore.registerUser(payload)
     if (ok) {
       alert('¡Registro completado! Ahora inicia sesión.')
-      // Limpiar campos y volver a modo LOGIN
-      form.value.dni_usuario = ''
-      form.value.nombre      = ''
-      form.value.email       = ''
-      form.value.password    = ''
+      // Limpiar y volver a modo LOGIN
+      form.value = { dni_usuario: '', nombre: '', email: '', password: '' }
       isLogin.value = true
     }
   }
 }
 
 function entrarComoInvitado() {
-  // Si el invitado pulsa aquí, dejamos loginStore.user = null y rol null
-  // y también vamos a “home” → HomeView interpretará rol=null como invitado.
+  // Vaciamos sesión (user queda null, rol null)
+  loginStore.logout()
+  emit('logged-in', null)
   router.push({ name: 'home' })
 }
 </script>

@@ -49,26 +49,39 @@ export const useNoticiasStore = defineStore("noticias", {
     },
 
     // 3) POST /api/noticias
-    async crearNoticia(payload) {
-      this.isSubmitting = true;
-      this.error = null;
+    async crearNoticiaConArchivoJSON(payload) {
+      this.isLoading = true
+      this.error = null
+
       try {
         const res = await fetch(`${API_URL}/noticias`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (res.status === 422) {
-          const errJson = await res.json().catch(() => ({}));
-          throw new Error(errJson.message || "Error de validación");
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+
+        if (!res.ok) {
+          let msg = `Error ${res.status}`
+          try {
+            const errJson = await res.json()
+            if (errJson.message) msg = errJson.message
+          } catch {}
+          this.error = msg
+          this.isLoading = false
+          return null
         }
-        if (!res.ok) throw new Error(`Error ${res.status} al crear noticia`);
-        return await res.json();
-      } catch (err) {
-        this.error = err.message || "Error desconocido al crear noticia";
-        return null;
-      } finally {
-        this.isSubmitting = false;
+
+        const data = await res.json()
+        // Agregar al principio (opcional)
+        this.noticias.unshift(data)
+        this.isLoading = false
+        return data
+      }
+      catch (err) {
+        console.error('Error al crear noticia:', err)
+        this.error = 'Error de red o servidor'
+        this.isLoading = false
+        return null
       }
     },
 
@@ -128,7 +141,7 @@ export const useNoticiasStore = defineStore("noticias", {
       })),
     smallNews: (state) =>
       state.noticias.slice(3, 9).map((n) => ({
-       image: n.portada
+        image: n.portada
           ? `data:${n.mime_type_portada || "image/jpeg"};base64,${n.portada}`
           : "",
         lightbox: n.lightbox
