@@ -1,13 +1,12 @@
 <template>
-  <teleport to="body">
-    <div v-if="visible" ref="box" class="lightbox" @click.self="onClose">
-      <div class="lightbox-content">
-        <span class="lightbox-close" @click="onClose">&times;</span>
-        <img class="lightbox-image" :src="lightboxImage" alt="noticia" />
-        <div class="lightbox-text">{{ body }}</div>
-      </div>
+
+  <div v-if="visible" ref="box" class="lightbox" @click.self="onClose">
+    <div class="lightbox-content">
+      <span class="lightbox-close" @click="onClose">&times;</span>
+      <img class="lightbox-image" :src="image" alt="noticia" />
+      <div class="lightbox-text">{{ text }}</div>
     </div>
-  </teleport>
+  </div>
 
 </template>
 
@@ -17,6 +16,8 @@ import { ref, watch, nextTick } from 'vue'
 const props = defineProps({
   lightboxImage: { type: String, required: true },
   body: { type: String, required: true },
+  image: { type: String, required: true },
+  text: { type: String, required: true },
   visible: { type: Boolean, required: true }
 })
 
