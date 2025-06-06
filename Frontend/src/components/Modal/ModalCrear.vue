@@ -123,9 +123,22 @@
 
                             <!-- ⇨ GÉNEROS ⇨ -->
                             <div v-else-if="entidad === 'generos'">
+                                <!-- Campo para nombre de género -->
                                 <div class="mb-3">
                                     <label class="form-label">Nombre Género</label>
-                                    <input v-model="formGenero.nombre" type="text" class="form-control" required />
+                                    <input v-model="formGenero.nombre" type="text" class="form-control"
+                                        placeholder="Ej: Acción" required />
+                                </div>
+
+                                <!-- Campo para imagen del género -->
+                                <div class="mb-3">
+                                    <label class="form-label">Imagen de Género</label>
+                                    <input type="file" accept="image/*" class="form-control"
+                                        @change="onFileGeneroChange" required />
+                                    <!-- Mostrar nombre de archivo (opcional) -->
+                                    <div v-if="fileGenero" class="mt-2 text-white">
+                                        ⚙️ Archivo seleccionado: {{ fileGenero.name }}
+                                    </div>
                                 </div>
                             </div>
 
@@ -240,6 +253,7 @@ const formNoticia = reactive({
 // Y, mientras el usuario elige el archivo, lo guardamos como File
 const filePortada = ref(null)
 const fileLightbox = ref(null)
+const fileGenero = ref(null)
 
 // 2.5) Archivos para imágenes de “Juegos”
 const archivosImagen = reactive({
@@ -313,6 +327,11 @@ async function onFileLightboxChange(event) {
     } catch (error) {
         console.error('Error convirtiendo lightbox a Base64:', error)
     }
+}
+
+function onFileGeneroChange(event) {
+    const file = event.target.files[0] || null
+    fileGenero.value = file
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -414,9 +433,17 @@ async function onSubmit() {
             if (!formGenero.nombre) {
                 throw new Error('Completa el nombre del género.')
             }
-            const nuevoGenero = await genresStore.createGenre({ nombre: formGenero.nombre })
-            if (!nuevoGenero) {
-                throw new Error(genresStore.error || 'Error al crear género')
+            if (!fileGenero.value) {
+                throw new Error('Debes seleccionar una imagen para el género.')
+            }
+            const payload = {
+                nombre: formGenero.nombre.trim(),
+                imagen: fileGenero.value
+            }
+
+            const creado = await genresStore.createGenre(payload)
+            if (!creado) {
+                throw new Error(genresStore.error || 'Error al crear el género.')
             }
 
         } else if (props.entidad === 'noticias') {
