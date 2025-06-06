@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, nextTick, watch } from 'vue'
 import Swiper from 'swiper/bundle'
 import 'swiper/css/bundle'
 
@@ -34,22 +34,22 @@ props.slides.forEach(slide => {
 
 
 
-onMounted(() => {
-    new Swiper('.hero-swiper', {
-        // Muestra 1.5 slides para ver parcialmente el siguiente
-        slidesPerView: 1.5,
-        spaceBetween: 0,
-        centeredSlides: true,
-        loop: true,
-        autoplay: {
-            delay: 3500,
-            disableOnInteraction: false
-        },
-        navigation: {
-            prevEl: '.hero-swiper .swiper-button-prev',
-            nextEl: '.hero-swiper .swiper-button-next'
-        }
-    })
+onMounted(async () => {
+  await nextTick();
+  new Swiper('.hero-swiper', {
+    slidesPerView: 1.5,
+    spaceBetween: 0,
+    centeredSlides: true,
+    loop: true,
+    autoplay: {
+      delay: 3500,
+      disableOnInteraction: false
+    },
+    navigation: {
+      prevEl: '.swiper-button-prev',
+      nextEl: '.swiper-button-next'
+    }
+  })
 })
 </script>
 

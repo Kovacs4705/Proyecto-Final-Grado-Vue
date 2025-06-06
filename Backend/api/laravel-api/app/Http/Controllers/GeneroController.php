@@ -53,10 +53,6 @@ class GeneroController extends Controller
         $generos = Genero::paginate($registrosPorPagina, ['*'], 'page', $pagina);
 
         // Devuelve la imagen como base64
-        $generos->getCollection()->transform(function ($genero) {
-            $genero->imagen = $genero->imagen ? base64_encode($genero->imagen) : null;
-            return $genero;
-        });
 
         return response()->json($generos->items());
     }

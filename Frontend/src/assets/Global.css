@@ -82,6 +82,7 @@ html, body, #app {
 .font-accessible input,
 .font-accessible textarea {
   font-family: 'Arial', sans-serif !important;
+  font-size: 1.2em !important; 
 }
 
 /* 2) Ahora, “rescatamos” los iconos que usan FontAwesome o Material Icons

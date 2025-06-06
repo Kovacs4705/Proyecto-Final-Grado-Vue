@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 #[OA\Tag(
     name: "Usuario",
@@ -103,7 +104,7 @@ class UsuarioController extends Controller
                 'avatar' => 'nullable|string',
 
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             throw new HttpResponseException(response()->json([
                 'errors' => $e->errors()
             ], 422));
@@ -186,19 +187,27 @@ class UsuarioController extends Controller
     )]
     public function update(Request $request, $dni_usuario)
     {
-        $usuario = \App\Models\Usuario::where('dni_usuario', $dni_usuario)->first();
+        $usuario = Usuario::where('dni_usuario', $dni_usuario)->first();
         if (!$usuario) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
 
-        $validated = $request->validate([
-            'nombre' => 'sometimes|string',
-            'email' => 'sometimes|email',
-            'contraseña' => 'sometimes|string',
-            'saldo' => 'nullable|numeric',
-            'avatar' => 'nullable|string',
-            'rol' => 'sometimes|string',
-        ]);
+        try {
+            $validated = $request->validate([
+                'nombre' => 'sometimes|string',
+                'email' => 'sometimes|email|unique:usuario,email,' . $usuario->dni_usuario . ',dni_usuario',
+                'contraseña' => 'sometimes|string',
+                'saldo' => 'nullable|numeric',
+                'avatar' => 'nullable|string',
+                'rol' => 'sometimes|string',
+            ]);
+        } catch (ValidationException $e) {
+            // Devuelve un mensaje claro para el frontend
+            return response()->json([
+                'message' => 'No se puede actualizar el usuario. El email ya está en uso.',
+                'errors' => $e->errors()
+            ], 422);
+        }
 
         if (isset($validated['contraseña'])) {
             $validated['contraseña'] = bcrypt($validated['contraseña']);
@@ -240,7 +249,7 @@ class UsuarioController extends Controller
     )]
     public function destroy($dni_usuario)
     {
-        $usuario = \App\Models\Usuario::where('dni_usuario', $dni_usuario)->first();
+        $usuario = Usuario::where('dni_usuario', $dni_usuario)->first();
         if (!$usuario) {
             return response()->json(['message' => 'Usuario no encontrado'], 404);
         }
@@ -297,7 +306,7 @@ class UsuarioController extends Controller
             'contraseña' => 'required|string',
         ]);
 
-        $usuario = \App\Models\Usuario::where('email', $validated['email'])->first();
+        $usuario = Usuario::where('email', $validated['email'])->first();
 
         if (!$usuario || !Hash::check($validated['contraseña'], $usuario->contraseña)) {
             return response()->json(['error' => 'Credenciales incorrectas'], 401);

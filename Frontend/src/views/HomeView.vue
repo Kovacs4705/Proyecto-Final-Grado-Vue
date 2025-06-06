@@ -36,15 +36,22 @@ const heroSlides = computed(() =>
 )
 
 const bestGames = computed(() =>
-  (gamesStore.games || []).slice(0, 8).map(j => ({
-    id: j.id_juego,
-    img: j.juego_imagens?.find(img => img.categoria === 'vertical')
-      ? `data:image/jpeg;base64,${j.juego_imagens.find(img => img.categoria === 'vertical').imagen}`
-      : '/images/default.png',
-    title: j.nombre,
-    price: j.precio ? `${j.precio}€` : '',
-    // Puedes agregar más campos si tu card los necesita
-  }))
+  (gamesStore.games || []).slice(0, 8).map(j => {
+    const verticalImg = j.juego_imagens?.find(img => img.categoria === 'vertical');
+    const characterImg = j.juego_imagens?.find(img => img.categoria === 'personaje');
+    return {
+      id: j.id_juego,
+      img: verticalImg
+        ? `data:image/jpeg;base64,${verticalImg.imagen}`
+        : '/images/default.png',
+      characterImg: characterImg
+        ? `data:image/jpeg;base64,${characterImg.imagen}`
+        : '', // o pon un default si quieres
+      title: j.nombre,
+      price: j.precio ? `${j.precio}€` : '',
+      // Otros campos si necesitas
+    }
+  })
 )
 
 const latestNews = computed(() =>

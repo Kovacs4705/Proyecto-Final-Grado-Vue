@@ -1,0 +1,1999 @@
+openapi: 3.0.0
+info:
+  title: 'Proyecto Final Grado API'
+  description: 'Documentacion de la API para el Proyecto Final de Grado'
+  contact:
+    name: 'Alejandro Solar, David Kovacs'
+    email: alejandrosolarruiz@gmail.com
+  version: 1.0.0
+paths:
+  /api/biblioteca:
+    get:
+      tags:
+        - Biblioteca
+      summary: 'Listar todos los juegos en la biblioteca'
+      operationId: ee5b066edd171f3694082e7567b4297f
+      responses:
+        '200':
+          description: 'Lista de juegos en la biblioteca'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Biblioteca'
+    post:
+      tags:
+        - Biblioteca
+      summary: 'Crear un nuevo juego en la biblioteca'
+      operationId: ab6f5ac5e68b78eed0085aacf637d926
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BibliotecaCreate'
+      responses:
+        '201':
+          description: 'Juego creado exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Biblioteca'
+  '/api/biblioteca/{id}':
+    get:
+      tags:
+        - Biblioteca
+      summary: 'Obtener un juego por ID de la biblioteca'
+      operationId: 71f4f6fab21061ca0ba1a03441c2491d
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del juego'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Juego encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Biblioteca'
+        '404':
+          description: 'Juego no encontrado'
+    put:
+      tags:
+        - Biblioteca
+      summary: 'Actualizar un juego existente en la biblioteca'
+      operationId: b2e3a5c1736f60376fe41b4b348560ca
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del juego'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BibliotecaUpdate'
+      responses:
+        '200':
+          description: 'Juego actualizado exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Biblioteca'
+    delete:
+      tags:
+        - Biblioteca
+      summary: 'Eliminar un juego de la biblioteca'
+      operationId: 06f0a46732000ab634d97ea9114b9708
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del juego'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Juego eliminado correctamente'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Juego eliminado correctamente' }
+                type: object
+  '/api/biblioteca/usuario/{dni_usuario}':
+    get:
+      tags:
+        - Biblioteca
+      summary: 'Listar todos los juegos de la biblioteca de un usuario por DNI'
+      operationId: 830c6866191865ce02382d0dea43016b
+      parameters:
+        -
+          name: dni_usuario
+          in: path
+          description: 'DNI del usuario'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Lista de juegos en la biblioteca del usuario'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Juego'
+  /api/compras:
+    get:
+      tags:
+        - Compra
+      summary: 'Listar todas las compras'
+      operationId: f8eb7c0a1eefb64950a585eb9983419a
+      responses:
+        '200':
+          description: 'Lista de compras'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Compra'
+    post:
+      tags:
+        - Compra
+      summary: 'Registrar una nueva compra'
+      operationId: da99d3423a329f1b7584114a38452adf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompraCreate'
+      responses:
+        '201':
+          description: 'Compra registrada exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Compra'
+  '/api/compras/{id}':
+    get:
+      tags:
+        - Compra
+      summary: 'Obtener una compra por ID'
+      operationId: cfc281a2fe0b31302ab28a228613c8ae
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la compra'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Compra encontrada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Compra'
+        '404':
+          description: 'Compra no encontrada'
+    put:
+      tags:
+        - Compra
+      summary: 'Actualizar una compra existente'
+      operationId: 6dbefbb1d113f51760fa5bcee9dc198d
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la compra'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompraUpdate'
+      responses:
+        '200':
+          description: 'Compra actualizada exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Compra'
+        '404':
+          description: 'Compra no encontrada'
+    delete:
+      tags:
+        - Compra
+      summary: 'Eliminar una compra'
+      operationId: 9c6103a719b7f4574f80f49f9c767a89
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la compra'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Compra eliminada correctamente'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Compra eliminada correctamente' }
+                type: object
+        '404':
+          description: 'Compra no encontrada'
+  /api/generos:
+    get:
+      tags:
+        - Genero
+      summary: 'Listar todos los géneros paginados'
+      operationId: 3f481aeb2388ba232907c09ac43e7f7d
+      parameters:
+        -
+          name: pagina
+          in: query
+          description: 'Número de página'
+          required: false
+          schema:
+            type: integer
+            default: 1
+        -
+          name: registrosPorPagina
+          in: query
+          description: 'Cantidad de registros por página'
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: 'Lista de géneros paginada'
+          content:
+            application/json:
+              schema:
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Genero' } }
+                type: object
+    post:
+      tags:
+        - Genero
+      summary: 'Crear un nuevo género'
+      operationId: e79f2f2d12fe7a22ed1d0754903b3c9d
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - nombre
+              properties:
+                nombre:
+                  type: string
+                imagen:
+                  type: string
+                  format: binary
+              type: object
+      responses:
+        '201':
+          description: 'Género creado exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Genero'
+  '/api/generos/{id}':
+    get:
+      tags:
+        - Genero
+      summary: 'Obtener un género por ID'
+      operationId: 1fa17e1f1e1166a23829328ca0997986
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del género'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Género encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Genero'
+        '404':
+          description: 'Género no encontrado'
+    put:
+      tags:
+        - Genero
+      summary: 'Actualizar un género existente'
+      operationId: b5523d9efe666d307c1511addc56367a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del género'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                nombre:
+                  type: string
+                imagen:
+                  type: string
+                  format: binary
+              type: object
+      responses:
+        '200':
+          description: 'Género actualizado exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Genero'
+        '404':
+          description: 'Género no encontrado'
+    delete:
+      tags:
+        - Genero
+      summary: 'Eliminar un género'
+      operationId: 910530f740dd29219c9520e0b0fb2464
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del género'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Género eliminado correctamente'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Género eliminado correctamente' }
+                type: object
+        '404':
+          description: 'Género no encontrado'
+  /api/juegos:
+    get:
+      tags:
+        - Juego
+      summary: 'Listar todos los juegos con sus imágenes y categorías (paginado, solo listado)'
+      operationId: e6414dd14d51162ed1d94054ea30fe65
+      parameters:
+        -
+          name: pagina
+          in: query
+          description: 'Número de página'
+          required: false
+          schema:
+            type: integer
+            default: 1
+        -
+          name: registrosPorPagina
+          in: query
+          description: 'Cantidad de registros por página'
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: 'Lista de juegos con imágenes (solo listado, sin metadatos de paginación)'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf: [{ $ref: '#/components/schemas/Juego' }, { properties: { juego_imagens: { type: array, items: { $ref: '#/components/schemas/JuegoImagen' } }, generos: { type: array, items: { $ref: '#/components/schemas/Genero' } } }, type: object }]
+    post:
+      tags:
+        - Juego
+      summary: 'Crear un nuevo juego'
+      operationId: 04fab3ea12216b2984f5f7fce0e35d58
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JuegoCreate'
+      responses:
+        '201':
+          description: 'Juego creado exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Juego'
+  '/api/juegos/{id}':
+    get:
+      tags:
+        - Juego
+      summary: 'Obtener un juego por ID con sus imágenes y categorías'
+      operationId: 7330d442c22044dce5c0cf1a2c5a6dde
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del juego'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Juego encontrado con imágenes'
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { $ref: '#/components/schemas/Juego' }
+                  - { properties: { juego_imagens: { type: array, items: { $ref: '#/components/schemas/JuegoImagen' } }, generos: { type: array, items: { $ref: '#/components/schemas/Genero' } } }, type: object }
+        '404':
+          description: 'Juego no encontrado'
+    put:
+      tags:
+        - Juego
+      summary: 'Actualizar un juego existente'
+      operationId: 844e300d0024b08c77ebe846acd00ee1
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del juego'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JuegoUpdate'
+      responses:
+        '200':
+          description: 'Juego actualizado exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Juego'
+        '404':
+          description: 'Juego no encontrado'
+    delete:
+      tags:
+        - Juego
+      summary: 'Eliminar un juego'
+      operationId: 0fc56b3e97500af5eacc5db163658a3e
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del juego'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Juego eliminado correctamente'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Juego eliminado correctamente' }
+                type: object
+        '404':
+          description: 'Juego no encontrado'
+  /api/juegos-destacados:
+    get:
+      tags:
+        - Juego
+      summary: 'Listar los 10 primeros juegos destacados'
+      operationId: 00e94c6b6df4a815674b9ac8712d1038
+      responses:
+        '200':
+          description: 'Lista de juegos destacados'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Juego'
+  /api/juegos/buscarPorParametro:
+    get:
+      tags:
+        - Juego
+      summary: 'Buscar juegos por nombre o género'
+      operationId: 36796057b56140494db41911822f5962
+      parameters:
+        -
+          name: parametro
+          in: query
+          description: 'Texto a buscar en el nombre del juego o en el nombre del género'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Lista de juegos encontrados'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Juego'
+  /api/juegos/filtrar:
+    get:
+      tags:
+        - Juego
+      summary: 'Filtrar juegos por nombre, género y/o plataforma'
+      operationId: f8e4a22ececeadb2c61bb47ad4447f8d
+      parameters:
+        -
+          name: nombre
+          in: query
+          description: 'Filtrar por nombre del juego'
+          required: false
+          schema:
+            type: string
+        -
+          name: genero
+          in: query
+          description: 'Filtrar por género'
+          required: false
+          schema:
+            type: string
+        -
+          name: plataforma
+          in: query
+          description: 'Filtrar por plataforma'
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Lista de juegos filtrados'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Juego'
+  /api/juego-genero:
+    get:
+      tags:
+        - JuegoGenero
+      summary: 'Listar todas las relaciones entre juegos y géneros'
+      operationId: ae3308b5b3ea988745b9f63df93b78ba
+      responses:
+        '200':
+          description: 'Lista de relaciones entre juegos y géneros'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JuegoGenero'
+    post:
+      tags:
+        - JuegoGenero
+      summary: 'Crear una nueva relación entre juego y género'
+      operationId: 8ba6b79af69b7b3c759f8aedd8a22b3c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JuegoGeneroCreate'
+      responses:
+        '201':
+          description: 'Relación creada exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JuegoGenero'
+  '/api/juego-genero/{id}':
+    get:
+      tags:
+        - JuegoGenero
+      summary: 'Obtener una relación por ID'
+      operationId: bd8f7a10244c6c4fcb6f576c6c9f7229
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la relación'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Relación encontrada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JuegoGenero'
+        '404':
+          description: 'Relación no encontrada'
+    put:
+      tags:
+        - JuegoGenero
+      summary: 'Actualizar una relación existente entre juego y género'
+      operationId: 50f26caf996b3e10a2d3b2864c410561
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la relación'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JuegoGeneroUpdate'
+      responses:
+        '200':
+          description: 'Relación actualizada exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JuegoGenero'
+        '404':
+          description: 'Relación no encontrada'
+    delete:
+      tags:
+        - JuegoGenero
+      summary: 'Eliminar una relación entre juego y género'
+      operationId: 18fb9ee6bba52218ff07051a23de928f
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la relación'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Relación eliminada correctamente'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Relación eliminada correctamente' }
+                type: object
+        '404':
+          description: 'Relación no encontrada'
+  /api/juego-imagenes:
+    get:
+      tags:
+        - JuegoImagen
+      summary: 'Listar todas las imágenes de los juegos'
+      operationId: 9cd58d5774c04ccd0da050d35851b73f
+      responses:
+        '200':
+          description: 'Lista de imágenes de los juegos'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JuegoImagen'
+    post:
+      tags:
+        - JuegoImagen
+      summary: 'Crear una nueva imagen para un juego'
+      operationId: 059f9045dea941d3a7ce5a985ed02a6f
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JuegoImagenCreate'
+      responses:
+        '201':
+          description: 'Imagen creada exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JuegoImagen'
+  '/api/juego-imagenes/{id}':
+    get:
+      tags:
+        - JuegoImagen
+      summary: 'Obtener una imagen por ID'
+      operationId: a54a08836f221451d445358e937633a7
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la imagen'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Imagen encontrada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JuegoImagen'
+        '404':
+          description: 'Imagen no encontrada'
+    put:
+      tags:
+        - JuegoImagen
+      summary: 'Actualizar una imagen existente'
+      operationId: 6ad81f96a62d76bb69f8f73a0b9d8cf2
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la imagen'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JuegoImagenUpdate'
+      responses:
+        '200':
+          description: 'Imagen actualizada exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JuegoImagen'
+        '404':
+          description: 'Imagen no encontrada'
+    delete:
+      tags:
+        - JuegoImagen
+      summary: 'Eliminar una imagen de un juego'
+      operationId: dbc5e0200f92268ecefd2eac5cfd8b41
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la imagen'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Imagen eliminada correctamente'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Imagen eliminada correctamente' }
+                type: object
+        '404':
+          description: 'Imagen no encontrada'
+  /api/logros:
+    get:
+      tags:
+        - Logro
+      summary: 'Listar todos los logros'
+      operationId: f695a3635065d10cb9bdf85a847c12f2
+      responses:
+        '200':
+          description: 'Lista de logros'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Logro'
+    post:
+      tags:
+        - Logro
+      summary: 'Crear un nuevo logro'
+      operationId: 3c027648e4ef50af93eb0d765535f9a6
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogroCreate'
+      responses:
+        '201':
+          description: 'Logro creado exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Logro'
+  '/api/logros/{id}':
+    get:
+      tags:
+        - Logro
+      summary: 'Obtener un logro por ID'
+      operationId: 8cfb6620822dcc0322b44f9fe6d9c697
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del logro'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Logro encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Logro'
+        '404':
+          description: 'Logro no encontrado'
+    put:
+      tags:
+        - Logro
+      summary: 'Actualizar un logro existente'
+      operationId: da055c0161ae64e100e241e3ee4718a6
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del logro'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogroUpdate'
+      responses:
+        '200':
+          description: 'Logro actualizado exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Logro'
+        '404':
+          description: 'Logro no encontrado'
+    delete:
+      tags:
+        - Logro
+      summary: 'Eliminar un logro'
+      operationId: 6673d1d38e1ed261d0cbafc4d895213c
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del logro'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Logro eliminado correctamente'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Logro eliminado correctamente' }
+                type: object
+        '404':
+          description: 'Logro no encontrado'
+  /api/noticias:
+    get:
+      tags:
+        - Noticia
+      summary: 'Listar todas las noticias paginadas (solo listado)'
+      operationId: 914e63ade6e06a3fc689556f6c295245
+      parameters:
+        -
+          name: pagina
+          in: query
+          description: 'Número de página'
+          required: false
+          schema:
+            type: integer
+            default: 1
+        -
+          name: registrosPorPagina
+          in: query
+          description: 'Cantidad de registros por página'
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: 'Lista de noticias (solo listado, sin metadatos de paginación)'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Noticia'
+    post:
+      tags:
+        - Noticia
+      summary: 'Crear una nueva noticia'
+      operationId: 8f1e4f67dea603a29aa7c4817f7810ea
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoticiaCreate'
+      responses:
+        '201':
+          description: 'Noticia creada exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Noticia'
+  '/api/noticias/{id}':
+    get:
+      tags:
+        - Noticia
+      summary: 'Obtener una noticia por ID'
+      operationId: ce8296da4c297f04ae5dd0493b9c28b0
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la noticia'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Noticia encontrada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Noticia'
+        '404':
+          description: 'Noticia no encontrada'
+    put:
+      tags:
+        - Noticia
+      summary: 'Actualizar una noticia existente'
+      operationId: 5b09bf8daeef7b4b31b386dd7d814079
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la noticia'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoticiaUpdate'
+      responses:
+        '200':
+          description: 'Noticia actualizada exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Noticia'
+        '404':
+          description: 'Noticia no encontrada'
+    delete:
+      tags:
+        - Noticia
+      summary: 'Eliminar una noticia'
+      operationId: fdd8118e7eb14c73fa335c678da6b85a
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la noticia'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Noticia eliminada correctamente'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Noticia eliminada correctamente' }
+                type: object
+        '404':
+          description: 'Noticia no encontrada'
+  /api/resenas:
+    get:
+      tags:
+        - Resena
+      summary: 'Listar todas las reseñas'
+      operationId: a36da7a6b602ebe4ed06cab9e104bae9
+      responses:
+        '200':
+          description: 'Lista de reseñas'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Resena'
+    post:
+      tags:
+        - Resena
+      summary: 'Crear una nueva reseña'
+      operationId: 06d513d26c73fd1143ff8648bc9249a8
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResenaCreate'
+      responses:
+        '201':
+          description: 'Reseña creada exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resena'
+  '/api/resenas/{id}':
+    get:
+      tags:
+        - Resena
+      summary: 'Obtener una reseña por ID'
+      operationId: ffd14eb1edcc79e2bdd85b773a383ba3
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la reseña'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Reseña encontrada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resena'
+        '404':
+          description: 'Reseña no encontrada'
+    put:
+      tags:
+        - Resena
+      summary: 'Actualizar una reseña existente'
+      operationId: aa205a0e0aa52727d9f22cdfc1be6393
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la reseña'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResenaUpdate'
+      responses:
+        '200':
+          description: 'Reseña actualizada exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resena'
+        '404':
+          description: 'Reseña no encontrada'
+    delete:
+      tags:
+        - Resena
+      summary: 'Eliminar una reseña'
+      operationId: c2c716608edd041b7f904ee0aa68ad87
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la reseña'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Reseña eliminada correctamente'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Reseña eliminada correctamente' }
+                type: object
+        '404':
+          description: 'Reseña no encontrada'
+  /api/usuarios:
+    get:
+      tags:
+        - Usuario
+      summary: 'Listar todos los usuarios'
+      operationId: e9d4d8b419dbef04b5748fbf9ccf3881
+      responses:
+        '200':
+          description: 'Lista de usuarios'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+    post:
+      tags:
+        - Usuario
+      summary: 'Crear un nuevo usuario de cualquier tipo'
+      operationId: 4e9dbcbdaaaf9faab196a82d5cbaea23
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioCreate'
+      responses:
+        '201':
+          description: 'Usuario creado exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+  /api/registrar-usuario:
+    post:
+      tags:
+        - Usuario
+      summary: 'Registrar un nuevo usuario de tipo usuario'
+      operationId: 23e61a855688f6fe133fe6738356606e
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - dni_usuario
+                - nombre
+                - email
+                - contraseña
+              properties:
+                dni_usuario:
+                  type: string
+                  example: 12345678A
+                nombre:
+                  type: string
+                  example: 'Juan Pérez'
+                email:
+                  type: string
+                  example: juan@email.com
+                contraseña:
+                  type: string
+                  example: secreto123
+              type: object
+      responses:
+        '201':
+          description: 'Usuario registrado correctamente'
+        '422':
+          description: 'Datos inválidos'
+  '/api/usuarios/{id}':
+    get:
+      tags:
+        - Usuario
+      summary: 'Obtener un usuario por ID'
+      operationId: e9ac05ddc4ea46d8848b012d7d92e3ac
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID del usuario'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Usuario encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '404':
+          description: 'Usuario no encontrado'
+  '/api/usuarios/{dni_usuario}':
+    put:
+      tags:
+        - Usuario
+      summary: 'Actualizar un usuario por DNI'
+      operationId: b1f7ec0547bf95596d25efd25a4e3c68
+      parameters:
+        -
+          name: dni_usuario
+          in: path
+          description: 'DNI del usuario'
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioUpdate'
+      responses:
+        '200':
+          description: 'Usuario actualizado correctamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '404':
+          description: 'Usuario no encontrado'
+    delete:
+      tags:
+        - Usuario
+      summary: 'Eliminar un usuario por DNI'
+      operationId: f2e5c0ef55217efbe80237f92f3c6092
+      parameters:
+        -
+          name: dni_usuario
+          in: path
+          description: 'DNI del usuario'
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Usuario eliminado correctamente'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Usuario eliminado correctamente' }
+                type: object
+        '404':
+          description: 'Usuario no encontrado'
+  /api/login:
+    post:
+      tags:
+        - Usuario
+      summary: 'Login de usuario'
+      operationId: 97e61fbe879f3468ebf503966c2d3482
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - email
+                - contraseña
+              properties:
+                email:
+                  type: string
+                  example: usuario@email.com
+                contraseña:
+                  type: string
+                  example: secreto123
+              type: object
+      responses:
+        '200':
+          description: 'Login exitoso'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Login exitoso' }
+                  usuario: { $ref: '#/components/schemas/Usuario' }
+                type: object
+        '401':
+          description: 'Credenciales incorrectas'
+          content:
+            application/json:
+              schema:
+                properties:
+                  error: { type: string, example: 'Credenciales incorrectas' }
+                type: object
+        '422':
+          description: 'Datos inválidos'
+  /api/usuario-logros:
+    get:
+      tags:
+        - UsuarioLogro
+      summary: 'Listar todas las relaciones entre usuarios y logros'
+      operationId: 924d852c97c1f8d2ca0e8af1e3ca965b
+      responses:
+        '200':
+          description: 'Lista de relaciones entre usuarios y logros'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsuarioLogro'
+    post:
+      tags:
+        - UsuarioLogro
+      summary: 'Crear una nueva relación entre usuario y logro'
+      operationId: 4aaf790b5278507e22ce6d1cbea9aa69
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioLogroCreate'
+      responses:
+        '201':
+          description: 'Relación creada exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioLogro'
+  '/api/usuario-logros/{id}':
+    get:
+      tags:
+        - UsuarioLogro
+      summary: 'Obtener una relación por ID'
+      operationId: 32d2602a148179bba2b85b8fcd7df9d2
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la relación'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Relación encontrada'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioLogro'
+        '404':
+          description: 'Relación no encontrada'
+    put:
+      tags:
+        - UsuarioLogro
+      summary: 'Actualizar una relación existente entre usuario y logro'
+      operationId: a2ea756275c77d7cc91bed0364fbc55e
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la relación'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioLogroUpdate'
+      responses:
+        '200':
+          description: 'Relación actualizada exitosamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioLogro'
+        '404':
+          description: 'Relación no encontrada'
+    delete:
+      tags:
+        - UsuarioLogro
+      summary: 'Eliminar una relación entre usuario y logro'
+      operationId: 1510aa616d9fa502706b25c3117270fd
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la relación'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Relación eliminada correctamente'
+          content:
+            application/json:
+              schema:
+                properties:
+                  message: { type: string, example: 'Relación eliminada correctamente' }
+                type: object
+        '404':
+          description: 'Relación no encontrada'
+components:
+  schemas:
+    Biblioteca:
+      properties:
+        dni_usuario:
+          type: string
+          example: 12345678A
+        id_juego:
+          type: integer
+          example: 1
+        horas_jugadas:
+          type: integer
+          example: 12
+        ultima_vez_jugado:
+          type: string
+          format: date-time
+          example: '2025-05-31 18:00:00'
+      type: object
+    BibliotecaCreate:
+      required:
+        - dni_usuario
+        - id_juego
+      properties:
+        dni_usuario:
+          type: string
+          example: 12345678A
+        id_juego:
+          type: integer
+          example: 1
+      type: object
+    BibliotecaUpdate:
+      properties:
+        horas_jugadas:
+          type: integer
+          example: 12
+        ultima_vez_jugado:
+          type: string
+          format: date-time
+          example: '2025-05-31 18:00:00'
+      type: object
+    Compra:
+      properties:
+        id_compra:
+          type: integer
+          example: 10
+        dni_usuario:
+          type: string
+          example: 12345678A
+        id_juego:
+          type: integer
+          example: 6
+        fecha_compra:
+          type: string
+          format: date-time
+          example: '2025-03-20 14:11:06'
+        precio_final:
+          type: number
+          format: float
+          example: 14.99
+      type: object
+    CompraCreate:
+      required:
+        - dni_usuario
+        - id_juego
+        - precio_final
+      properties:
+        dni_usuario:
+          type: string
+          example: 12345678A
+        id_juego:
+          type: integer
+          example: 6
+        precio_final:
+          type: number
+          format: float
+          example: 14.99
+      type: object
+    CompraUpdate:
+      properties:
+        precio_final:
+          type: number
+          format: float
+          example: 14.99
+      type: object
+    Genero:
+      properties:
+        id_genero:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: Acción
+      type: object
+    GeneroCreate:
+      required:
+        - nombre
+      properties:
+        nombre:
+          type: string
+          example: Acción
+      type: object
+    GeneroUpdate:
+      properties:
+        nombre:
+          type: string
+          example: Acción
+      type: object
+    Juego:
+      properties:
+        id_juego:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: CyberQuest
+        desarrollador:
+          type: string
+          example: TechSoft
+        editor:
+          type: string
+          example: GameHouse
+        fecha_lanzamiento:
+          type: string
+          format: date
+          example: '2023-06-15'
+        precio:
+          type: number
+          format: float
+          example: 49.99
+        descuento:
+          type: number
+          format: float
+          example: 10
+      type: object
+    JuegoCreate:
+      required:
+        - nombre
+        - precio
+      properties:
+        nombre:
+          type: string
+          example: CyberQuest
+        desarrollador:
+          type: string
+          example: TechSoft
+        editor:
+          type: string
+          example: GameHouse
+        fecha_lanzamiento:
+          type: string
+          format: date
+          example: '2023-06-15'
+        precio:
+          type: number
+          format: float
+          example: 49.99
+        descuento:
+          type: number
+          format: float
+          example: 10
+      type: object
+    JuegoUpdate:
+      properties:
+        nombre:
+          type: string
+          example: CyberQuest
+        desarrollador:
+          type: string
+          example: TechSoft
+        editor:
+          type: string
+          example: GameHouse
+        fecha_lanzamiento:
+          type: string
+          format: date
+          example: '2023-06-15'
+        precio:
+          type: number
+          format: float
+          example: 49.99
+        descuento:
+          type: number
+          format: float
+          example: 10
+      type: object
+    JuegoGenero:
+      properties:
+        id_juego:
+          type: integer
+          example: 1
+        id_genero:
+          type: integer
+          example: 1
+      type: object
+    JuegoGeneroCreate:
+      required:
+        - id_juego
+        - id_genero
+      properties:
+        id_juego:
+          type: integer
+          example: 1
+        id_genero:
+          type: integer
+          example: 1
+      type: object
+    JuegoGeneroUpdate:
+      properties:
+        id_genero:
+          type: integer
+          example: 1
+      type: object
+    JuegoImagen:
+      properties:
+        id_imagen:
+          type: integer
+          example: 1
+        id_juego:
+          type: integer
+          example: 2
+        url:
+          type: string
+          example: 'https://example.com/imagen.jpg'
+        descripcion:
+          type: string
+          example: 'Imagen de portada del juego'
+          nullable: true
+      type: object
+    JuegoImagenCreate:
+      required:
+        - id_juego
+        - url
+      properties:
+        id_juego:
+          type: integer
+          example: 2
+        url:
+          type: string
+          example: 'https://example.com/imagen.jpg'
+        descripcion:
+          type: string
+          example: 'Imagen de portada del juego'
+          nullable: true
+      type: object
+    JuegoImagenUpdate:
+      properties:
+        url:
+          type: string
+          example: 'https://example.com/imagen.jpg'
+        descripcion:
+          type: string
+          example: 'Imagen de portada del juego'
+          nullable: true
+      type: object
+    Logro:
+      properties:
+        id_logro:
+          type: integer
+          example: 1
+        id_juego:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: 'Primer nivel completado'
+        descripcion:
+          type: string
+          example: 'Supera el primer nivel del juego.'
+      type: object
+    LogroCreate:
+      required:
+        - id_juego
+        - nombre
+      properties:
+        id_juego:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: 'Primer nivel completado'
+        descripcion:
+          type: string
+          example: 'Supera el primer nivel del juego.'
+      type: object
+    LogroUpdate:
+      properties:
+        nombre:
+          type: string
+          example: 'Primer nivel completado'
+        descripcion:
+          type: string
+          example: 'Supera el primer nivel del juego.'
+      type: object
+    Noticia:
+      properties:
+        id_noticia:
+          type: integer
+          example: 1
+        titulo:
+          type: string
+          example: 'Título de la noticia'
+        imagen:
+          description: 'Imagen en formato base64'
+          type: string
+          format: byte
+          nullable: true
+        descripcion:
+          type: string
+          example: 'Descripción corta'
+        cuerpo:
+          type: string
+          example: 'Texto completo de la noticia'
+      type: object
+    NoticiaCreate:
+      required:
+        - titulo
+        - descripcion
+        - cuerpo
+      properties:
+        titulo:
+          type: string
+          example: 'Título de la noticia'
+        imagen:
+          description: 'Imagen en formato base64'
+          type: string
+          format: byte
+          nullable: true
+        descripcion:
+          type: string
+          example: 'Descripción corta'
+        cuerpo:
+          type: string
+          example: 'Texto completo de la noticia'
+      type: object
+    NoticiaUpdate:
+      properties:
+        titulo:
+          type: string
+          example: 'Título de la noticia'
+        imagen:
+          description: 'Imagen en formato base64'
+          type: string
+          format: byte
+          nullable: true
+        descripcion:
+          type: string
+          example: 'Descripción corta'
+        cuerpo:
+          type: string
+          example: 'Texto completo de la noticia'
+      type: object
+    Resena:
+      properties:
+        id_reseña:
+          type: integer
+          example: 10
+        dni_usuario:
+          type: string
+          example: 12345678A
+        id_juego:
+          type: integer
+          example: 6
+        calificación:
+          type: integer
+          example: 5
+        comentario:
+          type: string
+          example: 'Un metroidvania increíble, gran exploración.'
+        fecha_publicacion:
+          type: string
+          format: date-time
+          example: '2025-03-20 14:14:55'
+      type: object
+    ResenaCreate:
+      required:
+        - dni_usuario
+        - id_juego
+        - calificación
+      properties:
+        dni_usuario:
+          type: string
+          example: 12345678A
+        id_juego:
+          type: integer
+          example: 6
+        calificación:
+          type: integer
+          example: 5
+        comentario:
+          type: string
+          example: 'Un metroidvania increíble, gran exploración.'
+      type: object
+    ResenaUpdate:
+      properties:
+        calificación:
+          type: integer
+          example: 5
+        comentario:
+          type: string
+          example: 'Un metroidvania increíble, gran exploración.'
+      type: object
+    Usuario:
+      properties:
+        dni_usuario:
+          type: string
+          example: 12345678A
+        nombre:
+          type: string
+          example: 'Luis Fernández'
+        email:
+          type: string
+          format: email
+          example: luis.fernandez@example.com
+        contraseña:
+          type: string
+          example: password1
+        saldo:
+          type: number
+          format: float
+          example: 50
+        avatar:
+          type: string
+          example: null
+          nullable: true
+        fecha_registro:
+          type: string
+          format: date-time
+          example: '2025-03-20 14:07:08'
+        rol:
+          type: string
+          enum:
+            - usuario
+            - administrador
+          example: usuario
+      type: object
+    UsuarioCreate:
+      required:
+        - dni_usuario
+        - nombre
+        - email
+        - contraseña
+      properties:
+        dni_usuario:
+          type: string
+          example: 12345678A
+        nombre:
+          type: string
+          example: 'Luis Fernández'
+        email:
+          type: string
+          format: email
+          example: luis.fernandez@example.com
+        contraseña:
+          type: string
+          example: password1
+        saldo:
+          type: number
+          format: float
+          example: 50
+        avatar:
+          type: string
+          example: null
+          nullable: true
+        rol:
+          type: string
+          enum:
+            - usuario
+            - administrador
+          example: usuario
+      type: object
+    UsuarioUpdate:
+      properties:
+        nombre:
+          type: string
+          example: 'Luis Fernández'
+        email:
+          type: string
+          format: email
+          example: luis.fernandez@example.com
+        contraseña:
+          type: string
+          example: password1
+        saldo:
+          type: number
+          format: float
+          example: 50
+        avatar:
+          type: string
+          example: null
+          nullable: true
+        rol:
+          type: string
+          enum:
+            - usuario
+            - administrador
+          example: usuario
+      type: object
+    UsuarioLogro:
+      properties:
+        dni_usuario:
+          type: string
+          example: 12345678A
+        id_logro:
+          type: integer
+          example: 6
+        fecha_obtencion:
+          type: string
+          format: date-time
+          example: '2025-03-20 14:12:39'
+      type: object
+    UsuarioLogroCreate:
+      required:
+        - dni_usuario
+        - id_logro
+      properties:
+        dni_usuario:
+          type: string
+          example: 12345678A
+        id_logro:
+          type: integer
+          example: 6
+      type: object
+    UsuarioLogroUpdate:
+      properties:
+        fecha_obtencion:
+          type: string
+          format: date-time
+          example: '2025-03-20 14:12:39'
+      type: object
+tags:
+  -
+    name: Biblioteca
+    description: 'Operaciones relacionadas con la biblioteca de juegos'
+  -
+    name: Compra
+    description: 'Operaciones relacionadas con las compras'
+  -
+    name: Genero
+    description: 'Operaciones relacionadas con los géneros'
+  -
+    name: Juego
+    description: 'Operaciones relacionadas con los juegos'
+  -
+    name: JuegoGenero
+    description: 'Operaciones relacionadas con la relación entre juegos y géneros'
+  -
+    name: JuegoImagen
+    description: 'Operaciones relacionadas con las imágenes de los juegos'
+  -
+    name: Logro
+    description: 'Operaciones relacionadas con los logros'
+  -
+    name: Noticia
+    description: 'Operaciones relacionadas con las noticias'
+  -
+    name: Resena
+    description: 'Operaciones relacionadas con las reseñas'
+  -
+    name: Usuario
+    description: 'Operaciones relacionadas con los usuarios'
+  -
+    name: UsuarioLogro
+    description: 'Operaciones relacionadas con la relación entre usuarios y logros'

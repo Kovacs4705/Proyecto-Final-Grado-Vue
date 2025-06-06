@@ -184,7 +184,7 @@
 import { ref, reactive, computed, watch } from 'vue'
 import { useGamesStore } from '../../stores/useGamesStore.js'
 import { useUsersStore } from '../../stores/useUserStore.js'
-import { useGenresStore } from '../../stores/useGenerosStore.js'
+import { useGenerosStore } from '../../stores/useGenerosStore.js'
 import { useNoticiasStore } from '../../stores/useNoticiasStore.js'
 import { useJuegoImagenesStore } from '../../stores/useJuegoImagenesStore.js'
 
@@ -200,7 +200,7 @@ const emit = defineEmits(['saved', 'cancel'])
 // ────────────────────────────────────────────────────────────
 const gamesStore = useGamesStore()
 const usersStore = useUsersStore()
-const genresStore = useGenresStore()
+const generosStore = useGenerosStore()
 const noticiasStore = useNoticiasStore()
 const juegoImagenesStore = useJuegoImagenesStore()
 

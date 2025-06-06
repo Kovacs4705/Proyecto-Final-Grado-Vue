@@ -438,9 +438,21 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/GeneroCreate"
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string"
+                                    },
+                                    "imagen": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
@@ -513,9 +525,18 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/GeneroUpdate"
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string"
+                                    },
+                                    "imagen": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
                             }
                         }
                     }
@@ -624,6 +645,12 @@
                                                         "items": {
                                                             "$ref": "#/components/schemas/JuegoImagen"
                                                         }
+                                                    },
+                                                    "generos": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "$ref": "#/components/schemas/Genero"
+                                                        }
                                                     }
                                                 },
                                                 "type": "object"
@@ -700,6 +727,12 @@
                                                     "type": "array",
                                                     "items": {
                                                         "$ref": "#/components/schemas/JuegoImagen"
+                                                    }
+                                                },
+                                                "generos": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Genero"
                                                     }
                                                 }
                                             },
