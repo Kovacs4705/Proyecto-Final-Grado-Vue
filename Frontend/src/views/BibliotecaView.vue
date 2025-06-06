@@ -27,13 +27,13 @@ onMounted(async () => {
 // Computed para los juegos en formato esperado por los componentes hijos
 const games = computed(() =>
   (bibliotecaStore.biblioteca || []).map((j, idx) => {
-    // Buscar imagen de categoría 'horizontal'
-    const landscapeImg = j.juego_imagens?.find(img =>
-      img.categoria === 'horizontal' 
+    // Buscar imagen de categoría 'vertical'
+    const verticalImg = j.juego_imagens?.find(img =>
+      img.categoria === 'vertical' 
     )
     return {
-      image: landscapeImg
-        ? `data:image/jpeg;base64,${landscapeImg.imagen}`
+      image: verticalImg
+        ? `data:image/jpeg;base64,${verticalImg.imagen}`
         : '/images/default.png',
       title: j.nombre,
       delay: 200 * idx // Puedes ajustar el delay como prefieras

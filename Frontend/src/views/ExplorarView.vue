@@ -1,33 +1,38 @@
 <!-- src/views/ExploreView.vue -->
 <template>
-  
+  <div>
     <FeaturedSection :featured-item="featuredData" />
     <GenresCarousel :genres="genresData" />
-    <GamesGrid :games="gamesData" />
-  
+    <GamesGrid :games="gamesData" :filters="filters" />
+  </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { onMounted, computed } from 'vue'
 import { useLoginStore } from '../stores/useLoginStore.js'
+import { useGenerosStore } from '../stores/useGenerosStore.js'
+import { useGamesStore } from '../stores/useGamesStore.js'
 
-// Importa componentes de navegación
+import FeaturedSection from '../components/Explorar/FeaturedSection.vue'
+import GenresCarousel from '../components/Explorar/GenresCarousel.vue'
+import GamesGrid from '../components/Explorar/GamesGrid.vue'
+
+// Instancia los stores
+const generosStore = useGenerosStore()
+const gamesStore = useGamesStore()
 
 
-// Importa componentes de sección “Explorar” para cada rol
-import FeaturedSection   from '../components/Explorar/FeaturedSection.vue'
-import GenresCarousel    from '../components/Explorar/GenresCarousel.vue'
-import GamesGrid       from '../components/Explorar/GamesGrid.vue'
+// Carga los datos al montar la vista
+onMounted(() => {
+  generosStore.fetchGenres()
+  gamesStore.fetchGames()
+  console.log('Géneros:', generosStore.genres);
+  console.log('Juegos:', gamesStore.games);
+
+})
 
 
-
-// 1) Instancia la store de login
-const loginStore = useLoginStore()
-
-// 2) Computed para el rol (puede ser 'admin', 'usuario' o null)
-const rol = computed(() => loginStore.rol)
-
-// Datos estáticos de ejemplo para "Destacado", "Géneros" y "Juegos"
+// Datos estáticos para la sección destacada
 const featuredData = {
   sectionTitle: "Destacado",
   imageUrl: "/images/NoticiaDestacada.png",
@@ -39,20 +44,37 @@ const featuredData = {
   buttonUrl: "#"
 }
 
-const genresData = [
-  { id: 1, title: "Aventuras",        imageUrl: "/images/fortnite1.png" },
-  { id: 2, title: "Disparos",         imageUrl: "/images/spiderman1.png" },
-  { id: 3, title: "Multiplataforma",  imageUrl: "/images/stranger1.png" },
-  { id: 4, title: "Rol",              imageUrl: "/images/fortnite1.png" },
-  { id: 5, title: "Estrategia",       imageUrl: "/images/spiderman1.png" }
-]
+// Adapta los géneros del store para el carrusel
+const genresData = computed(() =>
+  (generosStore.genres || []).map(g => ({
+    id: g.id_genero,
+    title: g.nombre,
+    imageUrl: g.imagen ? `data:image/jpeg;base64,${g.imagen}` : '/images/default.png'
+  }))
+)
 
-const gamesData = [
-  { id: 1, title: "JEDI Fallen Order", price: "60€", imageUrl: "/images/juego1.png" },
-  { id: 2, title: "Cyberpunk 2077",    price: "50€", imageUrl: "/images/juego2.png" },
-  { id: 3, title: "The Witcher 3",     price: "40€", imageUrl: "/images/juego3.png" },
-  // ...otros juegos de ejemplo...
-]
+// Adapta los juegos del store para el grid
+const gamesData = computed(() =>
+  (gamesStore.games || []).map(j => {
+    // Buscar imagen vertical
+    const verticalImg = j.juego_imagens?.find(img => img.categoria === 'vertical')
+    return {
+      id: j.id_juego,
+      title: j.nombre,
+      price: j.precio ? `${j.precio}€` : '',
+      img: verticalImg
+        ? `data:image/jpeg;base64,${verticalImg.imagen}`
+        : '/images/default.png'
+    }
+  })
+)
+
+// Filtros como computed, depende de genresData
+const filters = computed(() => [
+  { label: 'Género', options: ['Todos', ...genresData.value.map(g => g.title)] },
+  { label: 'Plataforma', options: ['Todos', 'PC', 'Xbox', 'PlayStation'] }
+])
+
 </script>
 
 <style scoped>

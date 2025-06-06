@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Noticia;
 use Illuminate\Support\Facades\DB;
+use Intervention\Image\ImageManager;
 
 class NoticiaSeeder extends Seeder
 {
@@ -30,11 +31,32 @@ class NoticiaSeeder extends Seeder
             throw new \Exception("No se encontraron imágenes en la carpeta: $imagenesPath");
         }
 
+        // Configura el manager de Intervention Image
+        $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+
+        // Tamaño deseado para portada y lightbox (ajusta según tu diseño)
+        $portadaSize = [495, 302];
+        $lightboxSize = [1400, 720];
+
         for ($i = 1; $i <= 10; $i++) {
             $portadaPath = $archivos[($i) % $totalImagenes];
             $lightboxPath = $archivos[($i) % $totalImagenes];
 
-            // Generar texto lorem ipsum de al menos 500 caracteres
+            // Procesar portada
+            $portadaBin = null;
+            if (file_exists($portadaPath)) {
+                $img = $manager->read($portadaPath)->cover($portadaSize[0], $portadaSize[1]);
+                $portadaBin = (string) $img->toJpeg();
+            }
+
+            // Procesar lightbox
+            $lightboxBin = null;
+            if (file_exists($lightboxPath)) {
+                $img = $manager->read($lightboxPath)->cover($lightboxSize[0], $lightboxSize[1]);
+                $lightboxBin = (string) $img->toJpeg();
+            }
+
+            // Generar texto lorem ipsum de al menos 2000 caracteres
             $lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc ut laoreet dictum, massa erat ultricies enim, nec dictum ex nulla ac nisi. ";
             $cuerpo = '';
             while (strlen($cuerpo) < 2000) {
@@ -46,8 +68,8 @@ class NoticiaSeeder extends Seeder
                 'titulo' => "Noticia $i",
                 'descripcion' => "Descripción corta de la noticia $i",
                 'cuerpo' => $cuerpo,
-                'portada' => file_get_contents($portadaPath),
-                'lightbox' => file_get_contents($lightboxPath),
+                'portada' => $portadaBin,
+                'lightbox' => $lightboxBin,
             ]);
         }
     }

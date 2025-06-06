@@ -1,9 +1,12 @@
 <?php
 
 namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use App\Models\JuegoImagen;
 use Illuminate\Support\Facades\DB;
+use Intervention\Image\ImageManager;
+
 
 class JuegoImagenSeeder extends Seeder
 {
@@ -31,17 +34,27 @@ class JuegoImagenSeeder extends Seeder
             ]
         ];
 
+        // Tamaños por categoría
+        $sizes = [
+            'horizontal' => [495, 302],
+            'vertical' => [203, 261],
+            'personaje' => [512, 512],
+        ];
+
         $juegos = range(1, 10);
+        $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
 
         foreach ($juegos as $i) {
             foreach ($categorias as $categoria => $archivos) {
-                // Selecciona una imagen diferente para cada juego, ciclando si hay menos imágenes que juegos
                 $archivo = $archivos[($i - 1) % count($archivos)];
                 $ruta = database_path('../imagenes/' . $archivo);
                 echo "Procesando imagen: $ruta\n";
 
                 if (file_exists($ruta)) {
-                    $binario = file_get_contents($ruta);
+                    // Redimensiona la imagen según la categoría
+                    $image = $manager->read($ruta)->cover($sizes[$categoria][0], $sizes[$categoria][1]);
+                    $binario = (string) $image->toJpeg(); // o toPng()
+
                     JuegoImagen::create([
                         'id_juego' => $i,
                         'imagen' => $binario,

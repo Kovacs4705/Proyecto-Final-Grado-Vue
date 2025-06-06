@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Genero;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
+use Intervention\Image\ImageManager;
 
 #[OA\Tag(
     name: "Genero",
@@ -39,7 +40,6 @@ class GeneroController extends Controller
                 content: new OA\JsonContent(
                     properties: [
                         new OA\Property(property: "data", type: "array", items: new OA\Items(ref: "#/components/schemas/Genero")),
-                        
                     ]
                 )
             )
@@ -52,6 +52,12 @@ class GeneroController extends Controller
 
         $generos = Genero::paginate($registrosPorPagina, ['*'], 'page', $pagina);
 
+        // Devuelve la imagen como base64
+        $generos->getCollection()->transform(function ($genero) {
+            $genero->imagen = $genero->imagen ? base64_encode($genero->imagen) : null;
+            return $genero;
+        });
+
         return response()->json($generos->items());
     }
 
@@ -61,7 +67,16 @@ class GeneroController extends Controller
         tags: ["Genero"],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: "#/components/schemas/GeneroCreate")
+            content: new OA\MediaType(
+                mediaType: "multipart/form-data",
+                schema: new OA\Schema(
+                    required: ["nombre"],
+                    properties: [
+                        new OA\Property(property: "nombre", type: "string"),
+                        new OA\Property(property: "imagen", type: "string", format: "binary")
+                    ]
+                )
+            )
         ),
         responses: [
             new OA\Response(
@@ -73,7 +88,26 @@ class GeneroController extends Controller
     )]
     public function store(Request $request)
     {
-        $genero = Genero::create($request->all());
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'imagen' => 'nullable|image|max:2048',
+        ]);
+
+        $binario = null;
+        if ($request->hasFile('imagen')) {
+            $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+            $img = $manager->read($request->file('imagen')->getRealPath())->cover(295, 139);
+            $binario = (string) $img->toJpeg();
+        }
+
+        $genero = Genero::create([
+            'nombre' => $request->nombre,
+            'imagen' => $binario,
+        ]);
+
+        // Devuelve la imagen como base64
+        $genero->imagen = $genero->imagen ? base64_encode($genero->imagen) : null;
+
         return response()->json($genero, 201);
     }
 
@@ -108,6 +142,7 @@ class GeneroController extends Controller
         if (!$genero) {
             return response()->json(['message' => 'Género no encontrado'], 404);
         }
+        $genero->imagen = $genero->imagen ? base64_encode($genero->imagen) : null;
         return response()->json($genero);
     }
 
@@ -126,7 +161,15 @@ class GeneroController extends Controller
         ],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(ref: "#/components/schemas/GeneroUpdate")
+            content: new OA\MediaType(
+                mediaType: "multipart/form-data",
+                schema: new OA\Schema(
+                    properties: [
+                        new OA\Property(property: "nombre", type: "string"),
+                        new OA\Property(property: "imagen", type: "string", format: "binary")
+                    ]
+                )
+            )
         ),
         responses: [
             new OA\Response(
@@ -146,7 +189,20 @@ class GeneroController extends Controller
         if (!$genero) {
             return response()->json(['message' => 'Género no encontrado'], 404);
         }
-        $genero->update($request->all());
+
+        if ($request->has('nombre')) {
+            $genero->nombre = $request->nombre;
+        }
+
+        if ($request->hasFile('imagen')) {
+            $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+            $img = $manager->read($request->file('imagen')->getRealPath())->cover(295, 139);
+            $genero->imagen = (string) $img->toJpeg();
+        }
+
+        $genero->save();
+
+        $genero->imagen = $genero->imagen ? base64_encode($genero->imagen) : null;
         return response()->json($genero);
     }
 

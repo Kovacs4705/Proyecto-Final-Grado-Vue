@@ -6,15 +6,17 @@
         <aside class="filter-sidebar p-4">
           <h2 class="filter-title mb-4">Filtrar Juegos</h2>
           <div class="search-bar input-group mb-4">
-            <input type="text" class="form-control search-input" placeholder="Buscar por título…" />
+            <input type="text" class="form-control search-input" placeholder="Buscar por título…"
+              v-model="searchTerm" />
             <button class="btn search-btn" type="button">
               <i class="fas fa-search"></i>
             </button>
           </div>
           <div class="mb-3" v-for="filter in filters" :key="filter.label">
             <label class="form-label">{{ filter.label }}</label>
-            <select class="form-select filter-select">
-              <option>Todos</option>
+            <select class="form-select filter-select" v-for="(filter, idx) in filters" :key="filter.label"
+              v-model="selectedFilters[idx]">
+              <option v-for="option in filter.options" :key="option">{{ option }}</option>
             </select>
           </div>
           <button class="btn btn-success w-100 apply-btn">APLICAR FILTROS</button>
@@ -24,18 +26,12 @@
       <!-- Cards de juegos -->
       <div class="col-lg-9">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-          <div
-            class="col"
-            v-for="(game, index) in games"
-            :key="index"
-            :data-aos="game.aos"
-            :data-aos-duration="game.duration"
-          >
-            <ExploreGameCard
-              :img="game.img"
-              :title="game.title"
-              :price="game.price"
-            />
+          <div class="col" v-for="(game, index) in filteredGames" :key="index" :data-aos="game.aos"
+            :data-aos-duration="game.duration">
+            <ExploreGameCard :img="game.img" :title="game.title" :price="game.price" />
+          </div>
+          <div v-if="games.length === 0" class="text-center text-muted py-5">
+            No hay juegos para mostrar.
           </div>
         </div>
       </div>
@@ -44,101 +40,46 @@
 </template>
 
 <script setup>
+import { defineProps } from 'vue'
 import ExploreGameCard from '../Explorar/ExploreGameCard/ExploreGameCard.vue'
 
-const filters = [
-  { label: 'Género' },
-  { label: 'Tipo' },
-  { label: 'Plataforma' },
-  { label: 'Instalado' },
-]
-
-const games = [
-  {
-    img: '/images/juego1.png',
-    title: 'JEDI Falling Order',
-    price: '60€',
-    aos: 'fade-right',
-    duration: 1000
+const props = defineProps({
+  games: {
+    type: Array,
+    required: true
   },
-  {
-    img: '/images/juego1.png',
-    title: 'JEDI Falling Order',
-    price: '60€',
-    aos: 'fade-up',
-    duration: 1000
-  },
-  {
-    img: '/images/juego1.png',
-    title: 'JEDI Falling Order',
-    price: '60€',
-    aos: 'fade-left',
-    duration: 1000
-  },
-  {
-    img: '/images/juego1.png',
-    title: 'JEDI Falling Order',
-    price: '60€',
-    aos: 'fade-right',
-    duration: 1000
-  },
-  {
-    img: '/images/juego1.png',
-    title: 'JEDI Falling Order',
-    price: '60€',
-    aos: 'fade-up',
-    duration: 1000
-  },
-  {
-    img: '/images/juego1.png',
-    title: 'JEDI Falling Order',
-    price: '60€',
-    aos: 'fade-left',
-    duration: 1000
-  },
-  {
-    img: '/images/juego1.png',
-    title: 'JEDI Falling Order',
-    price: '60€',
-    aos: 'fade-right',
-    duration: 1000
-  },
-  {
-    img: '/images/juego1.png',
-    title: 'JEDI Falling Order',
-    price: '60€',
-    aos: 'fade-up',
-    duration: 1000
-  },
-  {
-    img: '/images/juego1.png',
-    title: 'JEDI Falling Order',
-    price: '60€',
-    aos: 'fade-left',
-    duration: 1000
-  },
-  {
-    img: '/images/juego1.png',
-    title: 'JEDI Falling Order',
-    price: '60€',
-    aos: 'fade-right',
-    duration: 1000
-  },
-  {
-    img: '/images/juego1.png',
-    title: 'JEDI Falling Order',
-    price: '60€',
-    aos: 'fade-up',
-    duration: 1000
-  },
-  {
-    img: '/images/juego1.png',
-    title: 'JEDI Falling Order',
-    price: '60€',
-    aos: 'fade-left',
-    duration: 1000
+  filters: {
+    type: Array,
+    required: true
   }
-]
+})
+
+// Estado para los filtros seleccionados
+const selectedFilters = ref(props.filters.map(() => 'Todos'))
+const searchTerm = ref('')
+
+// Computed para filtrar los juegos
+const filteredGames = computed(() => {
+  return props.games.filter(game => {
+    // Filtro por título
+    const matchesTitle = game.title.toLowerCase().includes(searchTerm.value.toLowerCase())
+
+    // Filtro por género (si existe en el objeto game)
+    const genreFilterIdx = props.filters.findIndex(f => f.label === 'Género')
+    const selectedGenre = selectedFilters.value[genreFilterIdx]
+    const matchesGenre = selectedGenre === 'Todos' || (game.genre === selectedGenre)
+
+    // Filtro por plataforma (si existe en el objeto game)
+    const platformFilterIdx = props.filters.findIndex(f => f.label === 'Plataforma')
+    const selectedPlatform = selectedFilters.value[platformFilterIdx]
+    const matchesPlatform = selectedPlatform === 'Todos' || (game.platform === selectedPlatform)
+
+    // Puedes agregar más filtros aquí según tus datos
+
+    return matchesTitle && matchesGenre && matchesPlatform
+  })
+})
+
 </script>
 
 <style scoped>
@@ -146,6 +87,7 @@ const games = [
   max-width: 67%;
   margin: 100px auto;
 }
+
 .filter-sidebar {
   /* background-color: #141414; */
   border-radius: 10px;

@@ -1,3 +1,4 @@
+
 // src/stores/useGenresStore.js
 import { defineStore } from 'pinia'
 

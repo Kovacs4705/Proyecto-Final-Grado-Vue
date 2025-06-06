@@ -3,12 +3,14 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Genero;
 use Illuminate\Support\Facades\DB;
+use Intervention\Image\ImageManager;
+
 
 class GeneroSeeder extends Seeder
 {
     public function run()
     {
-        // Desactivar restricciones de claves foráneas
+       // Desactivar restricciones de claves foráneas
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Genero::truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
@@ -38,12 +40,25 @@ class GeneroSeeder extends Seeder
             'VampireSurvivorsPortada.jpg',
         ];
 
+        // Tamaño deseado para la imagen del género
+        $size = [295, 139]; // Puedes ajustar el tamaño según tu diseño
+
+        $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+
         for ($i = 1; $i <= 10; $i++) {
             // Selecciona una imagen aleatoria
             $imagen = $imagenes[array_rand($imagenes)];
+            $ruta = database_path('../imagenes/' . $imagen);
+
+            $binario = null;
+            if (file_exists($ruta)) {
+                $img = $manager->read($ruta)->cover($size[0], $size[1]);
+                $binario = (string) $img->toJpeg();
+            }
+
             Genero::create([
                 'nombre' => "Género $i",
-                'imagen' => $imagen,
+                'imagen' => $binario,
             ]);
         }
     }
