@@ -22,11 +22,29 @@
                 <span class="ms-2 company-title">KALE CONNECTING WORLDS</span>
             </router-link>
 
-            <!-- Idioma + Usuario -->
+            <!-- Idioma + Usuario + Accesibilidad -->
             <div class="d-flex align-items-center ms-auto">
-                <div class="lang-buttons me-3">
-                    <button class="lang-btn">accesibilidad</button>
+                <div class="lang-buttons me-3 position-relative">
+                    <!-- Botón principal de ACCESIBILIDAD -->
+                    <button class="lang-btn" @click="toggleAccessibilityOptions">
+                        accesibilidad
+                    </button>
+
+                    <!-- Opciones desplegables de accesibilidad -->
+                    <div v-if="showAccessibilityOptions" class="accessibility-panel shadow-sm">
+                        <label class="form-check mb-2">
+                            <input type="checkbox" v-model="isFontAccessible" @change="onToggleFont"
+                                class="form-check-input" />
+                            <span class="form-check-label">Letra accesible</span>
+                        </label>
+                        <label class="form-check">
+                            <input type="checkbox" v-model="isColorAccessible" @change="onToggleColor"
+                                class="form-check-input" />
+                            <span class="form-check-label">Colores accesibles</span>
+                        </label>
+                    </div>
                 </div>
+
                 <div class="user-info d-flex align-items-center">
                     <img src="../assets/images/avatar-de-usuario.png" class="user-avatar" />
                     <span class="user-name ms-2">{{ displayName }}</span>
@@ -46,12 +64,42 @@ const scrolled = ref(false)
 const menuOpen = ref(false)
 const loginStore = useLoginStore()
 
+const showAccessibilityOptions = ref(false)
+
+// Estados separados para cada tipo de accesibilidad
+const isFontAccessible = ref(false)
+const isColorAccessible = ref(false)
+
+/* --- Funciones para aplicar/quitar clases en <body> --- */
+function applyFontAccess(enabled) {
+  if (enabled) document.body.classList.add('font-accessible')
+  else document.body.classList.remove('font-accessible')
+}
+function applyColorAccess(enabled) {
+  if (enabled) document.body.classList.add('color-accessible')
+  else document.body.classList.remove('color-accessible')
+}
+
+/* --- Handlers de cambio --- */
+function onToggleFont() {
+  localStorage.setItem('font_accessibility', isFontAccessible.value)
+  applyFontAccess(isFontAccessible.value)
+}
+function onToggleColor() {
+  localStorage.setItem('color_accessibility', isColorAccessible.value)
+  applyColorAccess(isColorAccessible.value)
+}
+
+/* --- Mostrar/ocultar panel de opciones --- */
+function toggleAccessibilityOptions() {
+  showAccessibilityOptions.value = !showAccessibilityOptions.value
+}
 
 // Computed para el rol y nombre de usuario
 const rol = computed(() => loginStore.rol)
 const displayName = computed(() => {
-  if (!loginStore.user) return 'Invitado'
-  return loginStore.user.nombre || 'Invitado'
+    if (!loginStore.user) return 'Invitado'
+    return loginStore.user.nombre || 'Invitado'
 })
 
 // Scroll listener
@@ -64,9 +112,21 @@ watch(menuOpen, (open) => {
     document.body.classList.toggle('no-scroll', open)
 })
 
+/* --- Ciclo de vida: leer preferencias de localStorage al montar --- */
 onMounted(() => {
-    window.addEventListener('scroll', onScroll)
+  window.addEventListener('scroll', onScroll)
+
+  // 1) Cargar preferencia de fuente accesible
+  const savedFont = localStorage.getItem('font_accessibility') === 'true'
+  isFontAccessible.value = savedFont
+  applyFontAccess(savedFont)
+
+  // 2) Cargar preferencia de colores accesibles
+  const savedColor = localStorage.getItem('color_accessibility') === 'true'
+  isColorAccessible.value = savedColor
+  applyColorAccess(savedColor)
 })
+
 onUnmounted(() => {
     window.removeEventListener('scroll', onScroll)
 })
@@ -262,7 +322,7 @@ onUnmounted(() => {
     opacity: 1;
 }
 
-::v-deep .wrapper ul li a{
+::v-deep .wrapper ul li a {
     opacity: 0;
     /* Hacer los enlaces invisibles al inicio */
     transition: opacity 0.6s ease, transform 1.2s cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -335,7 +395,8 @@ onUnmounted(() => {
     color: white;
     /* Asegúrate de que el color sea blanco */
 }
+
 #active {
-  display: none;
+    display: none;
 }
 </style>
