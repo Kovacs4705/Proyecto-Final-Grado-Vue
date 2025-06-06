@@ -221,7 +221,7 @@
 import { ref, computed, watch } from 'vue'
 import { useGamesStore } from '../stores/useGamesStore.js'
 import { useUsersStore } from '../stores/useUserStore.js'
-import { useGenresStore } from '../stores/useGenerosStore.js'
+import { useGenerosStore } from '../stores/useGenerosStore.js'
 import { useNoticiasStore } from '../stores/useNoticiasStore.js'
 import PanelControl from '../components/Panel de Control/PanelControl.vue'
 import ConfirmModal from '../components/Modal/ModalEliminar.vue'
@@ -239,7 +239,7 @@ const showCreateModal = ref(false)    // controla visibilidad del modal de creac
 // 2) Instanciamos los stores
 const gamesStore = useGamesStore()
 const usersStore = useUsersStore()
-const genresStore = useGenresStore()
+const genresStore = useGenerosStore()
 const noticiasStore = useNoticiasStore()
 
 // 3) Computed: true cuando se está eliminando algo

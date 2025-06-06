@@ -9,7 +9,6 @@
 
 <script setup>
 import { onMounted, computed } from 'vue'
-import { useLoginStore } from '../stores/useLoginStore.js'
 import { useGenerosStore } from '../stores/useGenerosStore.js'
 import { useGamesStore } from '../stores/useGamesStore.js'
 
@@ -33,16 +32,35 @@ onMounted(() => {
 
 
 // Datos estáticos para la sección destacada
-const featuredData = {
-  sectionTitle: "Destacado",
-  imageUrl: "/images/NoticiaDestacada.png",
-  altText: "Imagen Destacado",
-  headline: "UNREAL TOURNAMENT",
-  description:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, a aliquid corrupti illo distinctio minus, voluptates cum nobis ex enim deleniti reiciendis.",
-  buttonText: "Comprar Ahora",
-  buttonUrl: "#"
-}
+// featuredData dinámico: imagen y título del primer juego, el resto estático
+const featuredData = computed(() => {
+  const firstGameRaw = gamesStore.games?.[0]
+  const horizontalImg = firstGameRaw?.juego_imagens?.find(img => img.categoria === 'horizontal')
+  return firstGameRaw
+    ? {
+        sectionTitle: "Destacado",
+        imageUrl: horizontalImg
+          ? `data:image/jpeg;base64,${horizontalImg.imagen}`
+          : '/images/default.png',
+        altText: `Imagen de ${firstGameRaw.nombre}`,
+        headline: firstGameRaw.nombre,
+        description:
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, a aliquid corrupti illo distinctio minus, voluptates cum nobis ex enim deleniti reiciendis.",
+        buttonText: "Comprar Ahora",
+        buttonUrl: "#"
+      }
+    : {
+        sectionTitle: "Destacado",
+        imageUrl: "/images/NoticiaDestacada.png",
+        altText: "Imagen Destacado",
+        headline: "UNREAL TOURNAMENT",
+        description:
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt, a aliquid corrupti illo distinctio minus, voluptates cum nobis ex enim deleniti reiciendis.",
+        buttonText: "Comprar Ahora",
+        buttonUrl: "#"
+      }
+})
+
 
 // Adapta los géneros del store para el carrusel
 const genresData = computed(() =>
@@ -56,7 +74,6 @@ const genresData = computed(() =>
 // Adapta los juegos del store para el grid
 const gamesData = computed(() =>
   (gamesStore.games || []).map(j => {
-    // Buscar imagen vertical
     const verticalImg = j.juego_imagens?.find(img => img.categoria === 'vertical')
     return {
       id: j.id_juego,
@@ -64,7 +81,9 @@ const gamesData = computed(() =>
       price: j.precio ? `${j.precio}€` : '',
       img: verticalImg
         ? `data:image/jpeg;base64,${verticalImg.imagen}`
-        : '/images/default.png'
+        : '/images/default.png',
+      genre: Array.isArray(j.generos) ? j.generos.map(g => g.nombre) : [],
+      platform: j.plataforma || 'PC'
     }
   })
 )
@@ -72,7 +91,7 @@ const gamesData = computed(() =>
 // Filtros como computed, depende de genresData
 const filters = computed(() => [
   { label: 'Género', options: ['Todos', ...genresData.value.map(g => g.title)] },
-  { label: 'Plataforma', options: ['Todos', 'PC', 'Xbox', 'PlayStation'] }
+  { label: 'Plataforma', options: ['Todos', 'PC', 'Xbox', 'PlayStation','Switch','Móvil'] }
 ])
 
 </script>

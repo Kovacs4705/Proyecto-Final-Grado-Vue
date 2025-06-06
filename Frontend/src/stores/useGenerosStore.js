@@ -1,10 +1,8 @@
-
-// src/stores/useGenresStore.js
 import { defineStore } from 'pinia'
 
 const API_URL = import.meta.env.VITE_API_URL_REAL
 
-export const useGenresStore = defineStore('genres', {
+export const useGenerosStore = defineStore('generos', {
   state: () => ({
     genres: [],         // lista paginada de géneros
     genreActual: null,  // género obtenido por su id
@@ -20,7 +18,6 @@ export const useGenresStore = defineStore('genres', {
     async fetchGenres({ pagina = 1, registrosPorPagina = 10 } = {}) {
       this.isLoadingList = true
       this.error = null
-
       try {
         const res = await fetch(
           `${API_URL}/generos?pagina=${pagina}&registrosPorPagina=${registrosPorPagina}`
@@ -39,7 +36,6 @@ export const useGenresStore = defineStore('genres', {
     async fetchGenreById(id) {
       this.isLoadingOne = true
       this.error = null
-
       try {
         const res = await fetch(`${API_URL}/generos/${id}`)
         if (res.status === 404) throw new Error('Género no encontrado')
@@ -54,15 +50,19 @@ export const useGenresStore = defineStore('genres', {
     },
 
     // POST /api/generos
+    // payload: { nombre, imagen (File) }
     async createGenre(payload) {
       this.isSubmitting = true
       this.error = null
-
       try {
+        const formData = new FormData()
+        formData.append('nombre', payload.nombre)
+        if (payload.imagen) {
+          formData.append('imagen', payload.imagen)
+        }
         const res = await fetch(`${API_URL}/generos`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+          body: formData,
         })
         if (res.status === 422) {
           const errJson = await res.json().catch(() => ({}))
@@ -79,16 +79,21 @@ export const useGenresStore = defineStore('genres', {
     },
 
     // PUT /api/generos/{id}
+    // payload: { nombre, imagen (File) }
     async updateGenre(id, payload) {
       this.isSubmitting = true
       this.error = null
-
       try {
+        const formData = new FormData()
+        if (payload.nombre) formData.append('nombre', payload.nombre)
+        if (payload.imagen) formData.append('imagen', payload.imagen)
         const res = await fetch(`${API_URL}/generos/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+          method: 'POST', // Laravel PUT con FormData requiere POST + _method
+          body: formData,
+          headers: { 'Accept': 'application/json' }
         })
+        // Para Laravel: enviar _method=PUT si usas FormData
+        formData.append('_method', 'PUT')
         if (res.status === 404) throw new Error('Género no encontrado')
         if (!res.ok) throw new Error(`Error ${res.status} al actualizar género`)
         return await res.json()
@@ -104,7 +109,6 @@ export const useGenresStore = defineStore('genres', {
     async deleteGenre(id) {
       this.isDeleting = true
       this.error = null
-
       try {
         const res = await fetch(`${API_URL}/generos/${id}`, {
           method: 'DELETE',
@@ -118,6 +122,6 @@ export const useGenresStore = defineStore('genres', {
       } finally {
         this.isDeleting = false
       }
-    },
-  },
+    }
+  }
 })

@@ -23,9 +23,11 @@ export const useGamesStore = defineStore("games", {
           `${API_URL}/juegos?pagina=${pagina}&registrosPorPagina=${registrosPorPagina}`
         );
         if (!res.ok) throw new Error(`Error ${res.status} al cargar juegos`);
+        // La respuesta ya incluye generos y juego_imagens
         this.games = await res.json();
       } catch (err) {
         this.error = err.message || "Error desconocido al cargar juegos";
+        this.games = [];
       } finally {
         this.isLoadingList = false;
       }
@@ -42,6 +44,7 @@ export const useGamesStore = defineStore("games", {
         this.gameActual = await res.json();
       } catch (err) {
         this.error = err.message || "Error desconocido al obtener el juego";
+        this.gameActual = null;
       } finally {
         this.isLoadingOne = false;
       }
@@ -121,6 +124,7 @@ export const useGamesStore = defineStore("games", {
         this.games = await res.json();
       } catch (err) {
         this.error = err.message || "Error desconocido al buscar juegos";
+        this.games = [];
       } finally {
         this.isLoadingList = false;
       }
@@ -136,6 +140,7 @@ export const useGamesStore = defineStore("games", {
         this.games = await res.json();
       } catch (err) {
         this.error = err.message || "Error desconocido al cargar juegos destacados";
+        this.games = [];
       } finally {
         this.isLoadingList = false;
       }

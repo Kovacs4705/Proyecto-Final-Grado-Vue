@@ -12,10 +12,9 @@
               <i class="fas fa-search"></i>
             </button>
           </div>
-          <div class="mb-3" v-for="filter in filters" :key="filter.label">
+          <div class="mb-3" v-for="(filter, idx) in filters" :key="filter.label">
             <label class="form-label">{{ filter.label }}</label>
-            <select class="form-select filter-select" v-for="(filter, idx) in filters" :key="filter.label"
-              v-model="selectedFilters[idx]">
+            <select class="form-select filter-select" v-model="selectedFilters[idx]">
               <option v-for="option in filter.options" :key="option">{{ option }}</option>
             </select>
           </div>
@@ -30,7 +29,7 @@
             :data-aos-duration="game.duration">
             <ExploreGameCard :img="game.img" :title="game.title" :price="game.price" />
           </div>
-          <div v-if="games.length === 0" class="text-center text-muted py-5">
+          <div v-if="filteredGames.length === 0" class="text-center text-muted py-5">
             No hay juegos para mostrar.
           </div>
         </div>
@@ -40,7 +39,7 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
+import { ref, defineProps, computed } from 'vue'
 import ExploreGameCard from '../Explorar/ExploreGameCard/ExploreGameCard.vue'
 
 const props = defineProps({
@@ -64,17 +63,19 @@ const filteredGames = computed(() => {
     // Filtro por título
     const matchesTitle = game.title.toLowerCase().includes(searchTerm.value.toLowerCase())
 
-    // Filtro por género (si existe en el objeto game)
+    // Filtro por género (ahora genre es array)
     const genreFilterIdx = props.filters.findIndex(f => f.label === 'Género')
     const selectedGenre = selectedFilters.value[genreFilterIdx]
-    const matchesGenre = selectedGenre === 'Todos' || (game.genre === selectedGenre)
+    const matchesGenre =
+      selectedGenre === 'Todos' ||
+      (Array.isArray(game.genre)
+        ? game.genre.some(g => g.toLowerCase() === selectedGenre.toLowerCase())
+        : (game.genre && game.genre.toLowerCase() === selectedGenre.toLowerCase()))
 
-    // Filtro por plataforma (si existe en el objeto game)
+    // Filtro por plataforma
     const platformFilterIdx = props.filters.findIndex(f => f.label === 'Plataforma')
     const selectedPlatform = selectedFilters.value[platformFilterIdx]
     const matchesPlatform = selectedPlatform === 'Todos' || (game.platform === selectedPlatform)
-
-    // Puedes agregar más filtros aquí según tus datos
 
     return matchesTitle && matchesGenre && matchesPlatform
   })

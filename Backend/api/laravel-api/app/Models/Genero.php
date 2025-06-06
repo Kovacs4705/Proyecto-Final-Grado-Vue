@@ -25,7 +25,7 @@ class Genero extends Model
     protected $table = 'genero';
     protected $primaryKey = 'id_genero';
     public $timestamps = false;
-
+    protected $hidden = ['pivot'];
     protected $fillable = [
         'nombre',
         'imagen'
@@ -34,5 +34,10 @@ class Genero extends Model
     public function juegos()
     {
         return $this->belongsToMany(Juego::class, 'juego_genero', 'id_genero', 'id_juego');
+    }
+
+    public function getImagenAttribute($value)
+    {
+        return $value ? base64_encode($value) : null;
     }
 }

@@ -47,6 +47,11 @@ class JuegoController extends Controller
                                         property: "juego_imagens",
                                         type: "array",
                                         items: new OA\Items(ref: "#/components/schemas/JuegoImagen")
+                                    ),
+                                    new OA\Property(
+                                        property: "generos",
+                                        type: "array",
+                                        items: new OA\Items(ref: "#/components/schemas/Genero")
                                     )
                                 ]
                             )
@@ -61,9 +66,8 @@ class JuegoController extends Controller
         $pagina = $request->query('pagina', 1);
         $registrosPorPagina = $request->query('registrosPorPagina', 10);
 
-        $juegos = Juego::with('juego_imagens')->paginate($registrosPorPagina, ['*'], 'page', $pagina);
+        $juegos = Juego::with(['juego_imagens', 'generos'])->paginate($registrosPorPagina, ['*'], 'page', $pagina);
 
-        // Solo retorna el listado (array de juegos)
         return response()->json($juegos->items());
     }
 
@@ -115,6 +119,11 @@ class JuegoController extends Controller
                                     property: "juego_imagens",
                                     type: "array",
                                     items: new OA\Items(ref: "#/components/schemas/JuegoImagen")
+                                ),
+                                new OA\Property(
+                                    property: "generos",
+                                    type: "array",
+                                    items: new OA\Items(ref: "#/components/schemas/Genero")
                                 )
                             ]
                         )
@@ -129,7 +138,7 @@ class JuegoController extends Controller
     )]
     public function show(Juego $juego)
     {
-        $juego->load('juego_imagens');
+        $juego->load(['juego_imagens', 'generos']);
         return response()->json($juego);
     }
 
@@ -220,7 +229,7 @@ class JuegoController extends Controller
     )]
     public function listarDestacados()
     {
-        $juegos = Juego::limit(10)->get();
+        $juegos = Juego::with(['juego_imagens', 'generos'])->limit(10)->get();
         return response()->json($juegos);
     }
 
@@ -252,7 +261,8 @@ class JuegoController extends Controller
     {
         $parametro = $request->query('parametro');
 
-        $juegos = Juego::where('nombre', 'like', "%$parametro%")
+        $juegos = Juego::with(['juego_imagens', 'generos'])
+            ->where('nombre', 'like', "%$parametro%")
             ->orWhereHas('generos', function ($query) use ($parametro) {
                 $query->where('nombre', 'like', "%$parametro%");
             })
@@ -301,19 +311,21 @@ class JuegoController extends Controller
     )]
     public function filtrar(Request $request)
     {
-        $query = Juego::query();
+        $query = Juego::with(['juego_imagens', 'generos']);
 
         if ($request->filled('nombre')) {
             $query->where('nombre', 'like', '%' . $request->nombre . '%');
         }
         if ($request->filled('genero')) {
-            $query->where('genero', 'like', '%' . $request->genero . '%');
+            $query->whereHas('generos', function ($q) use ($request) {
+                $q->where('nombre', 'like', '%' . $request->genero . '%');
+            });
         }
         if ($request->filled('plataforma')) {
             $query->where('plataforma', 'like', '%' . $request->plataforma . '%');
         }
 
-        $juegos = $query->with('juego_imagens')->get();
+        $juegos = $query->get();
 
         return response()->json($juegos);
     }

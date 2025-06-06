@@ -218,7 +218,7 @@ import { reactive, ref, watch } from 'vue'
 import { defineProps, defineEmits } from 'vue'
 import { useGamesStore } from '../../stores/useGamesStore.js'
 import { useUsersStore } from '../../stores/useUserStore.js'
-import { useGenresStore } from '../../stores/useGenerosStore.js'
+import { useGenerosStore } from '../../stores/useGenerosStore.js'
 import { useNoticiasStore } from '../../stores/useNoticiasStore.js'
 
 const props = defineProps({
@@ -230,7 +230,7 @@ const emit = defineEmits(['saved', 'cancel'])
 // Stores para crear cada entidad
 const gamesStore    = useGamesStore()
 const usersStore    = useUsersStore()
-const genresStore   = useGenresStore()
+const genresStore   = useGenerosStore()
 const noticiasStore = useNoticiasStore()
 
 // Estado de envío

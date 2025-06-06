@@ -2,209 +2,63 @@
   <div>
     <HeroCarousel :slides="heroSlides" />
     <BestGameCards :games="bestGames" />
-    <LatestNews />
+    <LatestNews :news="latestNews" />
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useLoginStore } from '../stores/useLoginStore.js'
-import { useRoute } from 'vue-router'
-
+import { computed, onMounted } from 'vue'
+import { useGamesStore } from '../stores/useGamesStore.js'
+import { useNoticiasStore } from '../stores/useNoticiasStore.js'
 
 import HeroCarousel from '../components/Home/HeroCarousel.vue'
 import BestGameCards from '../components/Home/BestGameCards.vue'
 import LatestNews from '../components/Home/LatestNews.vue'
 
+// Stores
+const gamesStore = useGamesStore()
+const noticiasStore = useNoticiasStore()
 
+// Cargar datos al montar
+onMounted(() => {
+  gamesStore.fetchGames({ pagina: 1, registrosPorPagina: 20 })
+  noticiasStore.fetchNoticias({ pagina: 1, registrosPorPagina: 10 })
+})
 
+// Computed para los componentes
+const heroSlides = computed(() =>
+  (gamesStore.games || []).slice(0, 4).map(j => ({
+    id: j.id_juego,
+    img: j.juego_imagens?.find(img => img.categoria === 'horizontal')
+      ? `data:image/jpeg;base64,${j.juego_imagens.find(img => img.categoria === 'horizontal').imagen}`
+      : '/images/default.png'
+  }))
+)
 
-const heroSlides = ref([
-  { id: 1, img: '/images/stardewValleyPortada.png' },
-  { id: 2, img: '/images/hadesPortada.jpg' },
-  { id: 3, img: '/images/HollowKnightPortada.png' },
-  { id: 4, img: '/images/balatroPortada.png' }
-])
+const bestGames = computed(() =>
+  (gamesStore.games || []).slice(0, 8).map(j => ({
+    id: j.id_juego,
+    img: j.juego_imagens?.find(img => img.categoria === 'vertical')
+      ? `data:image/jpeg;base64,${j.juego_imagens.find(img => img.categoria === 'vertical').imagen}`
+      : '/images/default.png',
+    title: j.nombre,
+    price: j.precio ? `${j.precio}€` : '',
+    // Puedes agregar más campos si tu card los necesita
+  }))
+)
 
-// Datos para “Mejores Juegos”
-const bestGames = ref([
-  {
-    id: 1,
-    img: '/images/Uncharted-portada.webp',
-    characterImg: '/images/nathan3.png',
-    title: 'Uncharted 4: A Thief’s End',
-    price: '39.99€',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 0
-  },
-  {
-    id: 2,
-    img: '/images/spiderman-portada.jpg',
-    characterImg: '/images/spiderman-character.png',
-    title: 'Spider-Man Remastered',
-    price: '39.99€',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 200
-  },
-  {
-    id: 3,
-    img: '/images/ratchet-portada.png',
-    characterImg: '/images/ratchet-character.png',
-    title: 'Ratchet & Clank: Rift Apart',
-    price: '39.99€',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 400
-  },
-  {
-    id: 4,
-    img: '/images/reddeadredemption2.png',
-    characterImg: '/images/reddead-character.png',
-    title: 'Red Dead Redemption 2',
-    price: '39.99€',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 600
-  },
-  {
-    id: 5,
-    img: '/images/clairobscur-portada.jpg',
-    characterImg: '/images/clair-character.avif',
-    title: 'Clair Obscur: Expedition 33',
-    price: '49.99€',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 800
-  },
-  {
-    id: 6,
-    img: '/images/juego2.png',
-    title: 'The Witcher 3: Wild Hunt',
-    price: '39.99€',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 1000
-  },
-  {
-    id: 7,
-    img: '/images/juego3.png',
-    title: 'The Witcher 3: Wild Hunt',
-    price: '39.99€',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 1200
-  },
-  {
-    id: 8,
-    img: '/images/juego3.png',
-    title: 'The Witcher 3: Wild Hunt',
-    price: '39.99€',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 1400
-  },
-  {
-    id: 9,
-    img: '/images/Uncharted-portada.webp',
-    characterImg: '/images/nathan3.png',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 1600
-  },
-  {
-    id: 10,
-    img: '/images/spiderman-portada.jpg',
-    characterImg: '/images/spiderman-character.png',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 1800
-  },
-  {
-    id: 11,
-    img: '/images/ratchet-portada.png',
-    characterImg: '/images/ratchet-character.png',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 2000
-  },
-  {
-    id: 12,
-    img: '/images/reddeadredemption2.png',
-    characterImg: '/images/reddead-character.png',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 2200
-  },
-  {
-    id: 13,
-    img: '/images/clairobscur-portada.jpg',
-    characterImg: '/images/clair-character.avif',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 2400
-  },
-  {
-    id: 14,
-    img: '/images/ratchet-portada.png',
-    characterImg: '/images/ratchet-character.png',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 2600
-  },
-  {
-    id: 15,
-    img: '/images/Uncharted-portada.webp',
-    characterImg: '/images/nathan3.png',
-    title: 'Uncharted 4: A Thief’s End',
-    price: '39.99€',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 2800
-  },
-  {
-    id: 16,
-    img: '/images/spiderman-portada.jpg',
-    characterImg: '/images/spiderman-character.png',
-    title: 'Spider-Man Remastered',
-    price: '39.99€',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 3000
-  },
-  {
-    id: 17,
-    img: '/images/ratchet-portada.png',
-    characterImg: '/images/ratchet-character.png',
-    title: 'Ratchet & Clank: Rift Apart',
-    price: '39.99€',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 3200
-  },
-  {
-    id: 18,
-    img: '/images/reddeadredemption2.png',
-    characterImg: '/images/reddead-character.png',
-    title: 'Red Dead Redemption 2',
-    price: '39.99€',
-    aos: 'fade-up',
-    duration: 1200,
-    delay: 3400
-  },
-])
-
-// 1) Obtén la instancia del store
-const loginStore = useLoginStore()
-
-// 2) Crea una “propiedad computada” para el rol
-//    Si user es null, rol será null, por lo que caerá en el v-else (invitado)
-const rol = computed(() => loginStore.rol)
-
-// datos de noticias para el lightbox…
-const newsData = { /* … */ }
-const lightbox = ref(null)
-function openLightbox(id) { lightbox.value.open(id) }
-function onClose() { /* … */ }
+const latestNews = computed(() =>
+  (noticiasStore.noticias || []).slice(0, 2).map(n => ({
+    id: n.id,
+    title: n.titulo,
+    description: n.descripcion,
+    image: n.portada
+      ? `data:${n.mime_type_portada || "image/jpeg"};base64,${n.portada}`
+      : "",
+    body: n.cuerpo,
+    lightbox: n.lightbox
+      ? `data:${n.mime_type_lightbox || "image/jpeg"};base64,${n.lightbox}`
+      : "",
+  }))
+)
 </script>
