@@ -77,7 +77,7 @@
 import { ref } from "vue";
 import Lightbox from "./Lightbox.vue";
 
-const props = defineProps({
+const { featuredNews, smallNews } = defineProps({
     featuredNews: { type: Array, required: true },
     smallNews: { type: Array, required: true },
 });
@@ -90,6 +90,9 @@ const lightboxBody = ref("");
 // Función para abrir el lightbox con la noticia seleccionada
 function openLightbox(item) {
     console.log(item);
+    console.log(featuredNews);
+
+    console.log(smallNews);
 
     lightboxImage.value = item.lightbox || item.image; // Usa lightbox si existe, si no la portada
     lightboxBody.value = item.body || item.description; // Usa body si existe, si no la descripción
