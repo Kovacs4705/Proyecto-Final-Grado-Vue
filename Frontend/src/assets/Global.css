@@ -56,3 +56,95 @@ html, body, #app {
   --card-width: calc(var(--card-height) / 1.5);
 }
 
+/* --------------------------------------------------
+   Tipografía accesible (sólo a texto, excluye iconos)
+   -------------------------------------------------- */
+
+/* 1) Primero: aplicamos Arial a todos los elementos textuales comunes */
+.font-accessible,
+.font-accessible p,
+.font-accessible h1,
+.font-accessible h2,
+.font-accessible h3,
+.font-accessible h4,
+.font-accessible h5,
+.font-accessible h6,
+.font-accessible ul,
+.font-accessible ol,
+.font-accessible li,
+.font-accessible a,
+.font-accessible span,
+.font-accessible strong,
+.font-accessible em,
+.font-accessible small,
+.font-accessible label,
+.font-accessible button,
+.font-accessible input,
+.font-accessible textarea {
+  font-family: 'Arial', sans-serif !important;
+}
+
+/* 2) Ahora, “rescatamos” los iconos que usan FontAwesome o Material Icons
+   para que sigan usando su propio font */
+.font-accessible i[class^="fa-"],
+.font-accessible i[class*=" fa-"],
+.font-accessible .fa,
+.font-accessible .fas,
+.font-accessible .fab,
+.font-accessible .far,
+.font-accessible .fal {
+  /* Ajusta el font-family según la versión de FontAwesome que uses */
+  font-family: "Font Awesome 5 Free" !important;
+  font-weight: 900; /* o el que corresponda a tu kit de iconos */
+}
+
+/* Si usas Material Icons (o similar), añade su regla específica */
+.font-accessible .material-icons {
+  font-family: 'Material Icons' !important;
+}
+
+/* Si tienes otros icon-fonts (p.ej. Ionicons, Bootstrap Icons…), haz lo mismo:
+   .font-accessible .ionicons { font-family: "Ionicons" !important; } 
+   .font-accessible .bi { font-family: "Bootstrap Icons"; } */
+
+
+/* --------------------------------------------------
+   2) Colores accesibles (amarillo sobre negro)
+   -------------------------------------------------- */
+.color-accessible {
+  background-color: #000 !important;
+  color: #ff0 !important;
+}
+.color-accessible * {
+  color: #ff0 !important;
+  /* No forzamos background-color transparente aquí para no romper semitransparencias puntuales */
+  background-color: transparent !important;
+}
+
+/* Si tienes enlaces y botones, refuérzalos también */
+.color-accessible a {
+  color: #ff0 !important;
+  text-decoration: underline !important;
+}
+.color-accessible button {
+  background-color: #000 !important;
+  color: #ff0 !important;
+  border-color: #ff0 !important;
+}
+
+/* --------------------------------------------------
+   3) Restaurar fondo semitransparente en navbar y lightbox
+      — sólo cuando color-accessible esté activo
+   -------------------------------------------------- */
+/* A) Navbar: clase .navbar-custom mantiene su rgba(0,0,0,0.8) */
+.color-accessible .navbar-custom {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+.color-accessible .navbar-custom.scrolled {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* B) Lightbox (si tu lightbox usa clase .lightbox) */
+.color-accessible .lightbox {
+  background: rgba(0, 0, 0, 0.9) !important;
+}
