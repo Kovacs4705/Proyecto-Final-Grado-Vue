@@ -70,11 +70,10 @@ export const useJuegoImagenesStore = defineStore('juegoImagenes', {
     // 3) POST /api/juego-imagenes
     // ------------------------------------
     // formData debe contener: id_juego, url, descripcion (o si envías multipart/form-data, ajusta en backend)
-    async subirImagen(payload) {
+     async subirImagen(payload) {
       this.error = null
       this.isSubmitting = true
       try {
-        // Si tu API acepta JSON:
         const res = await fetch('http://localhost:8000/api/juego-imagenes', {
           method: 'POST',
           headers: {
@@ -82,6 +81,7 @@ export const useJuegoImagenesStore = defineStore('juegoImagenes', {
           },
           body: JSON.stringify(payload)
         })
+
         if (res.status === 422) {
           // Validación Laravel
           const errJson = await res.json().catch(() => ({}))
@@ -90,18 +90,31 @@ export const useJuegoImagenesStore = defineStore('juegoImagenes', {
             : errJson.message || 'Error de validación'
           throw new Error(msg)
         }
+
         if (!res.ok) {
-          throw new Error(`Error ${res.status} al subir la imagen`)
+          // Para ver el body de error del servidor
+          let textoError = ''
+          try {
+            const data = await res.json()
+            textoError = JSON.stringify(data, null, 2)
+          } catch {
+            textoError = await res.text().catch(() => '')
+          }
+          console.error('subirImagen Falló:', res.status, textoError)
+          throw new Error(`Error ${res.status} al subir imagen: ${textoError}`)
         }
+
         const nuevaImagen = await res.json()
-        // Añadimos la nueva al array
         this.imagenes.push(nuevaImagen)
+        return nuevaImagen
       } catch (err) {
         this.error = err.message || 'Error desconocido al subir imagen'
+        return null
       } finally {
         this.isSubmitting = false
       }
     },
+
 
     // ------------------------------------
     // 4) PUT /api/juego-imagenes/{id}
