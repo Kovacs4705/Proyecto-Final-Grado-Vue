@@ -174,7 +174,10 @@ class JuegoController extends Controller
     public function update(Request $request, Juego $juego)
     {
         $juego->update($request->all());
-        return response()->json($juego);
+        if ($request->has('generos')) {
+            $juego->generos()->sync($request->input('generos')); // <-- sincroniza la relación
+        }
+        return response()->json($juego->load(['juego_imagens', 'generos']));
     }
 
     #[OA\Delete(

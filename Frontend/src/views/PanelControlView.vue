@@ -1,4 +1,3 @@
-<!-- src/views/PanelControlView.vue -->
 <template>
   <div class="container mt-4">
     <!-- 1) Título -->
@@ -66,7 +65,12 @@
               <td>{{ formatoFecha(juego.fecha_lanzamiento) }}</td>
               <td>{{ juego.precio }}</td>
               <td>{{ juego.descuento }}</td>
-              <td>{{ juego.genero }}</td>
+              <td>
+                <span v-if="juego.generos && juego.generos.length">
+                  {{juego.generos.map(g => g.nombre).join(', ')}}
+                </span>
+                <span v-else class="text-muted">Sin género</span>
+              </td>
               <td>{{ juego.plataforma }}</td>
               <td class="text-center">
                 <button class="btn btn-sm btn-outline-warning me-2" @click="onEditClick(juego)">
@@ -325,8 +329,23 @@ async function onCreated() {
   }
 }
 
-function onEditClick(item) {
-  itemToEdit.value = item
+async function onEditClick(item) {
+  if (selectedEntity.value === 'juegos') {
+    // Asegúrate de que los géneros estén cargados
+    if (!genresStore.genres.length) {
+      await genresStore.fetchGenres({ pagina: 1, registrosPorPagina: 1000 });
+    }
+    const juegoActualizado = await gamesStore.fetchGamePorId(item.id_juego)
+    itemToEdit.value = juegoActualizado
+  } else if (selectedEntity.value === 'noticias') {
+    const noticiaActualizada = await noticiasStore.fetchNoticiaPorId(item.id_noticia)
+    itemToEdit.value = noticiaActualizada
+  } else if (selectedEntity.value === 'generos') {
+    const generoActualizado = await genresStore.fetchGenreById(item.id_genero)
+    itemToEdit.value = generoActualizado
+  } else {
+    itemToEdit.value = item
+  }
   showEditModal.value = true
 }
 

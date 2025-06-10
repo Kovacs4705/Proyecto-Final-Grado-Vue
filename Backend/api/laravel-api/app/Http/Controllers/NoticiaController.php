@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 use App\Models\Noticia;
-
+use Intervention\Image\ImageManager;
 
 #[OA\Tag(
     name: "Noticia",
@@ -73,7 +73,49 @@ class NoticiaController extends Controller
     )]
     public function store(Request $request)
     {
-        $noticia = Noticia::create($request->all());
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'cuerpo' => 'required|string',
+            // portada y lightbox pueden ser archivos o base64
+        ]);
+
+        $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+
+        // Procesar portada
+        $binarioPortada = null;
+        if ($request->hasFile('portada')) {
+            $img = $manager->read($request->file('portada')->getRealPath())->cover(295, 139);
+            $binarioPortada = (string) $img->toJpeg();
+        } elseif ($request->filled('portada')) {
+            $base64 = $request->input('portada');
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
+                $base64 = substr($base64, strpos($base64, ',') + 1);
+            }
+            $binarioPortada = base64_decode($base64);
+        }
+
+        // Procesar lightbox
+        $binarioLightbox = null;
+        if ($request->hasFile('lightbox')) {
+            $img = $manager->read($request->file('lightbox')->getRealPath())->cover(800, 400);
+            $binarioLightbox = (string) $img->toJpeg();
+        } elseif ($request->filled('lightbox')) {
+            $base64 = $request->input('lightbox');
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
+                $base64 = substr($base64, strpos($base64, ',') + 1);
+            }
+            $binarioLightbox = base64_decode($base64);
+        }
+
+        $noticia = Noticia::create([
+            'titulo' => $request->titulo,
+            'descripcion' => $request->descripcion,
+            'cuerpo' => $request->cuerpo,
+            'portada' => $binarioPortada,
+            'lightbox' => $binarioLightbox,
+        ]);
+
         return response()->json($noticia, 201);
     }
 
@@ -140,13 +182,40 @@ class NoticiaController extends Controller
             )
         ]
     )]
-    public function update(Request $request, $id)
+    public function update(Request $request, Noticia $noticia)
     {
-        $noticia = Noticia::find($id);
-        if (!$noticia) {
-            return response()->json(['message' => 'Noticia no encontrada'], 404);
+        if ($request->has('titulo')) $noticia->titulo = $request->titulo;
+        if ($request->has('descripcion')) $noticia->descripcion = $request->descripcion;
+        if ($request->has('cuerpo')) $noticia->cuerpo = $request->cuerpo;
+
+        $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+
+        // Procesar portada
+        if ($request->hasFile('portada')) {
+            $img = $manager->read($request->file('portada')->getRealPath())->cover(295, 139);
+            $noticia->portada = (string) $img->toJpeg();
+        } elseif ($request->filled('portada')) {
+            $base64 = $request->input('portada');
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
+                $base64 = substr($base64, strpos($base64, ',') + 1);
+            }
+            $noticia->portada = base64_decode($base64);
         }
-        $noticia->update($request->all());
+
+        // Procesar lightbox
+        if ($request->hasFile('lightbox')) {
+            $img = $manager->read($request->file('lightbox')->getRealPath())->cover(800, 400);
+            $noticia->lightbox = (string) $img->toJpeg();
+        } elseif ($request->filled('lightbox')) {
+            $base64 = $request->input('lightbox');
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
+                $base64 = substr($base64, strpos($base64, ',') + 1);
+            }
+            $noticia->lightbox = base64_decode($base64);
+        }
+
+        $noticia->save();
+
         return response()->json($noticia);
     }
 

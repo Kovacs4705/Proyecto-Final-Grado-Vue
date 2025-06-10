@@ -17,6 +17,33 @@ class Noticia extends Model
         'lightbox'
     ];
 
+    public function setPortadaAttribute($value)
+    {
+        if (empty($value) || is_null($value)) {
+            $this->attributes['portada'] = null;
+            return;
+        }
+        // Si es base64, decodifica antes de guardar
+        if (base64_encode(base64_decode($value, true)) === $value) {
+            $this->attributes['portada'] = base64_decode($value);
+        } else {
+            $this->attributes['portada'] = $value;
+        }
+    }
+
+    public function setLightboxAttribute($value)
+    {
+        if (empty($value) || is_null($value)) {
+            $this->attributes['lightbox'] = null;
+            return;
+        }
+        if (base64_encode(base64_decode($value, true)) === $value) {
+            $this->attributes['lightbox'] = base64_decode($value);
+        } else {
+            $this->attributes['lightbox'] = $value;
+        }
+    }
+
     public function getPortadaAttribute($value)
     {
         return $value ? base64_encode($value) : null;

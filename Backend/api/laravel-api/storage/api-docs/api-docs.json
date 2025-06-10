@@ -454,6 +454,23 @@
                                 },
                                 "type": "object"
                             }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string"
+                                    },
+                                    "imagen": {
+                                        "description": "Imagen en base64 (opcional)",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
                 },
@@ -534,6 +551,20 @@
                                     "imagen": {
                                         "type": "string",
                                         "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string"
+                                    },
+                                    "imagen": {
+                                        "description": "Imagen en base64 (opcional)",
+                                        "type": "string"
                                     }
                                 },
                                 "type": "object"

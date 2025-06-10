@@ -38,9 +38,8 @@ class GeneroController extends Controller
                 response: 200,
                 description: "Lista de géneros paginada",
                 content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: "data", type: "array", items: new OA\Items(ref: "#/components/schemas/Genero")),
-                    ]
+                    type: "array",
+                    items: new OA\Items(ref: "#/components/schemas/Genero")
                 )
             )
         ]
@@ -52,8 +51,7 @@ class GeneroController extends Controller
 
         $generos = Genero::paginate($registrosPorPagina, ['*'], 'page', $pagina);
 
-        // Devuelve la imagen como base64
-
+        // El modelo ya devuelve la imagen en base64
         return response()->json($generos->items());
     }
 
@@ -63,16 +61,28 @@ class GeneroController extends Controller
         tags: ["Genero"],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\MediaType(
-                mediaType: "multipart/form-data",
-                schema: new OA\Schema(
-                    required: ["nombre"],
-                    properties: [
-                        new OA\Property(property: "nombre", type: "string"),
-                        new OA\Property(property: "imagen", type: "string", format: "binary")
-                    ]
+            content: [
+                new OA\MediaType(
+                    mediaType: "multipart/form-data",
+                    schema: new OA\Schema(
+                        required: ["nombre"],
+                        properties: [
+                            new OA\Property(property: "nombre", type: "string"),
+                            new OA\Property(property: "imagen", type: "string", format: "binary")
+                        ]
+                    )
+                ),
+                new OA\MediaType(
+                    mediaType: "application/json",
+                    schema: new OA\Schema(
+                        required: ["nombre"],
+                        properties: [
+                            new OA\Property(property: "nombre", type: "string"),
+                            new OA\Property(property: "imagen", type: "string", description: "Imagen en base64 (opcional)")
+                        ]
+                    )
                 )
-            )
+            ]
         ),
         responses: [
             new OA\Response(
@@ -86,14 +96,23 @@ class GeneroController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'imagen' => 'nullable|image|max:2048',
+            // 'imagen' puede ser archivo o base64, validación manual abajo
         ]);
 
         $binario = null;
+
         if ($request->hasFile('imagen')) {
+            // Imagen como archivo
             $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
             $img = $manager->read($request->file('imagen')->getRealPath())->cover(295, 139);
             $binario = (string) $img->toJpeg();
+        } elseif ($request->filled('imagen')) {
+            // Imagen como base64
+            $base64 = $request->input('imagen');
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
+                $base64 = substr($base64, strpos($base64, ',') + 1);
+            }
+            $binario = base64_decode($base64);
         }
 
         $genero = Genero::create([
@@ -101,9 +120,7 @@ class GeneroController extends Controller
             'imagen' => $binario,
         ]);
 
-        // Devuelve la imagen como base64
-        $genero->imagen = $genero->imagen ? base64_encode($genero->imagen) : null;
-
+        // No volver a codificar aquí, el modelo lo hace
         return response()->json($genero, 201);
     }
 
@@ -138,7 +155,8 @@ class GeneroController extends Controller
         if (!$genero) {
             return response()->json(['message' => 'Género no encontrado'], 404);
         }
-        $genero->imagen = $genero->imagen ? base64_encode($genero->imagen) : null;
+
+        // No volver a codificar aquí, el modelo lo hace
         return response()->json($genero);
     }
 
@@ -157,15 +175,26 @@ class GeneroController extends Controller
         ],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\MediaType(
-                mediaType: "multipart/form-data",
-                schema: new OA\Schema(
-                    properties: [
-                        new OA\Property(property: "nombre", type: "string"),
-                        new OA\Property(property: "imagen", type: "string", format: "binary")
-                    ]
+            content: [
+                new OA\MediaType(
+                    mediaType: "multipart/form-data",
+                    schema: new OA\Schema(
+                        properties: [
+                            new OA\Property(property: "nombre", type: "string"),
+                            new OA\Property(property: "imagen", type: "string", format: "binary")
+                        ]
+                    )
+                ),
+                new OA\MediaType(
+                    mediaType: "application/json",
+                    schema: new OA\Schema(
+                        properties: [
+                            new OA\Property(property: "nombre", type: "string"),
+                            new OA\Property(property: "imagen", type: "string", description: "Imagen en base64 (opcional)")
+                        ]
+                    )
                 )
-            )
+            ]
         ),
         responses: [
             new OA\Response(
@@ -194,11 +223,17 @@ class GeneroController extends Controller
             $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
             $img = $manager->read($request->file('imagen')->getRealPath())->cover(295, 139);
             $genero->imagen = (string) $img->toJpeg();
+        } elseif ($request->filled('imagen')) {
+            $base64 = $request->input('imagen');
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
+                $base64 = substr($base64, strpos($base64, ',') + 1);
+            }
+            $genero->imagen = base64_decode($base64);
         }
 
         $genero->save();
 
-        $genero->imagen = $genero->imagen ? base64_encode($genero->imagen) : null;
+        // No volver a codificar aquí, el modelo lo hace
         return response()->json($genero);
     }
 

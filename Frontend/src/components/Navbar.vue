@@ -10,7 +10,7 @@
             <div class="wrapper" :class="{ open: menuOpen }">
                 <ul>
                     <li v-if="rol === 'administrador'">
-                        <router-link to="/panel" @click="menuOpen = false">Panel</router-link>
+                        <router-link to="/panel" @click="menuOpen = false">Panel de Control</router-link>
                     </li>
                     <li><router-link to="/home" @click="menuOpen = false">Inicio</router-link></li>
                     <li v-if="rol === 'administrador' || rol === 'usuario'">

@@ -36,6 +36,21 @@ class JuegoImagen extends Model
         return $this->belongsTo(Juego::class, 'id_juego');
     }
 
+
+    public function setImagenAttribute($value)
+    {
+        if (empty($value) || is_null($value)) {
+            $this->attributes['imagen'] = null;
+            return;
+        }
+        // Si es base64, decodifica antes de guardar
+        if (base64_encode(base64_decode($value, true)) === $value) {
+            $this->attributes['imagen'] = base64_decode($value);
+        } else {
+            $this->attributes['imagen'] = $value;
+        }
+    }
+
     // Mutator para devolver la imagen como base64 en JSON
     public function getImagenAttribute($value)
     {

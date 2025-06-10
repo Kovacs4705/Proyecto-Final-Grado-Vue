@@ -16,17 +16,20 @@
               <div v-if="entidad === 'juegos'">
                 <div class="mb-3">
                   <label class="form-label">Nombre del juego</label>
-                  <input v-model="formJuego.nombre" type="text" class="form-control" placeholder="Ej: Super Juego" required />
+                  <input v-model="formJuego.nombre" type="text" class="form-control" placeholder="Ej: Super Juego"
+                    required />
                 </div>
 
                 <div class="mb-3">
                   <label class="form-label">Desarrollador</label>
-                  <input v-model="formJuego.desarrollador" type="text" class="form-control" placeholder="Ej: MiStudio" required />
+                  <input v-model="formJuego.desarrollador" type="text" class="form-control" placeholder="Ej: MiStudio"
+                    required />
                 </div>
 
                 <div class="mb-3">
                   <label class="form-label">Editor</label>
-                  <input v-model="formJuego.editor" type="text" class="form-control" placeholder="Ej: Grandes Juegos SA" required />
+                  <input v-model="formJuego.editor" type="text" class="form-control" placeholder="Ej: Grandes Juegos SA"
+                    required />
                 </div>
 
                 <div class="mb-3">
@@ -36,68 +39,70 @@
 
                 <div class="mb-3">
                   <label class="form-label">Precio</label>
-                  <input v-model.number="formJuego.precio" type="number" min="0" class="form-control" placeholder="Ej: 59.99" required />
+                  <input v-model.number="formJuego.precio" type="number" min="0" class="form-control"
+                    placeholder="Ej: 59.99" required />
                 </div>
 
                 <div class="mb-3">
                   <label class="form-label">Descuento (%)</label>
-                  <input v-model.number="formJuego.descuento" type="number" min="0" max="100" class="form-control" placeholder="Ej: 20" />
+                  <input v-model.number="formJuego.descuento" type="number" min="0" max="100" class="form-control"
+                    placeholder="Ej: 20" />
                 </div>
 
                 <div class="mb-3">
-                  <label class="form-label">Género</label>
-                  <input v-model="formJuego.genero" type="text" class="form-control" placeholder="Ej: Acción, Aventura..." required />
+                  <label class="form-label">Géneros</label>
+                  <select v-model="selectedGenero" class="form-select" @change="onGeneroChange">
+                    <option disabled value="">Selecciona un género...</option>
+                    <option v-for="g in generosStore.genres" :key="g.id_genero" :value="g.id_genero"
+                      :disabled="formJuego.generos.includes(g.id_genero)">
+                      {{ g.nombre }}
+                    </option>
+                  </select>
+                  <div class="form-text">Selecciona un género para añadirlo. Haz clic en un badge para quitarlo.</div>
+                  <div v-if="formJuego.generos.length" class="mt-2">
+                    <span class="badge bg-success me-1" v-for="id in formJuego.generos" :key="id" style="cursor:pointer"
+                      @click="removeGenero(id)" title="Quitar">
+                      {{generosStore.genres.find(g => g.id_genero === id)?.nombre || id}} &times;
+                    </span>
+                  </div>
                 </div>
 
                 <div class="mb-3">
                   <label class="form-label">Plataforma</label>
-                  <input v-model="formJuego.plataforma" type="text" class="form-control" placeholder="Ej: PC / PS5 / Xbox" required />
+                  <input v-model="formJuego.plataforma" type="text" class="form-control"
+                    placeholder="Ej: PC / PS5 / Xbox" required />
                 </div>
 
-                <!-- ————————— IMAGEN HORIZONTAL ————————— -->
+                <!-- IMAGEN HORIZONTAL -->
                 <div class="mb-4">
                   <label class="form-label fw-bold">Imagen Horizontal</label>
                   <div v-if="formImagenH.previewUrl" class="mb-2">
-                    <img
-                      :src="formImagenH.previewUrl"
-                      alt="Horizontal actual"
-                      class="img-fluid rounded"
-                      style="max-height: 150px; object-fit: cover;"
-                    />
+                    <img :src="formImagenH.previewUrl" alt="Horizontal actual" class="img-fluid rounded"
+                      style="max-height: 150px; object-fit: cover;" />
                   </div>
                   <input type="file" accept="image/*" class="form-control" @change="onFileHChange" />
                   <div v-if="formImagenH.newFile" class="mt-1 text-white small">
                     ★ Nuevo archivo: {{ formImagenH.newFile.name }}
                   </div>
                 </div>
-
-                <!-- ————————— IMAGEN VERTICAL ————————— -->
+                <!-- IMAGEN VERTICAL -->
                 <div class="mb-4">
                   <label class="form-label fw-bold">Imagen Vertical</label>
                   <div v-if="formImagenV.previewUrl" class="mb-2">
-                    <img
-                      :src="formImagenV.previewUrl"
-                      alt="Vertical actual"
-                      class="img-fluid rounded"
-                      style="max-height: 150px; object-fit: cover;"
-                    />
+                    <img :src="formImagenV.previewUrl" alt="Vertical actual" class="img-fluid rounded"
+                      style="max-height: 150px; object-fit: cover;" />
                   </div>
                   <input type="file" accept="image/*" class="form-control" @change="onFileVChange" />
                   <div v-if="formImagenV.newFile" class="mt-1 text-white small">
                     ★ Nuevo archivo: {{ formImagenV.newFile.name }}
                   </div>
                 </div>
-
-                <!-- ————————— IMAGEN PERSONAJE ————————— -->
+                <!-- IMAGEN PERSONAJE -->
                 <div class="mb-4">
                   <label class="form-label fw-bold">Imagen Personaje</label>
                   <div v-if="formImagenP.previewUrl" class="mb-2">
-                    <img
-                      :src="formImagenP.previewUrl"
-                      alt="Personaje actual"
-                      class="img-fluid rounded"
-                      style="max-height: 150px; object-fit: cover;"
-                    />
+                    <img :src="formImagenP.previewUrl" alt="Personaje actual" class="img-fluid rounded"
+                      style="max-height: 150px; object-fit: cover;" />
                   </div>
                   <input type="file" accept="image/*" class="form-control" @change="onFilePChange" />
                   <div v-if="formImagenP.newFile" class="mt-1 text-white small">
@@ -140,16 +145,10 @@
                   <label class="form-label">Nombre Género</label>
                   <input v-model="formGenero.nombre" type="text" class="form-control" required />
                 </div>
-                <!-- Mostrar preview de la imagen actual (longblob convertido) -->
                 <div v-if="urlImagenActual" class="mb-2">
-                  <img
-                    :src="urlImagenActual"
-                    alt="Imagen actual de género"
-                    class="img-fluid rounded"
-                    style="max-height: 200px; object-fit: cover;"
-                  />
+                  <img :src="urlImagenActual" alt="Imagen actual de género" class="img-fluid rounded"
+                    style="max-height: 200px; object-fit: cover;" />
                 </div>
-                <!-- Input para elegir un archivo nuevo -->
                 <div class="mb-3">
                   <label class="form-label">Cambiar Imagen de Género</label>
                   <input type="file" accept="image/*" class="form-control" @change="onFileGeneroChange" />
@@ -158,22 +157,28 @@
                   </div>
                 </div>
               </div>
-
               <!-- ⇨ NOTICIAS ⇨ -->
               <div v-else-if="entidad === 'noticias'">
                 <div class="mb-3">
                   <label class="form-label">Título</label>
                   <input v-model="formNoticia.titulo" type="text" class="form-control" required />
                 </div>
-                <!-- ► PORTADA ACTUAL ► -->
+                <!-- PORTADA -->
                 <div class="mb-3">
                   <label class="form-label">Cambiar Portada</label>
+                  <div v-if="formNoticia.portada" class="mb-2">
+                    <img :src="formNoticia.portada" alt="Portada actual" class="img-fluid rounded"
+                      style="max-height: 150px; object-fit: cover;" />
+                  </div>
                   <input type="file" accept="image/*" class="form-control" @change="onFilePortadaChange" />
                 </div>
-
-                <!-- ► LIGHTBOX ACTUAL ► -->
+                <!-- LIGHTBOX -->
                 <div class="mb-3">
                   <label class="form-label">Cambiar Lightbox</label>
+                  <div v-if="formNoticia.lightbox" class="mb-2">
+                    <img :src="formNoticia.lightbox" alt="Lightbox actual" class="img-fluid rounded"
+                      style="max-height: 150px; object-fit: cover;" />
+                  </div>
                   <input type="file" accept="image/*" class="form-control" @change="onFileLightboxChange" />
                 </div>
                 <div class="mb-3">
@@ -190,12 +195,9 @@
               <div v-else>
                 <div v-for="(valor, clave) in props.itemActual" :key="clave" class="mb-3">
                   <label class="form-label">{{ clave }}</label>
-                  <input
-                    v-model="props.itemActual[clave]"
-                    :type="typeof valor === 'number' ? 'number' : 'text'"
+                  <input v-model="props.itemActual[clave]" :type="typeof valor === 'number' ? 'number' : 'text'"
                     class="form-control"
-                    :readonly="clave === 'id' || clave === 'id_juego' || clave === 'dni_usuario'"
-                  />
+                    :readonly="clave === 'id' || clave === 'id_juego' || clave === 'dni_usuario'" />
                 </div>
               </div>
 
@@ -215,6 +217,7 @@
   </div>
 </template>
 
+
 <script setup>
 import { ref, reactive, computed, watch } from 'vue'
 import { useGamesStore } from '../../stores/useGamesStore.js'
@@ -233,53 +236,73 @@ const emit = defineEmits(['saved', 'cancel'])
 // ────────────────────────────────────────────────────────────
 // 1) Instanciar cada store
 // ────────────────────────────────────────────────────────────
-const gamesStore         = useGamesStore()
-const usersStore         = useUsersStore()
-const generosStore       = useGenerosStore()
-const noticiasStore      = useNoticiasStore()
+const gamesStore = useGamesStore()
+const usersStore = useUsersStore()
+const generosStore = useGenerosStore()
+const noticiasStore = useNoticiasStore()
 const juegoImagenesStore = useJuegoImagenesStore()
 
 // ────────────────────────────────────────────────────────────
 // 2) Formularios iniciales (reactive) para cada entidad
 // ────────────────────────────────────────────────────────────
 const formJuego = reactive({
-  nombre:            '',
-  desarrollador:     '',
-  editor:            '',
+  nombre: '',
+  desarrollador: '',
+  editor: '',
   fecha_lanzamiento: '',
-  precio:            null,
-  descuento:         0,
-  genero:            '',
-  plataforma:        ''
+  precio: null,
+  descuento: 0,
+  generos: [],
+  plataforma: ''
 })
+
+const selectedGenero = ref('')
+
+function removeGenero(id) {
+  formJuego.generos = formJuego.generos.filter(gid => gid !== id)
+}
+
+function onGeneroChange() {
+  if (
+    selectedGenero.value &&
+    !formJuego.generos.includes(selectedGenero.value)
+  ) {
+    formJuego.generos.push(selectedGenero.value)
+  }
+  selectedGenero.value = ''
+}
 
 // Tres objetos reactivos para las 3 categorías de imagen de juego:
 const formImagenH = reactive({
-  id_imagen:  null,
+  id_imagen: null,
   previewUrl: '',
-  newFile:    null
+  newFile: null,
+  base64: ''
 })
 const formImagenV = reactive({
-  id_imagen:  null,
+  id_imagen: null,
   previewUrl: '',
-  newFile:    null
+  newFile: null,
+  base64: ''
 })
 const formImagenP = reactive({
-  id_imagen:  null,
+  id_imagen: null,
   previewUrl: '',
-  newFile:    null
+  newFile: null,
+  base64: ''
 })
 
 const formUsuario = reactive({
-  nombre:      '',
-  email:       '',
+  nombre: '',
+  email: '',
   dni_usuario: '',
-  rol:         '',
-  saldo:       null
+  rol: '',
+  saldo: null
 })
 
 const formGenero = reactive({
-  nombre: ''
+  nombre: '',
+  imagen: '' // base64
 })
 
 // Para mostrar la imagen actual del género (longblob → URL.createObjectURL):
@@ -289,21 +312,21 @@ const urlImagenActual = ref('')
 const fileGenero = ref(null)
 
 const formNoticia = reactive({
-  titulo:      '',
-  portada:     '',    // Base64 data URL (o cadena vacía)
-  lightbox:    '',
+  titulo: '',
+  portada: '',    // Base64 data URL (o cadena vacía)
+  lightbox: '',
   descripcion: '',
-  cuerpo:      ''
+  cuerpo: ''
 })
 // Para detectar si el usuario escogió un archivo nuevo en noticias:
-const filePortada  = ref(null)
+const filePortada = ref(null)
 const fileLightbox = ref(null)
 
 const formImagen = reactive({
   id_imagen: null,
-  id_juego:  null,
+  id_juego: null,
   categoria: '',
-  imagen:    ''  // aquí va la cadena Base64
+  imagen: ''  // aquí va la cadena Base64
 })
 
 // ────────────────────────────────────────────────────────────
@@ -313,12 +336,12 @@ const isSubmitting = ref(false)
 
 const entidadLabel = computed(() => {
   switch (props.entidad) {
-    case 'juegos':        return 'Juego'
-    case 'usuarios':      return 'Usuario'
-    case 'generos':       return 'Género'
-    case 'noticias':      return 'Noticia'
+    case 'juegos': return 'Juego'
+    case 'usuarios': return 'Usuario'
+    case 'generos': return 'Género'
+    case 'noticias': return 'Noticia'
     case 'juegoImagenes': return 'Imagen de Juego'
-    default:              return ''
+    default: return ''
   }
 })
 
@@ -331,85 +354,87 @@ watch(
     if (!estaVisible || !nuevoItem) return
 
     if (props.entidad === 'juegos') {
-      // 4.1) Copiar valores de texto del juego
       Object.assign(formJuego, {
-        nombre:            nuevoItem.nombre || '',
-        desarrollador:     nuevoItem.desarrollador || '',
-        editor:            nuevoItem.editor || '',
+        nombre: nuevoItem.nombre || '',
+        desarrollador: nuevoItem.desarrollador || '',
+        editor: nuevoItem.editor || '',
         fecha_lanzamiento: nuevoItem.fecha_lanzamiento?.split('T')[0] || '',
-        precio:            nuevoItem.precio ?? null,
-        descuento:         nuevoItem.descuento ?? 0,
-        genero:            nuevoItem.genero || '',
-        plataforma:        nuevoItem.plataforma || ''
+        precio: nuevoItem.precio ?? null,
+        descuento: nuevoItem.descuento ?? 0,
+        generos: (nuevoItem.generos || []).map(g => g.id_genero), // <-- array de IDs
+        plataforma: nuevoItem.plataforma || ''
       })
 
-      // 4.2) Reiniciar cada objeto de imagen
-      formImagenH.id_imagen  = null
+      // Reiniciar cada objeto de imagen
+      formImagenH.id_imagen = null
       formImagenH.previewUrl = ''
-      formImagenH.newFile    = null
-
-      formImagenV.id_imagen  = null
+      formImagenH.newFile = null
+      formImagenH.base64 = ''
+      formImagenV.id_imagen = null
       formImagenV.previewUrl = ''
-      formImagenV.newFile    = null
-
-      formImagenP.id_imagen  = null
+      formImagenV.newFile = null
+      formImagenV.base64 = ''
+      formImagenP.id_imagen = null
       formImagenP.previewUrl = ''
-      formImagenP.newFile    = null
+      formImagenP.newFile = null
+      formImagenP.base64 = ''
 
-      // 4.3) Llenar formImagenH/V/P buscando en nuevoItem.imagenes
+      // Llenar formImagenH/V/P buscando en nuevoItem.imagenes
       for (const img of (nuevoItem.imagenes || [])) {
         const dataUrl = img.imagen
           ? `data:${img.mime_type || 'image/jpeg'};base64,${img.imagen}`
           : ''
         if (img.categoria === 'horizontal') {
-          formImagenH.id_imagen  = img.id_imagen
+          formImagenH.id_imagen = img.id_imagen
           formImagenH.previewUrl = dataUrl
+          formImagenH.base64 = img.imagen || ''
         }
         else if (img.categoria === 'vertical') {
-          formImagenV.id_imagen  = img.id_imagen
+          formImagenV.id_imagen = img.id_imagen
           formImagenV.previewUrl = dataUrl
+          formImagenV.base64 = img.imagen || ''
         }
         else if (img.categoria === 'personaje') {
-          formImagenP.id_imagen  = img.id_imagen
+          formImagenP.id_imagen = img.id_imagen
           formImagenP.previewUrl = dataUrl
+          formImagenP.base64 = img.imagen || ''
         }
       }
     }
     else if (props.entidad === 'usuarios') {
       Object.assign(formUsuario, {
-        nombre:      nuevoItem.nombre || '',
-        email:       nuevoItem.email || '',
+        nombre: nuevoItem.nombre || '',
+        email: nuevoItem.email || '',
         dni_usuario: nuevoItem.dni_usuario || '',
-        rol:         nuevoItem.rol || '',
-        saldo:       nuevoItem.saldo ?? 0
+        rol: nuevoItem.rol || '',
+        saldo: nuevoItem.saldo ?? 0
       })
     }
     else if (props.entidad === 'generos') {
       formGenero.nombre = nuevoItem.nombre || ''
-      // Convertir array de bytes (longblob) a Blob → createObjectURL:
-      if (nuevoItem.imagen && Array.isArray(nuevoItem.imagen)) {
-        const byteArray = Uint8Array.from(nuevoItem.imagen)
-        const blob = new Blob([byteArray], { type: nuevoItem.mime_type || 'image/jpeg' })
-        urlImagenActual.value = URL.createObjectURL(blob)
+      if (typeof nuevoItem.imagen === 'string' && nuevoItem.imagen.length > 0) {
+        formGenero.imagen = nuevoItem.imagen
+        // Usa image/jpeg por defecto si no hay mime_type
+        urlImagenActual.value = `data:${nuevoItem.mime_type || 'image/jpeg'};base64,${nuevoItem.imagen}`
+        console.log('Imagen de género cargada:', urlImagenActual.value);
+
       } else {
         urlImagenActual.value = ''
+        formGenero.imagen = ''
       }
       fileGenero.value = null
     }
     else if (props.entidad === 'noticias') {
-      formNoticia.titulo      = nuevoItem.titulo || ''
+      formNoticia.titulo = nuevoItem.titulo || ''
       formNoticia.descripcion = nuevoItem.descripcion || ''
-      formNoticia.cuerpo      = nuevoItem.cuerpo || ''
-
+      formNoticia.cuerpo = nuevoItem.cuerpo || ''
       if (nuevoItem.portada) {
-        const mimeP = nuevoItem.mime_type_portada || 'image/jpeg'
-        formNoticia.portada = `data:${mimeP};base64,${nuevoItem.portada}`
+        formNoticia.portada = `data:${nuevoItem.mime_type_portada || 'image/jpeg'};base64,${nuevoItem.portada}`
       } else {
         formNoticia.portada = ''
       }
       if (nuevoItem.lightbox) {
-        const mimeL = nuevoItem.mime_type_lightbox || 'image/jpeg'
-        formNoticia.lightbox = `data:${mimeL};base64,${nuevoItem.lightbox}`
+        formNoticia.lightbox = `data:${nuevoItem.mime_type_lightbox || 'image/jpeg'};base64,${nuevoItem.lightbox}`
       } else {
         formNoticia.lightbox = ''
       }
@@ -419,65 +444,28 @@ watch(
     else if (props.entidad === 'juegoImagenes') {
       Object.assign(formImagen, {
         id_imagen: nuevoItem.id_imagen,
-        id_juego:  nuevoItem.id_juego,
+        id_juego: nuevoItem.id_juego,
         categoria: nuevoItem.categoria,
-        imagen:    `data:${nuevoItem.mime_type || 'image/jpeg'};base64,${nuevoItem.imagen}`
+        imagen: nuevoItem.imagen
+          ? `data:${nuevoItem.mime_type || 'image/jpeg'};base64,${nuevoItem.imagen}`
+          : ''
       })
     }
   }
 )
 
 // ────────────────────────────────────────────────────────────
+// Utilidad para extraer base64 puro
+// ────────────────────────────────────────────────────────────
+function dataUrlToBase64(dataUrl) {
+  if (!dataUrl) return ''
+  const parts = dataUrl.split(',')
+  return parts.length > 1 ? parts[1] : dataUrl
+}
+
+// ────────────────────────────────────────────────────────────
 // 5) Funciones para manejar nuevos archivos de “Juego”
 // ────────────────────────────────────────────────────────────
-function onFileHChange(event) {
-  const file = event.target.files[0] || null
-  if (!file) {
-    formImagenH.newFile = null
-    // previewUrl deja la antigua si no selecciona nada
-    return
-  }
-  formImagenH.newFile = file
-  const reader = new FileReader()
-  reader.onload = () => {
-    formImagenH.previewUrl = reader.result
-  }
-  reader.readAsDataURL(file)
-}
-
-function onFileVChange(event) {
-  const file = event.target.files[0] || null
-  if (!file) {
-    formImagenV.newFile = null
-    return
-  }
-  formImagenV.newFile = file
-  const reader = new FileReader()
-  reader.onload = () => {
-    formImagenV.previewUrl = reader.result
-  }
-  reader.readAsDataURL(file)
-}
-
-function onFilePChange(event) {
-  const file = event.target.files[0] || null
-  if (!file) {
-    formImagenP.newFile = null
-    return
-  }
-  formImagenP.newFile = file
-  const reader = new FileReader()
-  reader.onload = () => {
-    formImagenP.previewUrl = reader.result
-  }
-  reader.readAsDataURL(file)
-}
-
-function onFileGeneroChange(event) {
-  const file = event.target.files[0] || null
-  fileGenero.value = file
-}
-
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
@@ -487,37 +475,79 @@ function fileToBase64(file) {
   })
 }
 
-// ────────────────────────────────────────────────────────────
-// 6) Manejo de archivos para Noticias
-// ────────────────────────────────────────────────────────────
+async function onFileHChange(event) {
+  const file = event.target.files[0] || null
+  if (!file) {
+    formImagenH.newFile = null
+    formImagenH.base64 = ''
+    return
+  }
+  formImagenH.newFile = file
+  const base64 = await fileToBase64(file)
+  formImagenH.previewUrl = base64
+  formImagenH.base64 = dataUrlToBase64(base64)
+}
+
+async function onFileVChange(event) {
+  const file = event.target.files[0] || null
+  if (!file) {
+    formImagenV.newFile = null
+    formImagenV.base64 = ''
+    return
+  }
+  formImagenV.newFile = file
+  const base64 = await fileToBase64(file)
+  formImagenV.previewUrl = base64
+  formImagenV.base64 = dataUrlToBase64(base64)
+}
+
+async function onFilePChange(event) {
+  const file = event.target.files[0] || null
+  if (!file) {
+    formImagenP.newFile = null
+    formImagenP.base64 = ''
+    return
+  }
+  formImagenP.newFile = file
+  const base64 = await fileToBase64(file)
+  formImagenP.previewUrl = base64
+  formImagenP.base64 = dataUrlToBase64(base64)
+}
+
+async function onFileGeneroChange(event) {
+  const file = event.target.files[0] || null
+  fileGenero.value = file
+  if (!file) {
+    formGenero.imagen = ''
+    return
+  }
+  const base64 = await fileToBase64(file)
+  formGenero.imagen = dataUrlToBase64(base64)
+  urlImagenActual.value = base64
+}
+
 async function onFilePortadaChange(event) {
   const file = event.target.files[0]
   if (!file) {
     filePortada.value = null
+    formNoticia.portada = ''
     return
   }
   filePortada.value = file
-  try {
-    const base64 = await fileToBase64(file)
-    formNoticia.portada = base64
-  } catch (err) {
-    console.error('Error convirtiendo Portada a Base64:', err)
-  }
+  const base64 = await fileToBase64(file)
+  formNoticia.portada = base64
 }
 
 async function onFileLightboxChange(event) {
   const file = event.target.files[0]
   if (!file) {
     fileLightbox.value = null
+    formNoticia.lightbox = ''
     return
   }
   fileLightbox.value = file
-  try {
-    const base64 = await fileToBase64(file)
-    formNoticia.lightbox = base64
-  } catch (err) {
-    console.error('Error convirtiendo Lightbox a Base64:', err)
-  }
+  const base64 = await fileToBase64(file)
+  formNoticia.lightbox = base64
 }
 
 // ────────────────────────────────────────────────────────────
@@ -528,82 +558,96 @@ async function onSubmit() {
 
   try {
     if (props.entidad === 'juegos') {
-      // 7.1) Validar campos de texto
       if (
         !formJuego.nombre.trim() ||
         !formJuego.desarrollador.trim() ||
         !formJuego.editor.trim() ||
         !formJuego.fecha_lanzamiento ||
         formJuego.precio === null ||
-        !formJuego.genero.trim() ||
+        !formJuego.generos.length ||
         !formJuego.plataforma.trim()
       ) {
         throw new Error('Completa todos los campos del juego.')
       }
 
-      // 7.2) Actualizar solo datos de texto del juego
+      // Actualizar datos de texto del juego
       const actualizadoJuego = await gamesStore.actualizarGame(
         props.itemActual.id_juego,
         {
-          nombre:            formJuego.nombre.trim(),
-          desarrollador:     formJuego.desarrollador.trim(),
-          editor:            formJuego.editor.trim(),
+          nombre: formJuego.nombre.trim(),
+          desarrollador: formJuego.desarrollador.trim(),
+          editor: formJuego.editor.trim(),
           fecha_lanzamiento: formJuego.fecha_lanzamiento,
-          precio:            formJuego.precio,
-          descuento:         formJuego.descuento,
-          genero:            formJuego.genero.trim(),
-          plataforma:        formJuego.plataforma.trim()
+          precio: formJuego.precio,
+          descuento: formJuego.descuento,
+          generos: formJuego.generos, // <-- array de IDs
+          plataforma: formJuego.plataforma.trim()
         }
       )
       if (!actualizadoJuego) {
         throw new Error(gamesStore.error || 'Error al actualizar el juego.')
       }
 
-      // 7.3) Ahora, actualizar cada imagen si se seleccionó un nuevo File
-      // —————————————————————————————————————————————————————————
       // HORIZONTAL
       if (formImagenH.newFile instanceof File) {
-        const fdH = new FormData()
-        fdH.append('_method', 'PUT')
-        fdH.append('categoria', 'horizontal')
-        fdH.append('imagen', formImagenH.newFile)
-        const resH = await juegoImagenesStore.actualizarImagen(
-          formImagenH.id_imagen,
-          fdH
-        )
+        const payload = {
+          id_juego: props.itemActual.id_juego,
+          categoria: 'horizontal',
+          imagen: formImagenH.base64
+        }
+        // Eliminar TODAS las imágenes antiguas de esta categoría
+        const anteriores = (props.itemActual.imagenes || []).filter(img => img.categoria === 'horizontal')
+        console.log(anteriores);
+
+        for (const anterior of anteriores) {
+          if (anterior.id_imagen) {
+            await juegoImagenesStore.eliminarImagen(anterior.id_imagen)
+          }
+        }
+        // Subir la nueva imagen
+        const resH = await juegoImagenesStore.subirImagen(payload)
         if (!resH) {
-          throw new Error(juegoImagenesStore.error || 'Error al actualizar imagen horizontal.')
+          throw new Error(juegoImagenesStore.error || 'Error al crear imagen horizontal.')
         }
       }
+
       // VERTICAL
       if (formImagenV.newFile instanceof File) {
-        const fdV = new FormData()
-        fdV.append('_method', 'PUT')
-        fdV.append('categoria', 'vertical')
-        fdV.append('imagen', formImagenV.newFile)
-        const resV = await juegoImagenesStore.actualizarImagen(
-          formImagenV.id_imagen,
-          fdV
-        )
+        const payload = {
+          id_juego: props.itemActual.id_juego,
+          categoria: 'vertical',
+          imagen: formImagenV.base64
+        }
+        const anteriores = (props.itemActual.imagenes || []).filter(img => img.categoria === 'vertical')
+        for (const anterior of anteriores) {
+          if (anterior.id_imagen) {
+            await juegoImagenesStore.eliminarImagen(anterior.id_imagen)
+          }
+        }
+        const resV = await juegoImagenesStore.subirImagen(payload)
         if (!resV) {
-          throw new Error(juegoImagenesStore.error || 'Error al actualizar imagen vertical.')
+          throw new Error(juegoImagenesStore.error || 'Error al crear imagen vertical.')
         }
       }
+
       // PERSONAJE
       if (formImagenP.newFile instanceof File) {
-        const fdP = new FormData()
-        fdP.append('_method', 'PUT')
-        fdP.append('categoria', 'personaje')
-        fdP.append('imagen', formImagenP.newFile)
-        const resP = await juegoImagenesStore.actualizarImagen(
-          formImagenP.id_imagen,
-          fdP
-        )
+        const payload = {
+          id_juego: props.itemActual.id_juego,
+          categoria: 'personaje',
+          imagen: formImagenP.base64
+        }
+        const anteriores = (props.itemActual.imagenes || []).filter(img => img.categoria === 'personaje')
+        for (const anterior of anteriores) {
+          if (anterior.id_imagen) {
+            await juegoImagenesStore.eliminarImagen(anterior.id_imagen)
+          }
+        }
+        const resP = await juegoImagenesStore.subirImagen(payload)
         if (!resP) {
-          throw new Error(juegoImagenesStore.error || 'Error al actualizar imagen de personaje.')
+          throw new Error(juegoImagenesStore.error || 'Error al crear imagen de personaje.')
         }
       }
-      // —————————————————————————————————————————————————————————
     }
     else if (props.entidad === 'usuarios') {
       if (
@@ -618,11 +662,11 @@ async function onSubmit() {
       const actualizado = await usersStore.updateUserByDni(
         props.itemActual.dni_usuario,
         {
-          nombre:      formUsuario.nombre.trim(),
-          email:       formUsuario.email.trim(),
+          nombre: formUsuario.nombre.trim(),
+          email: formUsuario.email.trim(),
           dni_usuario: formUsuario.dni_usuario.trim(),
-          rol:         formUsuario.rol.trim(),
-          saldo:       formUsuario.saldo
+          rol: formUsuario.rol.trim(),
+          saldo: formUsuario.saldo
         }
       )
       if (!actualizado) {
@@ -630,13 +674,12 @@ async function onSubmit() {
       }
     }
     else if (props.entidad === 'generos') {
-      if (!formGenero.nombre.trim()) {
-        throw new Error('Completa el nombre del género.')
+      if (!formGenero.nombre.trim() || !formGenero.imagen) {
+        throw new Error('Completa el nombre y la imagen del género.')
       }
-      // Preparo el payload limpio; el store lo convertirá a FormData
       const payload = {
         nombre: formGenero.nombre.trim(),
-        imagen: fileGenero.value  // null si no se seleccionó nada nuevo
+        imagen: formGenero.imagen
       }
       const respuesta = await generosStore.updateGenre(
         props.itemActual.id_genero,
@@ -661,11 +704,11 @@ async function onSubmit() {
         throw new Error('Debe existir un lightbox (o seleccione uno nuevo).')
       }
       const payload = {
-        titulo:      formNoticia.titulo.trim(),
-        portada:     formNoticia.portada,
-        lightbox:    formNoticia.lightbox,
+        titulo: formNoticia.titulo.trim(),
+        portada: dataUrlToBase64(formNoticia.portada),
+        lightbox: dataUrlToBase64(formNoticia.lightbox),
         descripcion: formNoticia.descripcion.trim(),
-        cuerpo:      formNoticia.cuerpo.trim()
+        cuerpo: formNoticia.cuerpo.trim()
       }
       const actualizado = await noticiasStore.actualizarNoticia(
         props.itemActual.id_noticia,
@@ -683,11 +726,10 @@ async function onSubmit() {
       ) {
         throw new Error('Completa todos los campos de la imagen de juego.')
       }
-      const blob64 = formImagen.imagen
       const payload = {
-        id_juego:  formImagen.id_juego,
+        id_juego: formImagen.id_juego,
         categoria: formImagen.categoria.trim(),
-        imagen:    blob64
+        imagen: dataUrlToBase64(formImagen.imagen)
       }
       const actualizado = await juegoImagenesStore.actualizarImagen(
         formImagen.id_imagen,
@@ -698,7 +740,6 @@ async function onSubmit() {
       }
     }
 
-    // Emitir que ya se guardó todo
     emit('saved')
   }
   catch (err) {
