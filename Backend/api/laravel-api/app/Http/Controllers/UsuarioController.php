@@ -102,12 +102,20 @@ class UsuarioController extends Controller
                 'contraseña' => 'required|string',
                 'saldo' => 'nullable|numeric',
                 'avatar' => 'nullable|string',
-
             ]);
         } catch (ValidationException $e) {
-            throw new HttpResponseException(response()->json([
-                'errors' => $e->errors()
-            ], 422));
+            // Personaliza los mensajes de error para email y dni_usuario
+            $errors = $e->errors();
+            $customMessage = 'Datos inválidos.';
+            if (isset($errors['dni_usuario'])) {
+                $customMessage = 'El DNI ya está registrado.';
+            } elseif (isset($errors['email'])) {
+                $customMessage = 'El correo electrónico ya está registrado.';
+            }
+            return response()->json([
+                'message' => $customMessage,
+                'errors' => $errors
+            ], 422);
         }
 
         $validated['contraseña'] = bcrypt($validated['contraseña']);

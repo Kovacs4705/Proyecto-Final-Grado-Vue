@@ -49,7 +49,6 @@ class Juego extends Model
 		'fecha_lanzamiento',
 		'precio',
 		'descuento',
-		'genero',
 		'plataforma',
 	];
 

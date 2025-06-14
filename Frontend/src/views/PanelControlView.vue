@@ -371,7 +371,7 @@ async function confirmDeletion() {
   }
   else if (selectedEntity.value === 'usuarios') {
     deletingId.value = itemToDelete.value.dni_usuario
-    const result = await usersStore.deleteUser(itemToDelete.value.dni_usuario)
+    const result = await usersStore.deleteUserByDni(itemToDelete.value.dni_usuario)
     if (result) {
       await usersStore.fetchUsers({ pagina: 1, registrosPorPagina: 1000 })
     } else {

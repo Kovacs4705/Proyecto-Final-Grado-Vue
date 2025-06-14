@@ -89,10 +89,38 @@ class JuegoController extends Controller
     )]
     public function store(Request $request)
     {
-        $juego = Juego::create($request->all());
-        return response()->json($juego, 201);
-    }
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'desarrollador' => 'required|string|max:255',
+            'editor' => 'required|string|max:255',
+            'fecha_lanzamiento' => 'required|date',
+            'precio' => 'required|numeric|min:0',
+            'descuento' => 'nullable|numeric|min:0|max:100',
+            'plataforma' => 'required|string|max:255',
+            'generos' => 'required|array|min:1',
+            'generos.*' => 'integer|exists:genero,id_genero',
+        ]);
 
+        // Validación adicional: descuento no puede ser mayor que el precio
+        if (
+            isset($validated['descuento']) &&
+            isset($validated['precio']) &&
+            $validated['descuento'] > $validated['precio']
+        ) {
+            return response()->json([
+                'message' => 'El descuento no puede ser mayor que el precio del juego.'
+            ], 422);
+        }
+
+        // Crear el juego sin el campo 'generos'
+        $juego = Juego::create(collect($validated)->except('generos')->toArray());
+
+        // Asociar géneros
+        $juego->generos()->sync($request->input('generos'));
+
+        // Cargar relaciones y devolver
+        return response()->json($juego->load(['juego_imagens', 'generos']), 201);
+    }
     #[OA\Get(
         path: "/api/juegos/{id}",
         summary: "Obtener un juego por ID con sus imágenes y categorías",
@@ -173,10 +201,34 @@ class JuegoController extends Controller
     )]
     public function update(Request $request, Juego $juego)
     {
-        $juego->update($request->all());
-        if ($request->has('generos')) {
-            $juego->generos()->sync($request->input('generos')); // <-- sincroniza la relación
+        $validated = $request->validate([
+            'nombre' => 'sometimes|required|string|max:255',
+            'desarrollador' => 'sometimes|required|string|max:255',
+            'editor' => 'sometimes|required|string|max:255',
+            'fecha_lanzamiento' => 'sometimes|required|date',
+            'precio' => 'sometimes|required|numeric|min:0',
+            'descuento' => 'nullable|numeric|min:0|max:100',
+            'plataforma' => 'sometimes|required|string|max:255',
+            'generos' => 'sometimes|required|array|min:1',
+            'generos.*' => 'integer|exists:genero,id_genero',
+        ]);
+
+        if (
+            isset($validated['descuento']) &&
+            isset($validated['precio']) &&
+            $validated['descuento'] > $validated['precio']
+        ) {
+            return response()->json([
+                'message' => 'El descuento no puede ser mayor que el precio del juego.'
+            ], 422);
         }
+
+        $juego->update(collect($validated)->except('generos')->toArray());
+
+        if ($request->has('generos')) {
+            $juego->generos()->sync($request->input('generos'));
+        }
+
         return response()->json($juego->load(['juego_imagens', 'generos']));
     }
 

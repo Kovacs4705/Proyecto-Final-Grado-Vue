@@ -78,44 +78,57 @@ class JuegoImagenController extends Controller
         ]);
 
         try {
-            $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
-
-            // Elegir dimensiones según la categoría
-            $width = 800;
-            $height = 400;
-            switch ($request->input('categoria')) {
-                case 'horizontal':
-                    $width = 495;
-                    $height = 302;
-                    break;
-                case 'vertical':
-                    $width = 203;
-                    $height = 261;
-                    break;
-                case 'personaje':
-                    $width = 512;
-                    $height = 512;
-                    break;
-            }
-
+            $categoria = $request->input('categoria');
             $binario = null;
-            if ($request->hasFile('imagen')) {
-                $img = $manager->read($request->file('imagen')->getRealPath())->cover($width, $height);
-                $binario = (string) $img->toJpeg();
-            } elseif ($request->filled('imagen')) {
-                $base64 = $request->input('imagen');
-                if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
-                    $base64 = substr($base64, strpos($base64, ',') + 1);
+
+            if ($categoria === 'personaje') {
+                // Guardar la imagen tal cual (sin Intervention)
+                if ($request->hasFile('imagen')) {
+                    $file = $request->file('imagen');
+                    $binario = file_get_contents($file->getRealPath());
+                } elseif ($request->filled('imagen')) {
+                    $base64 = $request->input('imagen');
+                    if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
+                        $base64 = substr($base64, strpos($base64, ',') + 1);
+                    }
+                    $binario = base64_decode($base64);
+                } else {
+                    return response()->json(['message' => 'No se envió ninguna imagen'], 422);
                 }
-                $img = $manager->read(base64_decode($base64))->cover($width, $height);
-                $binario = (string) $img->toJpeg();
             } else {
-                return response()->json(['message' => 'No se envió ninguna imagen'], 422);
+                // Para horizontal y vertical, sigue usando Intervention
+                $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+                $width = 800;
+                $height = 400;
+                switch ($categoria) {
+                    case 'horizontal':
+                        $width = 1920;
+                        $height = 1080;
+                        break;
+                    case 'vertical':
+                        $width = 267;
+                        $height = 400;
+                        break;
+                }
+
+                if ($request->hasFile('imagen')) {
+                    $img = $manager->read($request->file('imagen')->getRealPath())->cover($width, $height);
+                    $binario = (string) $img->toJpeg();
+                } elseif ($request->filled('imagen')) {
+                    $base64 = $request->input('imagen');
+                    if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
+                        $base64 = substr($base64, strpos($base64, ',') + 1);
+                    }
+                    $img = $manager->read(base64_decode($base64))->cover($width, $height);
+                    $binario = (string) $img->toJpeg();
+                } else {
+                    return response()->json(['message' => 'No se envió ninguna imagen'], 422);
+                }
             }
 
             $imagen = JuegoImagen::create([
                 'id_juego' => $request->id_juego,
-                'categoria' => $request->categoria,
+                'categoria' => $categoria,
                 'imagen' => $binario,
             ]);
 
@@ -210,16 +223,12 @@ class JuegoImagenController extends Controller
         $height = 400;
         switch ($categoria) {
             case 'horizontal':
-                $width = 495;
-                $height = 302;
+                $width = 1920;
+                $height = 1080;
                 break;
             case 'vertical':
-                $width = 203;
-                $height = 261;
-                break;
-            case 'personaje':
-                $width = 512;
-                $height = 512;
+                $width = 267;
+                $height = 400;
                 break;
         }
 
@@ -227,18 +236,31 @@ class JuegoImagenController extends Controller
             $imagen->categoria = $categoria;
         }
 
-        $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
-
-        if ($request->hasFile('imagen')) {
-            $img = $manager->read($request->file('imagen')->getRealPath())->cover($width, $height);
-            $imagen->imagen = (string) $img->toJpeg();
-        } elseif ($request->filled('imagen')) {
-            $base64 = $request->input('imagen');
-            if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
-                $base64 = substr($base64, strpos($base64, ',') + 1);
+        if ($categoria === 'personaje') {
+            // Guardar la imagen tal cual (sin Intervention)
+            if ($request->hasFile('imagen')) {
+                $file = $request->file('imagen');
+                $imagen->imagen = file_get_contents($file->getRealPath());
+            } elseif ($request->filled('imagen')) {
+                $base64 = $request->input('imagen');
+                if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
+                    $base64 = substr($base64, strpos($base64, ',') + 1);
+                }
+                $imagen->imagen = base64_decode($base64);
             }
-            $img = $manager->read(base64_decode($base64))->cover($width, $height);
-            $imagen->imagen = (string) $img->toJpeg();
+        } else {
+            $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+            if ($request->hasFile('imagen')) {
+                $img = $manager->read($request->file('imagen')->getRealPath())->cover($width, $height);
+                $imagen->imagen = (string) $img->toJpeg();
+            } elseif ($request->filled('imagen')) {
+                $base64 = $request->input('imagen');
+                if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
+                    $base64 = substr($base64, strpos($base64, ',') + 1);
+                }
+                $img = $manager->read(base64_decode($base64))->cover($width, $height);
+                $imagen->imagen = (string) $img->toJpeg();
+            }
         }
 
         $imagen->save();

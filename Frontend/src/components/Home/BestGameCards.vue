@@ -5,8 +5,16 @@
             <h2 id="mejoresJuegos">Mejores Juegos</h2>
             <div class="row">
                 <div class="col" v-for="game in visibleGames" :key="game.id">
-                    <BestGameCard :link="game.link" :img="game.img" :characterImg="game.characterImg" :aos="game.aos"
-                        :duration="game.duration" :delay="game.delay" :title="game.title" :price="game.price" />
+                    <BestGameCard
+                        :link="game.link"
+                        :img="game.img"
+                        :characterImg="game.characterImg"
+                        :aos="game.aos"
+                        :duration="game.duration"
+                        :delay="game.delay"
+                        :title="game.title"
+                        :price="game.price"
+                    />
                 </div>
             </div>
         </section>
@@ -14,21 +22,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
-import BestGameCard from '../Home/BestGameCard/BestGameCard.vue'
+import { ref, onMounted, onBeforeUnmount, computed } from "vue";
+import BestGameCard from "../Home/BestGameCard/BestGameCard.vue";
 
 const props = defineProps({
-    games: { type: Array, default: () => [] }
-})
+    games: { type: Array, default: () => [] },
+});
 
 // reactivo al ancho de ventana
-const ww = ref(innerWidth)
-console.log('ww', ww.value);
+const ww = ref(innerWidth);
 
-function onResize() { ww.value = innerWidth }
+function onResize() {
+    ww.value = innerWidth;
+}
 
-onMounted(() => window.addEventListener('resize', onResize))
-onBeforeUnmount(() => window.removeEventListener('resize', onResize))
+onMounted(() => window.addEventListener("resize", onResize));
+onBeforeUnmount(() => window.removeEventListener("resize", onResize));
 
 // calculamos cuántas mostrar
 const visibleGames = computed(() => {
@@ -38,19 +47,13 @@ const visibleGames = computed(() => {
     if (ww.value >= 768) cardsPerRow = 3;
     if (ww.value >= 992) cardsPerRow = 3;
     if (ww.value >= 1200) cardsPerRow = 3;
-    if (ww.value >= 2560) cardsPerRow = 6 ;
-    if (ww.value >= 3840) cardsPerRow = 9;  
-    console.log('cardsPerRow', cardsPerRow);
-    
+    if (ww.value >= 2560) cardsPerRow = 6;
+    if (ww.value >= 3840) cardsPerRow = 9;
 
-    const maxCards = cardsPerRow * 2; 
-    console.log('maxCards', maxCards);
-    
-    console.log(props.games.slice(0, maxCards));
-    
+    const maxCards = cardsPerRow * 2;
+
     return props.games.slice(0, maxCards);
 });
-    
 </script>
 
 <style scoped>
@@ -61,7 +64,7 @@ const visibleGames = computed(() => {
 }
 
 #mejoresJuegos::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -10px;
     left: 0;
@@ -74,7 +77,7 @@ const visibleGames = computed(() => {
     padding: 0 1rem;
 }
 
-.best-games-cards .row>.col {
+.best-games-cards .row > .col {
     display: flex;
 }
 

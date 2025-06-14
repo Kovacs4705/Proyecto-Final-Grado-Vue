@@ -106,5 +106,5 @@ const filters = computed(() => [
 </script>
 
 <style scoped>
-/* Si necesitas estilos adicionales para esta vista, agrégalos aquí */
+
 </style>

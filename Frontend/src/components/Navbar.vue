@@ -123,7 +123,7 @@ function goToLogin() {
 }
 function goToRegister() {
     showUserMenu.value = false
-    router.push({ name: 'login' })
+    router.push({ name: 'login', query: { register: 1 } })
 }
 // Método de logout: limpia store y redirige a home como invitado
 function logout() {
