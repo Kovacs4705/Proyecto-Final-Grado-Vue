@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="user-info d-flex align-items-center position-relative">
-                    <img src="../assets/images/avatar-de-usuario.png" class="user-avatar" />
+                    <img src="../../public/images/perfl.jpg" class="user-avatar" />
                     <!-- Al hacer click en el nombre, mostramos el menú correspondiente -->
                     <span class="user-name ms-2" @click="toggleUserMenu" style="cursor: pointer;">
                         {{ displayName }}
