@@ -77,7 +77,6 @@ class NoticiaController extends Controller
             'titulo' => 'required|string|max:255',
             'descripcion' => 'required|string',
             'cuerpo' => 'required|string',
-            // portada y lightbox pueden ser archivos o base64
         ]);
 
         $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
@@ -92,7 +91,8 @@ class NoticiaController extends Controller
             if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
                 $base64 = substr($base64, strpos($base64, ',') + 1);
             }
-            $binarioPortada = base64_decode($base64);
+            $img = $manager->read(base64_decode($base64))->cover(295, 139);
+            $binarioPortada = (string) $img->toJpeg();
         }
 
         // Procesar lightbox
@@ -105,7 +105,8 @@ class NoticiaController extends Controller
             if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
                 $base64 = substr($base64, strpos($base64, ',') + 1);
             }
-            $binarioLightbox = base64_decode($base64);
+            $img = $manager->read(base64_decode($base64))->cover(800, 400);
+            $binarioLightbox = (string) $img->toJpeg();
         }
 
         $noticia = Noticia::create([
@@ -184,9 +185,12 @@ class NoticiaController extends Controller
     )]
     public function update(Request $request, Noticia $noticia)
     {
-        if ($request->has('titulo')) $noticia->titulo = $request->titulo;
-        if ($request->has('descripcion')) $noticia->descripcion = $request->descripcion;
-        if ($request->has('cuerpo')) $noticia->cuerpo = $request->cuerpo;
+        if ($request->has('titulo'))
+            $noticia->titulo = $request->titulo;
+        if ($request->has('descripcion'))
+            $noticia->descripcion = $request->descripcion;
+        if ($request->has('cuerpo'))
+            $noticia->cuerpo = $request->cuerpo;
 
         $manager = new ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
 
@@ -199,19 +203,21 @@ class NoticiaController extends Controller
             if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
                 $base64 = substr($base64, strpos($base64, ',') + 1);
             }
-            $noticia->portada = base64_decode($base64);
+            $img = $manager->read(base64_decode($base64))->cover(295, 139);
+            $noticia->portada = (string) $img->toJpeg();
         }
 
         // Procesar lightbox
         if ($request->hasFile('lightbox')) {
-            $img = $manager->read($request->file('lightbox')->getRealPath())->cover(800, 400);
+            $img = $manager->read($request->file('lightbox')->getRealPath())->cover(1024, 720);
             $noticia->lightbox = (string) $img->toJpeg();
         } elseif ($request->filled('lightbox')) {
             $base64 = $request->input('lightbox');
             if (preg_match('/^data:image\/(\w+);base64,/', $base64)) {
                 $base64 = substr($base64, strpos($base64, ',') + 1);
             }
-            $noticia->lightbox = base64_decode($base64);
+            $img = $manager->read(base64_decode($base64))->cover(1024, 720);
+            $noticia->lightbox = (string) $img->toJpeg();
         }
 
         $noticia->save();
